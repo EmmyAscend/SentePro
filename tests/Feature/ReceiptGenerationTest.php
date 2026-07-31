@@ -119,6 +119,47 @@ class ReceiptGenerationTest extends TestCase
         $response->assertSee('genuine');
     }
 
+    public function test_the_qr_code_endpoint_returns_a_scannable_svg_for_a_guest(): void
+    {
+        $business = Business::factory()->create(['status' => 'approved']);
+        $transaction = PaymentTransaction::factory()->create(['business_id' => $business->id]);
+
+        $receipt = Receipt::create([
+            'business_id' => $business->id,
+            'payment_transaction_id' => $transaction->id,
+            'reference_number' => 'RCPT-TESTQRCODE',
+            'amount' => 2500,
+            'net_amount' => 2400,
+            'currency' => 'UGX',
+        ]);
+
+        $response = $this->get('/receipts/RCPT-TESTQRCODE/qr-code');
+
+        $response->assertOk();
+        $response->assertHeader('Content-Type', 'image/svg+xml');
+        $this->assertStringContainsString('<svg', $response->getContent());
+    }
+
+    public function test_the_public_receipt_page_embeds_the_qr_code_image(): void
+    {
+        $business = Business::factory()->create(['status' => 'approved']);
+        $transaction = PaymentTransaction::factory()->create(['business_id' => $business->id]);
+
+        $receipt = Receipt::create([
+            'business_id' => $business->id,
+            'payment_transaction_id' => $transaction->id,
+            'reference_number' => 'RCPT-TESTQREMBED',
+            'amount' => 2500,
+            'net_amount' => 2400,
+            'currency' => 'UGX',
+        ]);
+
+        $response = $this->get('/receipts/RCPT-TESTQREMBED');
+
+        $response->assertOk();
+        $response->assertSee(route('receipts.qr-code', $receipt), false);
+    }
+
     public function test_business_admin_only_sees_their_own_receipts_in_the_index(): void
     {
         $businessA = Business::factory()->create(['status' => 'approved']);

@@ -51,6 +51,9 @@ Route::get('/receipts/{receipt}', [ReceiptController::class, 'show'])
 Route::get('/receipts/{receipt}/verify', [ReceiptController::class, 'verify'])
     ->name('receipts.verify');
 
+Route::get('/receipts/{receipt}/qr-code', [ReceiptController::class, 'qrCode'])
+    ->name('receipts.qr-code');
+
 Route::get('/business/register', [BusinessRegistrationController::class, 'index'])
     ->name('business.register');
 

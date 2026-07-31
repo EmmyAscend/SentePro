@@ -46,11 +46,14 @@
                 </div>
             </div>
 
-            <div class="mt-6 rounded-2xl bg-slate-800 p-5 text-sm ring-1 ring-slate-700 print:bg-white print:ring-slate-200">
-                <p class="text-slate-400 print:text-slate-500">Verify this receipt</p>
-                <a href="{{ route('receipts.verify', $receipt) }}" class="mt-1 block break-all font-mono text-emerald-400 print:text-emerald-700">
-                    {{ route('receipts.verify', $receipt) }}
-                </a>
+            <div class="mt-6 flex items-center gap-4 rounded-2xl bg-slate-800 p-5 text-sm ring-1 ring-slate-700 print:bg-white print:ring-slate-200">
+                <img src="{{ route('receipts.qr-code', $receipt) }}" alt="Scan to verify this receipt" width="96" height="96" class="h-24 w-24 shrink-0 rounded-lg bg-white p-1">
+                <div class="min-w-0">
+                    <p class="text-slate-400 print:text-slate-500">Scan or visit to verify this receipt</p>
+                    <a href="{{ route('receipts.verify', $receipt) }}" class="mt-1 block break-all font-mono text-xs text-emerald-400 print:text-emerald-700">
+                        {{ route('receipts.verify', $receipt) }}
+                    </a>
+                </div>
             </div>
 
             <p class="mt-6 text-center text-xs text-slate-500">Issued by SentePro on behalf of {{ $receipt->business->business_name }}.</p>
