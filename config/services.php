@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    'pesapal' => [
+        'sandbox_url' => env('PESAPAL_SANDBOX_URL', 'https://cybqa.pesapal.com/pesapalv3'),
+        'production_url' => env('PESAPAL_PRODUCTION_URL', 'https://pay.pesapal.com/v3'),
+    ],
+
+    'yo_payments' => [
+        'sandbox_url' => env('YO_PAYMENTS_SANDBOX_URL', 'https://sandbox.yo.co.ug/services/yopaymentsdev/task.php'),
+        'production_url' => env('YO_PAYMENTS_PRODUCTION_URL', 'https://paymentsapi1.yo.co.ug/ybs/task.php'),
+    ],
+
 ];

@@ -11,7 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Real payment gateways POST to these without a CSRF token.
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/pesapal/*',
+            'webhooks/yo-payments/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

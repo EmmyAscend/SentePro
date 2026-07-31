@@ -20,6 +20,10 @@ class BusinessRegistrationTest extends TestCase
     public function test_business_registration_form_accepts_valid_business_details(): void
     {
         $response = $this->post('/business/register', [
+            'owner_name' => 'Jane Owner',
+            'owner_email' => 'owner@sentepro.test',
+            'owner_password' => 'password123',
+            'owner_password_confirmation' => 'password123',
             'business_name' => 'SentePro Demo Business',
             'trading_name' => 'SentePro Demo',
             'registration_number' => 'REG-123456',
@@ -31,6 +35,7 @@ class BusinessRegistrationTest extends TestCase
             'business_description' => 'A test business collecting payments online.',
         ]);
 
-        $response->assertRedirect('/business/register');
+        $response->assertRedirect(route('dashboard'));
+        $this->assertAuthenticated();
     }
 }

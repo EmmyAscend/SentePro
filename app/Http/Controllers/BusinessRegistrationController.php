@@ -2,34 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Business;
+use App\Http\Requests\StoreBusinessRequest;
+use App\Services\BusinessRegistrationService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class BusinessRegistrationController extends Controller
 {
+    public function __construct(private readonly BusinessRegistrationService $registrationService) {}
+
     public function index(): View
     {
         return view('business.register');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreBusinessRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'business_name' => ['required', 'string', 'max:255'],
-            'trading_name' => ['required', 'string', 'max:255'],
-            'registration_number' => ['required', 'string', 'max:255'],
-            'country' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:50'],
-            'email' => ['required', 'email'],
-            'industry' => ['required', 'string', 'max:255'],
-            'expected_monthly_volume' => ['required', 'string', 'max:255'],
-            'business_description' => ['nullable', 'string'],
-        ]);
+        $owner = $this->registrationService->register($request->validated());
 
-        Business::create($validated);
+        Auth::login($owner);
 
-        return redirect()->route('business.register')->with('status', 'Business registration submitted.');
+        return redirect()->route('dashboard')
+            ->with('status', 'Business registration submitted. Your account is pending verification.');
     }
 }

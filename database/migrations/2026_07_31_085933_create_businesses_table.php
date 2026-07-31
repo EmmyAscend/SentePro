@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('industry');
             $table->string('expected_monthly_volume');
             $table->text('business_description')->nullable();
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }

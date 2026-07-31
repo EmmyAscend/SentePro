@@ -15,6 +15,43 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('settlements.index')" :active="request()->routeIs('settlements.*')">
+                        {{ __('Settlements') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('payment-links.index')" :active="request()->routeIs('payment-links.*')">
+                        {{ __('Payment Links') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*')">
+                        {{ __('Transactions') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('receipts.index')" :active="request()->routeIs('receipts.*')">
+                        {{ __('Receipts') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('gateways.index')" :active="request()->routeIs('gateways.*')">
+                        {{ __('Gateways') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('webhooks.index')" :active="request()->routeIs('webhooks.*')">
+                        {{ __('Webhooks') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('fee-breakdowns.index')" :active="request()->routeIs('fee-breakdowns.*')">
+                        {{ __('Fees') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('analytics.index')" :active="request()->routeIs('analytics.*')">
+                        {{ __('Analytics') }}
+                    </x-nav-link>
+                    @if (auth()->user()->isBusinessAdmin() || auth()->user()->isSuperAdmin())
+                        <x-nav-link :href="route('admin.staff')" :active="request()->routeIs('admin.staff')">
+                            {{ __('Staff') }}
+                        </x-nav-link>
+                    @endif
+                    @if (auth()->user()->isSuperAdmin())
+                        <x-nav-link :href="route('admin.settlement-methods')" :active="request()->routeIs('admin.settlement-methods')">
+                            {{ __('Settlement Methods') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.fee-structures')" :active="request()->routeIs('admin.fee-structures')">
+                            {{ __('Fee Structures') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -70,6 +107,43 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('settlements.index')" :active="request()->routeIs('settlements.*')">
+                {{ __('Settlements') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('payment-links.index')" :active="request()->routeIs('payment-links.*')">
+                {{ __('Payment Links') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*')">
+                {{ __('Transactions') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('receipts.index')" :active="request()->routeIs('receipts.*')">
+                {{ __('Receipts') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('gateways.index')" :active="request()->routeIs('gateways.*')">
+                {{ __('Gateways') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('webhooks.index')" :active="request()->routeIs('webhooks.*')">
+                {{ __('Webhooks') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('fee-breakdowns.index')" :active="request()->routeIs('fee-breakdowns.*')">
+                {{ __('Fees') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('analytics.index')" :active="request()->routeIs('analytics.*')">
+                {{ __('Analytics') }}
+            </x-responsive-nav-link>
+            @if (auth()->user()->isBusinessAdmin() || auth()->user()->isSuperAdmin())
+                <x-responsive-nav-link :href="route('admin.staff')" :active="request()->routeIs('admin.staff')">
+                    {{ __('Staff') }}
+                </x-responsive-nav-link>
+            @endif
+            @if (auth()->user()->isSuperAdmin())
+                <x-responsive-nav-link :href="route('admin.settlement-methods')" :active="request()->routeIs('admin.settlement-methods')">
+                    {{ __('Settlement Methods') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.fee-structures')" :active="request()->routeIs('admin.fee-structures')">
+                    {{ __('Fee Structures') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
