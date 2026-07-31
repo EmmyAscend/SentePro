@@ -25,4 +25,15 @@ class BusinessPolicy
     {
         return false;
     }
+
+    /**
+     * Browsing the full cross-tenant businesses list is super-admin-only,
+     * granted entirely via the Gate::before bypass in AppServiceProvider.
+     * Distinct from viewAny()/view() above, which gate a business admin's
+     * view of their own single business.
+     */
+    public function manage(User $user): bool
+    {
+        return false;
+    }
 }

@@ -51,6 +51,15 @@
                         <x-nav-link :href="route('admin.fee-structures')" :active="request()->routeIs('admin.fee-structures')">
                             {{ __('Fee Structures') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.businesses.index')" :active="request()->routeIs('admin.businesses.index')">
+                            {{ __('Businesses') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.wallet-monitoring')" :active="request()->routeIs('admin.wallet-monitoring')">
+                            {{ __('Wallet Monitoring') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.audit-logs')" :active="request()->routeIs('admin.audit-logs')">
+                            {{ __('Audit Logs') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -142,6 +151,15 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.fee-structures')" :active="request()->routeIs('admin.fee-structures')">
                     {{ __('Fee Structures') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.businesses.index')" :active="request()->routeIs('admin.businesses.index')">
+                    {{ __('Businesses') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.wallet-monitoring')" :active="request()->routeIs('admin.wallet-monitoring')">
+                    {{ __('Wallet Monitoring') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.audit-logs')" :active="request()->routeIs('admin.audit-logs')">
+                    {{ __('Audit Logs') }}
                 </x-responsive-nav-link>
             @endif
         </div>

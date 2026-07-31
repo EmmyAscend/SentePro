@@ -42,7 +42,12 @@
                 <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
                     <div class="mb-4 flex items-center justify-between gap-4">
                         <h3 class="text-lg font-semibold text-slate-900">Recent business onboarding</h3>
-                        <a href="{{ route('settlements.index') }}" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Manage settlements</a>
+                        <div class="flex items-center gap-2">
+                            @if (auth()->user()->isSuperAdmin())
+                                <a href="{{ route('admin.businesses.index') }}" class="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">View all businesses</a>
+                            @endif
+                            <a href="{{ route('settlements.index') }}" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Manage settlements</a>
+                        </div>
                     </div>
                     @if ($latestBusinesses->isEmpty())
                         <p class="text-slate-600">No business applications recorded yet.</p>
