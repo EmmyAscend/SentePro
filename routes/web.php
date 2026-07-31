@@ -14,6 +14,7 @@ use App\Http\Controllers\PaymentTransactionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicCheckoutController;
 use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\RefundController;
 use App\Http\Controllers\SettlementController;
 use App\Http\Controllers\SettlementMethodController;
 use App\Http\Controllers\SettlementReviewController;
@@ -84,6 +85,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/gateways', [GatewayProviderController::class, 'store'])->name('gateways.store');
     Route::get('/transactions', [PaymentTransactionController::class, 'index'])->name('transactions.index');
     Route::post('/transactions', [PaymentTransactionController::class, 'store'])->name('transactions.store');
+    Route::post('/transactions/{transaction}/refund', [RefundController::class, 'store'])->name('transactions.refund');
     Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts.index');
     Route::get('/webhooks', [WebhookController::class, 'index'])->name('webhooks.index');
     Route::post('/webhooks', [WebhookController::class, 'store'])->name('webhooks.store');

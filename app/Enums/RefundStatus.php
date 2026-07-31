@@ -2,20 +2,16 @@
 
 namespace App\Enums;
 
-enum PaymentTransactionStatus: string
+enum RefundStatus: string
 {
-    case Processing = 'processing';
     case Completed = 'completed';
     case Failed = 'failed';
-    case Refunded = 'refunded';
 
     public function label(): string
     {
         return match ($this) {
-            self::Processing => 'Processing',
             self::Completed => 'Completed',
             self::Failed => 'Failed',
-            self::Refunded => 'Refunded',
         };
     }
 }

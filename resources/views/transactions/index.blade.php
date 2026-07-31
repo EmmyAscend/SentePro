@@ -68,8 +68,23 @@
                                         <p class="font-semibold text-slate-900">{{ $transaction->business->business_name }}</p>
                                         <p class="text-sm text-slate-500">{{ $transaction->provider->label() }} • {{ $transaction->external_reference }}</p>
                                     </div>
-                                    <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">{{ strtoupper($transaction->status->value) }}</span>
+                                    <span @class([
+                                        'rounded-full px-3 py-1 text-xs font-semibold',
+                                        'bg-emerald-100 text-emerald-700' => $transaction->status === \App\Enums\PaymentTransactionStatus::Completed,
+                                        'bg-amber-100 text-amber-700' => $transaction->status === \App\Enums\PaymentTransactionStatus::Processing,
+                                        'bg-rose-100 text-rose-700' => $transaction->status === \App\Enums\PaymentTransactionStatus::Failed,
+                                        'bg-slate-200 text-slate-600' => $transaction->status === \App\Enums\PaymentTransactionStatus::Refunded,
+                                    ])>{{ strtoupper($transaction->status->value) }}</span>
                                 </div>
+                                @if ($transaction->status === \App\Enums\PaymentTransactionStatus::Completed && $transaction->provider !== \App\Enums\PaymentProvider::YoPayments)
+                                @can('refund', $transaction)
+                                    <form method="POST" action="{{ route('transactions.refund', $transaction) }}" class="mt-3 flex items-center gap-2" onsubmit="return confirm('Refund this transaction? This cannot be undone.');">
+                                        @csrf
+                                        <input type="text" name="reason" placeholder="Refund reason (optional)" class="flex-1 rounded-xl border border-slate-300 px-3 py-1.5 text-sm">
+                                        <button type="submit" class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-200">Refund</button>
+                                    </form>
+                                @endcan
+                                @endif
                             </div>
                         @empty
                             <p class="text-slate-600">No transactions recorded yet.</p>
