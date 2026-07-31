@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Business;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -12,7 +14,7 @@ class BusinessRegistrationController extends Controller
         return view('business.register');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'business_name' => ['required', 'string', 'max:255'],
@@ -25,6 +27,8 @@ class BusinessRegistrationController extends Controller
             'expected_monthly_volume' => ['required', 'string', 'max:255'],
             'business_description' => ['nullable', 'string'],
         ]);
+
+        Business::create($validated);
 
         return redirect()->route('business.register')->with('status', 'Business registration submitted.');
     }
