@@ -19,8 +19,8 @@
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Business</label>
                             <select name="business_id" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2">
-                                @foreach ($paymentLinks as $link)
-                                    <option value="{{ $link->business_id }}">{{ $link->business->business_name }}</option>
+                                @foreach ($businesses as $business)
+                                    <option value="{{ $business->id }}">{{ $business->business_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -71,13 +71,42 @@
                     <h3 class="text-lg font-semibold text-slate-900">Existing payment links</h3>
                     <div class="mt-4 space-y-3">
                         @forelse ($paymentLinks as $link)
-                            <div class="rounded-xl bg-slate-50 p-4">
+                            <div x-data="{ open: false }" class="rounded-xl bg-slate-50 p-4">
                                 <div class="flex items-center justify-between gap-3">
                                     <div>
                                         <p class="font-semibold text-slate-900">{{ $link->title }}</p>
                                         <p class="text-sm text-slate-500">{{ $link->business->business_name }} • {{ ucfirst($link->type) }}</p>
                                     </div>
-                                    <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">{{ strtoupper($link->status) }}</span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">{{ strtoupper($link->status) }}</span>
+                                        <button type="button" @click="open = !open" class="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                                            Share
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div x-show="open" x-cloak class="mt-4 space-y-4 border-t border-slate-200 pt-4">
+                                    <div class="flex flex-col gap-3 sm:flex-row sm:items-start">
+                                        <img src="{{ route('checkout.qr-code', $link) }}" alt="Scan to pay {{ $link->title }}" width="128" height="128" class="h-32 w-32 shrink-0 rounded-lg bg-white p-1 ring-1 ring-slate-200">
+
+                                        <div class="flex-1 space-y-3">
+                                            <div>
+                                                <label class="text-xs font-medium text-slate-500">Payment link</label>
+                                                <div class="mt-1 flex gap-2">
+                                                    <input type="text" readonly value="{{ route('checkout.show', $link) }}" class="flex-1 rounded-xl border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-700" onclick="this.select()">
+                                                    <button type="button" class="rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50" onclick="navigator.clipboard.writeText(this.previousElementSibling.value); this.textContent='Copied!'">Copy</button>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label class="text-xs font-medium text-slate-500">Payment button (HTML embed)</label>
+                                                <div class="mt-1 flex gap-2">
+                                                    <textarea readonly rows="2" class="flex-1 rounded-xl border border-slate-300 bg-white px-3 py-1.5 font-mono text-xs text-slate-700" onclick="this.select()"><a href="{{ route('checkout.show', $link) }}" style="display:inline-block;padding:12px 24px;background:#0f172a;color:#ffffff;font-family:sans-serif;font-weight:600;border-radius:9999px;text-decoration:none;">Pay {{ $link->title }}</a></textarea>
+                                                    <button type="button" class="self-start rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50" onclick="navigator.clipboard.writeText(this.previousElementSibling.value); this.textContent='Copied!'">Copy</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         @empty

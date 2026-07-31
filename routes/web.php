@@ -37,6 +37,9 @@ Route::get('/pay/{paymentLink}', [PublicCheckoutController::class, 'show'])
 Route::get('/pay/{paymentLink}/status', [PublicCheckoutController::class, 'status'])
     ->name('checkout.status');
 
+Route::get('/pay/{paymentLink}/qr-code', [PublicCheckoutController::class, 'qrCode'])
+    ->name('checkout.qr-code');
+
 Route::post('/pay/{paymentLink}', [PublicCheckoutController::class, 'store'])
     ->name('checkout.store');
 
