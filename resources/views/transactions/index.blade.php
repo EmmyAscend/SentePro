@@ -19,8 +19,8 @@
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Business</label>
                             <select name="business_id" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2">
-                                @foreach ($transactions as $transaction)
-                                    <option value="{{ $transaction->business_id }}">{{ $transaction->business->business_name }}</option>
+                                @foreach ($businesses as $business)
+                                    <option value="{{ $business->id }}">{{ $business->business_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -59,7 +59,58 @@
                 </div>
 
                 <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                    <h3 class="text-lg font-semibold text-slate-900">Transaction ledger</h3>
+                    <div class="flex items-center justify-between gap-4">
+                        <h3 class="text-lg font-semibold text-slate-900">Transaction ledger</h3>
+                        <a href="{{ route('transactions.export', request()->query()) }}" class="rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">Export CSV</a>
+                    </div>
+
+                    <form method="GET" action="{{ route('transactions.index') }}" class="mt-4 grid gap-3 rounded-xl bg-slate-50 p-4 md:grid-cols-3">
+                        <label class="flex flex-col gap-1 text-sm md:col-span-3">
+                            <span class="font-medium text-slate-700">Search</span>
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Reference, customer name, email, or phone" class="rounded-xl border border-slate-300 px-3 py-2">
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-700">Status</span>
+                            <select name="status" class="rounded-xl border border-slate-300 px-3 py-2">
+                                <option value="">All statuses</option>
+                                @foreach (['processing', 'completed', 'failed', 'refunded'] as $status)
+                                    <option value="{{ $status }}" @selected(request('status') === $status)>{{ ucfirst($status) }}</option>
+                                @endforeach
+                            </select>
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-700">Provider</span>
+                            <select name="provider" class="rounded-xl border border-slate-300 px-3 py-2">
+                                <option value="">All providers</option>
+                                <option value="pesapal" @selected(request('provider') === 'pesapal')>Pesapal</option>
+                                <option value="yo_payments" @selected(request('provider') === 'yo_payments')>Yo Payments</option>
+                            </select>
+                        </label>
+                        @if (auth()->user()->isSuperAdmin())
+                            <label class="flex flex-col gap-1 text-sm">
+                                <span class="font-medium text-slate-700">Business</span>
+                                <select name="business_id" class="rounded-xl border border-slate-300 px-3 py-2">
+                                    <option value="">All businesses</option>
+                                    @foreach ($businesses as $business)
+                                        <option value="{{ $business->id }}" @selected(request('business_id') == $business->id)>{{ $business->business_name }}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                        @endif
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-700">From</span>
+                            <input type="date" name="date_from" value="{{ request('date_from') }}" class="rounded-xl border border-slate-300 px-3 py-2">
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-700">To</span>
+                            <input type="date" name="date_to" value="{{ request('date_to') }}" class="rounded-xl border border-slate-300 px-3 py-2">
+                        </label>
+                        <div class="flex items-end gap-2">
+                            <button type="submit" class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white">Filter</button>
+                            <a href="{{ route('transactions.index') }}" class="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Clear</a>
+                        </div>
+                    </form>
+
                     <div class="mt-4 space-y-3">
                         @forelse ($transactions as $transaction)
                             <div class="rounded-xl bg-slate-50 p-4">
@@ -87,8 +138,12 @@
                                 @endif
                             </div>
                         @empty
-                            <p class="text-slate-600">No transactions recorded yet.</p>
+                            <p class="text-slate-600">No transactions match these filters.</p>
                         @endforelse
+                    </div>
+
+                    <div class="mt-4">
+                        {{ $transactions->links() }}
                     </div>
                 </div>
             </div>

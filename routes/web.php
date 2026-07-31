@@ -85,6 +85,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/gateways', [GatewayProviderController::class, 'store'])->name('gateways.store');
     Route::get('/transactions', [PaymentTransactionController::class, 'index'])->name('transactions.index');
     Route::post('/transactions', [PaymentTransactionController::class, 'store'])->name('transactions.store');
+    Route::get('/transactions/export', [PaymentTransactionController::class, 'export'])->name('transactions.export');
     Route::post('/transactions/{transaction}/refund', [RefundController::class, 'store'])->name('transactions.refund');
     Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts.index');
     Route::get('/webhooks', [WebhookController::class, 'index'])->name('webhooks.index');
