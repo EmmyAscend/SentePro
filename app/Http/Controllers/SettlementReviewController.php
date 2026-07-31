@@ -32,4 +32,26 @@ class SettlementReviewController extends Controller
 
         return redirect()->route('settlements.index')->with('status', 'Settlement rejected.');
     }
+
+    public function reverse(Request $request, Settlement $settlement): RedirectResponse
+    {
+        $this->authorize('process', $settlement);
+
+        $validated = $request->validate([
+            'reason' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $this->settlementService->reverse($settlement, $validated['reason'] ?? null);
+
+        return redirect()->route('settlements.index')->with('status', 'Settlement reversed.');
+    }
+
+    public function retry(Settlement $settlement): RedirectResponse
+    {
+        $this->authorize('process', $settlement);
+
+        $this->settlementService->retry($settlement);
+
+        return redirect()->route('settlements.index')->with('status', 'Settlement resubmitted for processing.');
+    }
 }

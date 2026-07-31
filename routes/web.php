@@ -76,6 +76,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/settlements', [SettlementController::class, 'store'])->name('settlements.store');
     Route::post('/admin/settlements/{settlement}/complete', [SettlementReviewController::class, 'complete'])->name('admin.settlements.complete');
     Route::post('/admin/settlements/{settlement}/reject', [SettlementReviewController::class, 'reject'])->name('admin.settlements.reject');
+    Route::post('/admin/settlements/{settlement}/reverse', [SettlementReviewController::class, 'reverse'])->name('admin.settlements.reverse');
+    Route::post('/admin/settlements/{settlement}/retry', [SettlementReviewController::class, 'retry'])->name('admin.settlements.retry');
     Route::get('/admin/settlement-methods', [SettlementMethodController::class, 'index'])->name('admin.settlement-methods');
     Route::post('/admin/settlement-methods', [SettlementMethodController::class, 'store'])->name('admin.settlement-methods.store');
     Route::put('/admin/settlement-methods/{settlementMethod}', [SettlementMethodController::class, 'update'])->name('admin.settlement-methods.update');

@@ -117,19 +117,38 @@
                                         @endif
                                     </p>
                                 </div>
-                                <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">{{ $settlement->status->label() }}</span>
+                                <span @class([
+                                    'rounded-full px-3 py-1 text-xs font-semibold',
+                                    'bg-emerald-100 text-emerald-700' => $settlement->status === \App\Enums\SettlementStatus::Completed,
+                                    'bg-amber-100 text-amber-700' => in_array($settlement->status, [\App\Enums\SettlementStatus::Pending, \App\Enums\SettlementStatus::Processing]),
+                                    'bg-rose-100 text-rose-700' => in_array($settlement->status, [\App\Enums\SettlementStatus::Rejected, \App\Enums\SettlementStatus::Failed]),
+                                    'bg-slate-200 text-slate-600' => in_array($settlement->status, [\App\Enums\SettlementStatus::Cancelled, \App\Enums\SettlementStatus::Reversed]),
+                                ])>{{ $settlement->status->label() }}</span>
                             </div>
-                            @if (auth()->user()->isSuperAdmin() && in_array($settlement->status->value, ['pending', 'processing']))
-                                <div class="mt-3 flex gap-2">
-                                    <form method="POST" action="{{ route('admin.settlements.complete', $settlement) }}">
+                            @if (auth()->user()->isSuperAdmin())
+                                @if (in_array($settlement->status->value, ['pending', 'processing']))
+                                    <div class="mt-3 flex gap-2">
+                                        <form method="POST" action="{{ route('admin.settlements.complete', $settlement) }}">
+                                            @csrf
+                                            <button type="submit" class="rounded-full bg-emerald-500 px-3 py-1 text-xs font-semibold text-slate-950 hover:bg-emerald-400">Complete</button>
+                                        </form>
+                                        <form method="POST" action="{{ route('admin.settlements.reject', $settlement) }}">
+                                            @csrf
+                                            <button type="submit" class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-200">Reject</button>
+                                        </form>
+                                    </div>
+                                @elseif ($settlement->status->value === 'completed')
+                                    <form method="POST" action="{{ route('admin.settlements.reverse', $settlement) }}" class="mt-3 flex items-center gap-2" onsubmit="return confirm('Reverse this settlement? The payout will be undone and the funds returned to the wallet.');">
                                         @csrf
-                                        <button type="submit" class="rounded-full bg-emerald-500 px-3 py-1 text-xs font-semibold text-slate-950 hover:bg-emerald-400">Complete</button>
+                                        <input type="text" name="reason" placeholder="Reversal reason (optional)" class="flex-1 rounded-xl border border-slate-300 px-3 py-1.5 text-sm">
+                                        <button type="submit" class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-200">Reverse</button>
                                     </form>
-                                    <form method="POST" action="{{ route('admin.settlements.reject', $settlement) }}">
+                                @elseif (in_array($settlement->status->value, ['rejected', 'failed']))
+                                    <form method="POST" action="{{ route('admin.settlements.retry', $settlement) }}" class="mt-3">
                                         @csrf
-                                        <button type="submit" class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-200">Reject</button>
+                                        <button type="submit" class="rounded-full bg-emerald-500 px-3 py-1 text-xs font-semibold text-slate-950 hover:bg-emerald-400">Retry</button>
                                     </form>
-                                </div>
+                                @endif
                             @endif
                         </div>
                     @empty

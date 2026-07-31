@@ -10,6 +10,7 @@ enum SettlementStatus: string
     case Rejected = 'rejected';
     case Cancelled = 'cancelled';
     case Failed = 'failed';
+    case Reversed = 'reversed';
 
     public function label(): string
     {
@@ -20,6 +21,7 @@ enum SettlementStatus: string
             self::Rejected => 'Rejected',
             self::Cancelled => 'Cancelled',
             self::Failed => 'Failed',
+            self::Reversed => 'Reversed',
         };
     }
 }
