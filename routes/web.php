@@ -19,6 +19,9 @@ use App\Http\Controllers\SettlementController;
 use App\Http\Controllers\SettlementMethodController;
 use App\Http\Controllers\SettlementReviewController;
 use App\Http\Controllers\StaffManagementController;
+use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\SupportTicketMessageController;
+use App\Http\Controllers\SupportTicketReviewController;
 use App\Http\Controllers\WalletMonitoringController;
 use App\Http\Controllers\WalletTransferController;
 use App\Http\Controllers\WebhookController;
@@ -108,6 +111,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/audit-logs', [AuditLogController::class, 'index'])->name('admin.audit-logs');
     Route::get('/admin/wallet-monitoring', [WalletMonitoringController::class, 'index'])->name('admin.wallet-monitoring');
     Route::get('/admin/businesses', [BusinessManagementController::class, 'index'])->name('admin.businesses.index');
+    Route::get('/support-tickets', [SupportTicketController::class, 'index'])->name('support-tickets.index');
+    Route::post('/support-tickets', [SupportTicketController::class, 'store'])->name('support-tickets.store');
+    Route::get('/support-tickets/{ticket}', [SupportTicketController::class, 'show'])->name('support-tickets.show');
+    Route::post('/support-tickets/{ticket}/messages', [SupportTicketMessageController::class, 'store'])->name('support-tickets.messages.store');
+    Route::post('/support-tickets/{ticket}/resolve', [SupportTicketReviewController::class, 'resolve'])->name('support-tickets.resolve');
+    Route::post('/support-tickets/{ticket}/reopen', [SupportTicketReviewController::class, 'reopen'])->name('support-tickets.reopen');
 });
 
 Route::middleware('auth')->group(function () {

@@ -30,6 +30,9 @@
                     <x-nav-link :href="route('wallet-transfers.index')" :active="request()->routeIs('wallet-transfers.*')">
                         {{ __('Wallet Transfers') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('support-tickets.index')" :active="request()->routeIs('support-tickets.*')">
+                        {{ __('Support') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('gateways.index')" :active="request()->routeIs('gateways.*')">
                         {{ __('Gateways') }}
                     </x-nav-link>
@@ -133,6 +136,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('wallet-transfers.index')" :active="request()->routeIs('wallet-transfers.*')">
                 {{ __('Wallet Transfers') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('support-tickets.index')" :active="request()->routeIs('support-tickets.*')">
+                {{ __('Support') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('gateways.index')" :active="request()->routeIs('gateways.*')">
                 {{ __('Gateways') }}
