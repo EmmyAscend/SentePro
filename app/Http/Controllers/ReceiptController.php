@@ -7,6 +7,7 @@ use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\SvgWriter;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReceiptController extends Controller
 {
@@ -49,5 +50,37 @@ class ReceiptController extends Controller
             'Content-Type' => $result->getMimeType(),
             'Cache-Control' => 'public, max-age=86400',
         ]);
+    }
+
+    public function export(): StreamedResponse
+    {
+        $this->authorize('viewAny', Receipt::class);
+
+        $receipts = Receipt::with('business')->latest()->get();
+
+        return response()->streamDownload(function () use ($receipts) {
+            $handle = fopen('php://output', 'w');
+
+            fputcsv($handle, [
+                'Reference Number', 'Business', 'Customer Name', 'Customer Email',
+                'Amount', 'Net Amount', 'Currency', 'Emailed At', 'Date',
+            ]);
+
+            foreach ($receipts as $receipt) {
+                fputcsv($handle, [
+                    $receipt->reference_number,
+                    $receipt->business->business_name,
+                    $receipt->customer_name,
+                    $receipt->customer_email,
+                    $receipt->amount,
+                    $receipt->net_amount,
+                    $receipt->currency,
+                    $receipt->emailed_at?->toDateTimeString(),
+                    $receipt->created_at->toDateTimeString(),
+                ]);
+            }
+
+            fclose($handle);
+        }, 'receipts-'.now()->format('Y-m-d-His').'.csv', ['Content-Type' => 'text/csv']);
     }
 }

@@ -58,6 +58,13 @@ Route::post('/webhooks/yo-payments/{gatewayProvider}/success', [YoPaymentsWebhoo
 Route::post('/webhooks/yo-payments/{gatewayProvider}/failure', [YoPaymentsWebhookController::class, 'failure'])
     ->name('webhooks.yo-payments.failure');
 
+// Registered before the {receipt} wildcard below — both are one-segment
+// paths under /receipts/, and route matching is registration-order, so
+// /receipts/export would otherwise be swallowed by receipts.show.
+Route::get('/receipts/export', [ReceiptController::class, 'export'])
+    ->middleware(['auth', 'verified'])
+    ->name('receipts.export');
+
 Route::get('/receipts/{receipt}', [ReceiptController::class, 'show'])
     ->name('receipts.show');
 
@@ -80,6 +87,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/settlements', [SettlementController::class, 'index'])->name('settlements.index');
     Route::post('/settlements', [SettlementController::class, 'store'])->name('settlements.store');
+    Route::get('/settlements/export', [SettlementController::class, 'export'])->name('settlements.export');
     Route::post('/admin/settlements/{settlement}/complete', [SettlementReviewController::class, 'complete'])->name('admin.settlements.complete');
     Route::post('/admin/settlements/{settlement}/reject', [SettlementReviewController::class, 'reject'])->name('admin.settlements.reject');
     Route::post('/admin/settlements/{settlement}/reverse', [SettlementReviewController::class, 'reverse'])->name('admin.settlements.reverse');
@@ -104,6 +112,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
     Route::get('/fee-breakdowns', [FeeBreakdownController::class, 'index'])->name('fee-breakdowns.index');
     Route::post('/fee-breakdowns', [FeeBreakdownController::class, 'store'])->name('fee-breakdowns.store');
+    Route::get('/fee-breakdowns/export', [FeeBreakdownController::class, 'export'])->name('fee-breakdowns.export');
     Route::get('/admin/fee-structures', [FeeStructureController::class, 'index'])->name('admin.fee-structures');
     Route::post('/admin/fee-structures', [FeeStructureController::class, 'store'])->name('admin.fee-structures.store');
     Route::put('/admin/fee-structures/{feeStructure}', [FeeStructureController::class, 'update'])->name('admin.fee-structures.update');

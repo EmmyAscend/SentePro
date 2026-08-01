@@ -19,8 +19,8 @@
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Business</label>
                             <select name="business_id" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2">
-                                @foreach ($feeBreakdowns as $breakdown)
-                                    <option value="{{ $breakdown->business_id }}">{{ $breakdown->business->business_name }}</option>
+                                @foreach ($businesses as $business)
+                                    <option value="{{ $business->id }}">{{ $business->business_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -50,7 +50,10 @@
                 </div>
 
                 <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                    <h3 class="text-lg font-semibold text-slate-900">Recorded breakdowns</h3>
+                    <div class="flex items-center justify-between gap-4">
+                        <h3 class="text-lg font-semibold text-slate-900">Recorded breakdowns</h3>
+                        <a href="{{ route('fee-breakdowns.export') }}" class="rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">Export CSV</a>
+                    </div>
                     <div class="mt-4 space-y-3">
                         @forelse ($feeBreakdowns as $breakdown)
                             <div class="rounded-xl bg-slate-50 p-4">

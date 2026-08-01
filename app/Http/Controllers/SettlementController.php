@@ -9,6 +9,7 @@ use App\Models\SettlementMethod;
 use App\Services\SettlementService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SettlementController extends Controller
 {
@@ -46,5 +47,37 @@ class SettlementController extends Controller
         $this->settlementService->request($business, $method, $validated);
 
         return redirect()->route('settlements.index')->with('status', 'Settlement request submitted for review.');
+    }
+
+    public function export(): StreamedResponse
+    {
+        $this->authorize('viewAny', Settlement::class);
+
+        $settlements = Settlement::with(['business', 'settlementMethod'])->latest()->get();
+
+        return response()->streamDownload(function () use ($settlements) {
+            $handle = fopen('php://output', 'w');
+
+            fputcsv($handle, [
+                'Business', 'Method', 'Amount', 'Gateway Fee', 'Platform Fee',
+                'Net Amount', 'Status', 'Estimated Completion', 'Date',
+            ]);
+
+            foreach ($settlements as $settlement) {
+                fputcsv($handle, [
+                    $settlement->business->business_name,
+                    $settlement->settlementMethod?->name ?? 'Unknown method',
+                    $settlement->amount,
+                    $settlement->gateway_fee,
+                    $settlement->platform_fee,
+                    $settlement->net_amount,
+                    $settlement->status->label(),
+                    $settlement->estimated_completion_at?->toDateTimeString(),
+                    $settlement->created_at->toDateTimeString(),
+                ]);
+            }
+
+            fclose($handle);
+        }, 'settlements-'.now()->format('Y-m-d-His').'.csv', ['Content-Type' => 'text/csv']);
     }
 }

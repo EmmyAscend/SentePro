@@ -9,7 +9,10 @@
     <div class="py-12">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <h3 class="text-lg font-semibold text-slate-900">Receipt history</h3>
+                <div class="flex items-center justify-between gap-4">
+                    <h3 class="text-lg font-semibold text-slate-900">Receipt history</h3>
+                    <a href="{{ route('receipts.export') }}" class="rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">Export CSV</a>
+                </div>
                 <div class="mt-4 space-y-3">
                     @forelse ($receipts as $receipt)
                         <a href="{{ route('receipts.show', $receipt) }}" target="_blank" class="block rounded-xl bg-slate-50 p-4 hover:bg-slate-100">
