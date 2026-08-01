@@ -52,6 +52,12 @@
                             <span class="font-medium">Phone number (for mobile money)</span>
                             <input type="text" name="customer_phone" value="{{ old('customer_phone') }}" placeholder="256712345678" class="mt-1 w-full rounded-lg border-0 px-3 py-2 text-slate-900">
                         </label>
+                        @foreach ($paymentLink->fields ?? [] as $field)
+                            <label class="block">
+                                <span class="font-medium">{{ $field['label'] }}</span>
+                                <input type="text" name="custom_fields[{{ $field['key'] }}]" value="{{ old('custom_fields.'.$field['key']) }}" class="mt-1 w-full rounded-lg border-0 px-3 py-2 text-slate-900">
+                            </label>
+                        @endforeach
                         <label class="block">
                             <span class="font-medium">Payment method</span>
                             <select name="gateway_provider_id" class="mt-1 w-full rounded-lg border-0 px-3 py-2 text-slate-900" required>

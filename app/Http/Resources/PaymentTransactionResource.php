@@ -21,6 +21,7 @@ class PaymentTransactionResource extends JsonResource
             'customer_name' => $this->customer_name,
             'customer_email' => $this->customer_email,
             'customer_phone' => $this->customer_phone,
+            'custom_field_values' => $this->custom_field_values ?? [],
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }

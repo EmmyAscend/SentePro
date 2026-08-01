@@ -64,6 +64,8 @@ class PublicCheckoutController extends Controller
             'customer_phone' => ['nullable', 'string', 'max:20'],
             'currency' => ['required', 'string', 'max:10'],
             'gateway_provider_id' => ['required', 'exists:gateway_providers,id'],
+            'custom_fields' => ['nullable', 'array'],
+            'custom_fields.*' => ['nullable', 'string', 'max:500'],
         ]);
 
         $gatewayProvider = GatewayProvider::findOrFail($validated['gateway_provider_id']);

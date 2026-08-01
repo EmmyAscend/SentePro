@@ -34,12 +34,14 @@ class PaymentTransaction extends Model
         'customer_name',
         'customer_email',
         'customer_phone',
+        'custom_field_values',
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
         'provider' => PaymentProvider::class,
         'status' => PaymentTransactionStatus::class,
+        'custom_field_values' => 'array',
     ];
 
     protected static function booted(): void

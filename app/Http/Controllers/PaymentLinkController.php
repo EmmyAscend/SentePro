@@ -42,6 +42,7 @@ class PaymentLinkController extends Controller
             'custom_amount' => $validated['custom_amount'],
             'expiry_date' => $validated['expiry_date'],
             'description' => $validated['description'] ?? null,
+            'fields' => PaymentLink::buildFieldsFromInput($validated['standard_fields'] ?? null, $validated['custom_field_labels'] ?? null),
             'status' => 'active',
         ]);
 

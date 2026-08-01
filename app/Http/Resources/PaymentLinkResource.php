@@ -17,6 +17,7 @@ class PaymentLinkResource extends JsonResource
             'custom_amount' => $this->custom_amount,
             'expiry_date' => $this->expiry_date?->toDateString(),
             'description' => $this->description,
+            'fields' => $this->fields ?? [],
             'status' => $this->status,
             'checkout_url' => route('checkout.show', $this->resource),
             'created_at' => $this->created_at?->toIso8601String(),

@@ -63,6 +63,25 @@
                             <textarea name="description" rows="4" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"></textarea>
                         </div>
 
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Extra checkout fields</label>
+                            <p class="text-xs text-slate-500">Ask the customer for anything beyond name, email, and phone.</p>
+                            <div class="mt-2 grid grid-cols-2 gap-2 text-sm">
+                                @foreach (\App\Models\PaymentLink::STANDARD_FIELDS as $key => $label)
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" name="standard_fields[]" value="{{ $key }}" class="rounded border-slate-300">
+                                        {{ $label }}
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Custom field labels</label>
+                            <p class="text-xs text-slate-500">One per line, e.g. "T-Shirt Size" — up to 10.</p>
+                            <textarea name="custom_field_labels" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2"></textarea>
+                        </div>
+
                         <button type="submit" class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white">Create link</button>
                     </form>
                 </div>

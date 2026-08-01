@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\PaymentLink;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePaymentLinkRequest extends FormRequest
 {
@@ -21,6 +22,9 @@ class StorePaymentLinkRequest extends FormRequest
             'custom_amount' => ['required', 'boolean'],
             'expiry_date' => ['required', 'date'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'standard_fields' => ['nullable', 'array'],
+            'standard_fields.*' => [Rule::in(array_keys(PaymentLink::STANDARD_FIELDS))],
+            'custom_field_labels' => ['nullable', 'string', 'max:2000'],
         ];
 
         if ($this->user()->isSuperAdmin()) {

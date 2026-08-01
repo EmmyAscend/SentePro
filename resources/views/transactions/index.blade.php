@@ -128,6 +128,11 @@
                                         'bg-orange-100 text-orange-700' => $transaction->status === \App\Enums\PaymentTransactionStatus::PartiallyRefunded,
                                     ])>{{ strtoupper($transaction->status->value) }}</span>
                                 </div>
+                                @if (! empty($transaction->custom_field_values))
+                                    <p class="mt-1 text-xs text-slate-500">
+                                        {{ collect($transaction->custom_field_values)->map(fn ($field) => $field['label'].': '.$field['value'])->implode(' • ') }}
+                                    </p>
+                                @endif
                                 @if (in_array($transaction->status, [\App\Enums\PaymentTransactionStatus::Completed, \App\Enums\PaymentTransactionStatus::PartiallyRefunded], true) && $transaction->provider !== \App\Enums\PaymentProvider::YoPayments)
                                 @can('refund', $transaction)
                                     <form method="POST" action="{{ route('transactions.refund', $transaction) }}" class="mt-3 flex items-center gap-2" onsubmit="return confirm('Refund this transaction? This cannot be undone.');">

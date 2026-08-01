@@ -15,7 +15,7 @@ class PaymentInitiationService
     public function __construct(private readonly PaymentGatewayManager $gatewayManager) {}
 
     /**
-     * @param  array{customer_name: string, customer_email: string, customer_phone?: ?string, currency: string}  $customer
+     * @param  array{customer_name: string, customer_email: string, customer_phone?: ?string, currency: string, custom_fields?: array<string, ?string>}  $customer
      * @return array{transaction: PaymentTransaction, redirect_url: ?string}
      */
     public function initiate(PaymentLink $paymentLink, GatewayProvider $gatewayProvider, array $customer): array
@@ -52,6 +52,7 @@ class PaymentInitiationService
             'customer_name' => $customer['customer_name'],
             'customer_email' => $customer['customer_email'],
             'customer_phone' => $customer['customer_phone'] ?? null,
+            'custom_field_values' => $this->buildCustomFieldValues($paymentLink, $customer['custom_fields'] ?? []),
         ]);
 
         $driver = $this->gatewayManager->driver($gatewayProvider->provider);
@@ -60,5 +61,29 @@ class PaymentInitiationService
         $transaction->update(['provider_reference' => $result['provider_reference']]);
 
         return ['transaction' => $transaction, 'redirect_url' => $result['redirect_url']];
+    }
+
+    /**
+     * Attaches each submitted value to its field's label as configured on
+     * the payment link *at submission time* — not a live join back to the
+     * link's current `fields` config, so a later edit to the link's field
+     * set doesn't rewrite history for transactions that already happened.
+     *
+     * @param  array<string, ?string>  $submitted
+     * @return array<string, array{label: string, value: string}>
+     */
+    private function buildCustomFieldValues(PaymentLink $paymentLink, array $submitted): array
+    {
+        $values = [];
+
+        foreach ($paymentLink->fields ?? [] as $field) {
+            $value = trim((string) ($submitted[$field['key']] ?? ''));
+
+            if ($value !== '') {
+                $values[$field['key']] = ['label' => $field['label'], 'value' => $value];
+            }
+        }
+
+        return $values;
     }
 }
