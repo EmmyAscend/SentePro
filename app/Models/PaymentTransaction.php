@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\PaymentProvider;
 use App\Enums\PaymentTransactionStatus;
 use App\Enums\RefundStatus;
+use App\Jobs\SendSmsNotification;
 use App\Mail\PaymentReceivedMail;
 use App\Models\Concerns\BelongsToTenant;
 use App\Services\ReceiptService;
@@ -87,6 +88,13 @@ class PaymentTransaction extends Model
         ]);
 
         $receipt = app(ReceiptService::class)->generate($transaction, $breakdown);
+
+        if ($transaction->customer_phone) {
+            SendSmsNotification::dispatch(
+                $transaction->customer_phone,
+                "Hi, we've received your payment of {$transaction->currency} ".number_format((float) $transaction->amount, 2)." to {$transaction->business->business_name}. Ref: {$receipt->reference_number}.",
+            );
+        }
 
         $recipients = $transaction->business->admins->pluck('email');
 

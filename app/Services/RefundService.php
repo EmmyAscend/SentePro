@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\PaymentProvider;
 use App\Enums\PaymentTransactionStatus;
 use App\Enums\RefundStatus;
+use App\Jobs\SendSmsNotification;
 use App\Mail\RefundProcessedMail;
 use App\Models\FeeBreakdown;
 use App\Models\GatewayProvider;
@@ -90,6 +91,13 @@ class RefundService
 
         if ($transaction->customer_email) {
             Mail::to($transaction->customer_email)->queue(new RefundProcessedMail($refund));
+        }
+
+        if ($transaction->customer_phone) {
+            SendSmsNotification::dispatch(
+                $transaction->customer_phone,
+                "Hi, your payment of {$transaction->currency} ".number_format((float) $refund->amount, 2)." to {$transaction->business->business_name} has been refunded.",
+            );
         }
 
         return $refund;

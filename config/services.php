@@ -45,4 +45,11 @@ return [
         'production_url' => env('YO_PAYMENTS_PRODUCTION_URL', 'https://paymentsapi1.yo.co.ug/ybs/task.php'),
     ],
 
+    'egosms' => [
+        'base_url' => env('EGOSMS_BASE_URL', 'https://www.egosms.co'),
+        'username' => env('EGOSMS_USERNAME'),
+        'password' => env('EGOSMS_PASSWORD'),
+        'sender_id' => env('EGOSMS_SENDER_ID', 'SentePro'),
+    ],
+
 ];
