@@ -90,7 +90,23 @@
                     <h3 class="text-lg font-semibold text-slate-900">Existing payment links</h3>
                     <div class="mt-4 space-y-3">
                         @forelse ($paymentLinks as $link)
-                            <div x-data="{ open: false }" class="rounded-xl bg-slate-50 p-4">
+                            <div x-data="{
+                                    open: false,
+                                    style: 'pill',
+                                    theme: 'dark',
+                                    size: 'medium',
+                                    checkoutUrl: '{{ route('checkout.show', $link) }}',
+                                    title: {{ \Illuminate\Support\Js::from($link->title) }},
+                                    sizes: { small: 'padding:8px 16px;font-size:12px;', medium: 'padding:12px 24px;font-size:14px;', large: 'padding:16px 32px;font-size:16px;' },
+                                    themes: { dark: 'background:#0f172a;color:#ffffff;', light: 'background:#ffffff;color:#0f172a;border:1px solid #0f172a;', brand: 'background:#059669;color:#ffffff;' },
+                                    shapes: { pill: 'border-radius:9999px;', rounded: 'border-radius:8px;', square: 'border-radius:0;' },
+                                    buttonStyle() {
+                                        return 'display:inline-block;font-family:sans-serif;font-weight:600;text-decoration:none;' + this.sizes[this.size] + this.themes[this.theme] + this.shapes[this.style];
+                                    },
+                                    buttonHtml() {
+                                        return '<a href=\'' + this.checkoutUrl + '\' style=\'' + this.buttonStyle() + '\'>Pay ' + this.title + '</a>';
+                                    },
+                                }" class="rounded-xl bg-slate-50 p-4">
                                 <div class="flex items-center justify-between gap-3">
                                     <div>
                                         <p class="font-semibold text-slate-900">{{ $link->title }}</p>
@@ -119,8 +135,30 @@
 
                                             <div>
                                                 <label class="text-xs font-medium text-slate-500">Payment button (HTML embed)</label>
-                                                <div class="mt-1 flex gap-2">
-                                                    <textarea readonly rows="2" class="flex-1 rounded-xl border border-slate-300 bg-white px-3 py-1.5 font-mono text-xs text-slate-700" onclick="this.select()"><a href="{{ route('checkout.show', $link) }}" style="display:inline-block;padding:12px 24px;background:#0f172a;color:#ffffff;font-family:sans-serif;font-weight:600;border-radius:9999px;text-decoration:none;">Pay {{ $link->title }}</a></textarea>
+                                                <div class="mt-1 grid grid-cols-3 gap-2">
+                                                    <select x-model="size" class="rounded-xl border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700">
+                                                        <option value="small">Small</option>
+                                                        <option value="medium">Medium</option>
+                                                        <option value="large">Large</option>
+                                                    </select>
+                                                    <select x-model="theme" class="rounded-xl border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700">
+                                                        <option value="dark">Dark</option>
+                                                        <option value="light">Light</option>
+                                                        <option value="brand">Brand</option>
+                                                    </select>
+                                                    <select x-model="style" class="rounded-xl border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700">
+                                                        <option value="pill">Pill</option>
+                                                        <option value="rounded">Rounded</option>
+                                                        <option value="square">Square</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="mt-2 rounded-xl border border-dashed border-slate-300 bg-white p-3">
+                                                    <a href="javascript:void(0)" :style="buttonStyle()" onclick="return false;">Pay <span x-text="title"></span></a>
+                                                </div>
+
+                                                <div class="mt-2 flex gap-2">
+                                                    <textarea readonly rows="2" :value="buttonHtml()" class="flex-1 rounded-xl border border-slate-300 bg-white px-3 py-1.5 font-mono text-xs text-slate-700" onclick="this.select()"><a href="{{ route('checkout.show', $link) }}" style="display:inline-block;padding:12px 24px;background:#0f172a;color:#ffffff;font-family:sans-serif;font-weight:600;border-radius:9999px;text-decoration:none;">Pay {{ $link->title }}</a></textarea>
                                                     <button type="button" class="self-start rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50" onclick="navigator.clipboard.writeText(this.previousElementSibling.value); this.textContent='Copied!'">Copy</button>
                                                 </div>
                                             </div>
