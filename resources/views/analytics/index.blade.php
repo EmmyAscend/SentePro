@@ -2,8 +2,8 @@
     <x-slot name="header">
         <div class="flex items-center justify-between gap-4">
             <div>
-                <h2 class="text-2xl font-bold text-slate-900">Analytics</h2>
-                <p class="text-sm text-slate-500">Operational performance overview for collection activity</p>
+                <h2 class="text-2xl font-bold text-white">Analytics</h2>
+                <p class="text-sm text-slate-400">Operational performance overview for collection activity</p>
             </div>
         </div>
     </x-slot>
@@ -15,17 +15,17 @@
                     <p class="text-sm text-slate-300">Total transactions</p>
                     <p class="mt-2 text-4xl font-bold">{{ $totalTransactions }}</p>
                 </div>
-                <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                    <p class="text-sm text-slate-500">Collection volume</p>
-                    <p class="mt-2 text-4xl font-bold text-slate-900">{{ number_format($totalVolume, 2) }}</p>
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                    <p class="text-sm text-slate-400">Collection volume</p>
+                    <p class="mt-2 text-4xl font-bold text-white">{{ number_format($totalVolume, 2) }}</p>
                 </div>
-                <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                    <p class="text-sm text-slate-500">Completed</p>
-                    <p class="mt-2 text-4xl font-bold text-slate-900">{{ $completedTransactions }}</p>
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                    <p class="text-sm text-slate-400">Completed</p>
+                    <p class="mt-2 text-4xl font-bold text-white">{{ $completedTransactions }}</p>
                 </div>
-                <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                    <p class="text-sm text-slate-500">Processing</p>
-                    <p class="mt-2 text-4xl font-bold text-slate-900">{{ $processingTransactions }}</p>
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                    <p class="text-sm text-slate-400">Processing</p>
+                    <p class="mt-2 text-4xl font-bold text-white">{{ $processingTransactions }}</p>
                 </div>
             </div>
         </div>

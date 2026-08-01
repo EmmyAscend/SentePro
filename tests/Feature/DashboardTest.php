@@ -77,7 +77,8 @@ class DashboardTest extends TestCase
         $response = $this->actingAs($otherAdmin)->get('/dashboard');
 
         $response->assertOk();
-        $response->assertDontSee('Pesapal');
+        // "Pesapal" is now also a static label in the provider-split widget shown to every business.
+        $response->assertDontSee('txn-dashboard-1');
     }
 
     public function test_super_admin_sees_transaction_activity_across_all_businesses(): void

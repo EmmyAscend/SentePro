@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex items-center justify-between gap-4">
             <div>
-                <h2 class="text-2xl font-bold text-slate-900">Settlements</h2>
-                <p class="text-sm text-slate-500">Raise a settlement request from your business wallet</p>
+                <h2 class="text-2xl font-bold text-white">Settlements</h2>
+                <p class="text-sm text-slate-400">Raise a settlement request from your business wallet</p>
             </div>
             @if (auth()->user()->isSuperAdmin())
-                <a href="{{ route('admin.settlement-methods') }}" class="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Settlement methods</a>
+                <a href="{{ route('admin.settlement-methods') }}" class="rounded-full bg-lime-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-lime-300">Settlement methods</a>
             @endif
         </div>
     </x-slot>
@@ -14,17 +14,17 @@
     <div class="py-12">
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 space-y-6">
             <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-                <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                    <h3 class="text-lg font-semibold text-slate-900">Wallet snapshot</h3>
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                    <h3 class="text-lg font-semibold text-white">Wallet snapshot</h3>
                     <div class="mt-4 space-y-3">
                         @foreach ($businesses as $business)
-                            <div class="rounded-xl bg-slate-50 p-4">
+                            <div class="rounded-xl bg-slate-800/60 p-4">
                                 <div class="flex items-center justify-between gap-3">
                                     <div>
-                                        <p class="font-semibold text-slate-900">{{ $business->business_name }}</p>
-                                        <p class="text-sm text-slate-500">Available balance: {{ number_format($business->wallet?->available_balance ?? 0, 2) }}</p>
+                                        <p class="font-semibold text-white">{{ $business->business_name }}</p>
+                                        <p class="text-sm text-slate-400">Available balance: {{ number_format($business->wallet?->available_balance ?? 0, 2) }}</p>
                                     </div>
-                                    <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">{{ strtoupper($business->status) }}</span>
+                                    <span class="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300">{{ strtoupper($business->status) }}</span>
                                 </div>
                             </div>
                         @endforeach
@@ -100,18 +100,18 @@
                 </div>
             </div>
 
-            <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+            <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
                 <div class="flex items-center justify-between gap-4">
-                    <h3 class="text-lg font-semibold text-slate-900">Settlement queue</h3>
-                    <a href="{{ route('settlements.export') }}" class="rounded-full border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">Export CSV</a>
+                    <h3 class="text-lg font-semibold text-white">Settlement queue</h3>
+                    <a href="{{ route('settlements.export') }}" class="rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">Export CSV</a>
                 </div>
                 <div class="mt-4 space-y-3">
                     @forelse ($settlements as $settlement)
-                        <div class="rounded-xl bg-slate-50 p-4">
+                        <div class="rounded-xl bg-slate-800/60 p-4">
                             <div class="flex items-center justify-between gap-3">
                                 <div>
-                                    <p class="font-semibold text-slate-900">{{ $settlement->business->business_name }} — {{ number_format($settlement->amount, 2) }}</p>
-                                    <p class="text-sm text-slate-500">
+                                    <p class="font-semibold text-white">{{ $settlement->business->business_name }} — {{ number_format($settlement->amount, 2) }}</p>
+                                    <p class="text-sm text-slate-400">
                                         {{ $settlement->settlementMethod?->name ?? 'Unknown method' }} •
                                         Net {{ number_format($settlement->net_amount, 2) }} •
                                         Fees {{ number_format($settlement->gateway_fee + $settlement->platform_fee, 2) }}
@@ -122,10 +122,10 @@
                                 </div>
                                 <span @class([
                                     'rounded-full px-3 py-1 text-xs font-semibold',
-                                    'bg-emerald-100 text-emerald-700' => $settlement->status === \App\Enums\SettlementStatus::Completed,
-                                    'bg-amber-100 text-amber-700' => in_array($settlement->status, [\App\Enums\SettlementStatus::Pending, \App\Enums\SettlementStatus::Processing]),
-                                    'bg-rose-100 text-rose-700' => in_array($settlement->status, [\App\Enums\SettlementStatus::Rejected, \App\Enums\SettlementStatus::Failed]),
-                                    'bg-slate-200 text-slate-600' => in_array($settlement->status, [\App\Enums\SettlementStatus::Cancelled, \App\Enums\SettlementStatus::Reversed]),
+                                    'bg-emerald-500/15 text-emerald-300' => $settlement->status === \App\Enums\SettlementStatus::Completed,
+                                    'bg-amber-500/15 text-amber-300' => in_array($settlement->status, [\App\Enums\SettlementStatus::Pending, \App\Enums\SettlementStatus::Processing]),
+                                    'bg-rose-500/15 text-rose-300' => in_array($settlement->status, [\App\Enums\SettlementStatus::Rejected, \App\Enums\SettlementStatus::Failed]),
+                                    'bg-slate-500/15 text-slate-300' => in_array($settlement->status, [\App\Enums\SettlementStatus::Cancelled, \App\Enums\SettlementStatus::Reversed]),
                                 ])>{{ $settlement->status->label() }}</span>
                             </div>
                             @if (auth()->user()->isSuperAdmin())
@@ -137,14 +137,14 @@
                                         </form>
                                         <form method="POST" action="{{ route('admin.settlements.reject', $settlement) }}">
                                             @csrf
-                                            <button type="submit" class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-200">Reject</button>
+                                            <button type="submit" class="rounded-full bg-rose-500/15 px-3 py-1 text-xs font-semibold text-rose-300 hover:bg-rose-500/25">Reject</button>
                                         </form>
                                     </div>
                                 @elseif ($settlement->status->value === 'completed')
                                     <form method="POST" action="{{ route('admin.settlements.reverse', $settlement) }}" class="mt-3 flex items-center gap-2" onsubmit="return confirm('Reverse this settlement? The payout will be undone and the funds returned to the wallet.');">
                                         @csrf
-                                        <input type="text" name="reason" placeholder="Reversal reason (optional)" class="flex-1 rounded-xl border border-slate-300 px-3 py-1.5 text-sm">
-                                        <button type="submit" class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-200">Reverse</button>
+                                        <input type="text" name="reason" placeholder="Reversal reason (optional)" class="flex-1 rounded-xl border border-white/10 bg-slate-950 px-3 py-1.5 text-sm text-white">
+                                        <button type="submit" class="rounded-full bg-rose-500/15 px-3 py-1 text-xs font-semibold text-rose-300 hover:bg-rose-500/25">Reverse</button>
                                     </form>
                                 @elseif (in_array($settlement->status->value, ['rejected', 'failed']))
                                     <form method="POST" action="{{ route('admin.settlements.retry', $settlement) }}" class="mt-3">
@@ -155,7 +155,7 @@
                             @endif
                         </div>
                     @empty
-                        <p class="text-slate-600">No settlement requests yet.</p>
+                        <p class="text-slate-400">No settlement requests yet.</p>
                     @endforelse
                 </div>
             </div>

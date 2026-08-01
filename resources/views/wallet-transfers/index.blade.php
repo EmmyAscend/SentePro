@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900">Wallet Transfers</h2>
-            <p class="text-sm text-slate-500">Move money to another SentePro business instantly — no gateway, no fee</p>
+            <h2 class="text-2xl font-bold text-white">Wallet Transfers</h2>
+            <p class="text-sm text-slate-400">Move money to another SentePro business instantly — no gateway, no fee</p>
         </div>
     </x-slot>
 
@@ -10,23 +10,23 @@
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 space-y-6">
             @can('create', \App\Models\WalletTransfer::class)
                 <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-                    <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                        <h3 class="text-lg font-semibold text-slate-900">Send money</h3>
+                    <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                        <h3 class="text-lg font-semibold text-white">Send money</h3>
                         <form method="POST" action="{{ route('wallet-transfers.store') }}" class="mt-4 space-y-4">
                             @csrf
                             <div>
-                                <label class="block text-sm font-medium text-slate-700">Recipient</label>
-                                <input type="text" name="recipient" value="{{ old('recipient', request('recipient')) }}" placeholder="Business ID, email, or phone" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" required>
+                                <label class="block text-sm font-medium text-slate-300">Recipient</label>
+                                <input type="text" name="recipient" value="{{ old('recipient', request('recipient')) }}" placeholder="Business ID, email, or phone" class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white" required>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700">Amount</label>
-                                <input type="number" min="1" step="0.01" name="amount" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" required>
+                                <label class="block text-sm font-medium text-slate-300">Amount</label>
+                                <input type="number" min="1" step="0.01" name="amount" class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white" required>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700">Note</label>
-                                <textarea name="note" rows="3" class="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2" placeholder="Optional note"></textarea>
+                                <label class="block text-sm font-medium text-slate-300">Note</label>
+                                <textarea name="note" rows="3" class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white" placeholder="Optional note"></textarea>
                             </div>
-                            <button type="submit" class="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white">Send transfer</button>
+                            <button type="submit" class="w-full rounded-xl bg-lime-400 px-4 py-3 text-sm font-semibold text-slate-950 hover:bg-lime-300">Send transfer</button>
                         </form>
                     </div>
 
@@ -44,17 +44,17 @@
                 </div>
             @endcan
 
-            <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-                <h3 class="text-lg font-semibold text-slate-900">Transfer history</h3>
+            <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                <h3 class="text-lg font-semibold text-white">Transfer history</h3>
                 <div class="mt-4 space-y-3">
                     @forelse ($transfers as $transfer)
                         @php
                             $isSender = $transfer->sender_business_id === auth()->user()->business_id;
                         @endphp
-                        <div class="rounded-xl bg-slate-50 p-4">
+                        <div class="rounded-xl bg-slate-800/60 p-4">
                             <div class="flex items-center justify-between gap-3">
                                 <div>
-                                    <p class="font-semibold text-slate-900">
+                                    <p class="font-semibold text-white">
                                         @if (auth()->user()->isSuperAdmin())
                                             {{ $transfer->senderBusiness->business_name }} → {{ $transfer->recipientBusiness->business_name }}
                                         @elseif ($isSender)
@@ -63,23 +63,23 @@
                                             Received from {{ $transfer->senderBusiness->business_name }}
                                         @endif
                                     </p>
-                                    <p class="text-sm text-slate-500">{{ $transfer->reference }} • {{ $transfer->created_at->format('d M Y, H:i') }}</p>
+                                    <p class="text-sm text-slate-400">{{ $transfer->reference }} • {{ $transfer->created_at->format('d M Y, H:i') }}</p>
                                     @if ($transfer->note)
-                                        <p class="mt-1 text-sm text-slate-600">{{ $transfer->note }}</p>
+                                        <p class="mt-1 text-sm text-slate-400">{{ $transfer->note }}</p>
                                     @endif
                                 </div>
                                 <span @class([
                                     'rounded-full px-3 py-1 text-xs font-semibold',
-                                    'bg-rose-100 text-rose-700' => $isSender && ! auth()->user()->isSuperAdmin(),
-                                    'bg-emerald-100 text-emerald-700' => ! $isSender && ! auth()->user()->isSuperAdmin(),
-                                    'bg-slate-200 text-slate-600' => auth()->user()->isSuperAdmin(),
+                                    'bg-rose-500/15 text-rose-300' => $isSender && ! auth()->user()->isSuperAdmin(),
+                                    'bg-emerald-500/15 text-emerald-300' => ! $isSender && ! auth()->user()->isSuperAdmin(),
+                                    'bg-slate-500/15 text-slate-300' => auth()->user()->isSuperAdmin(),
                                 ])>
                                     {{ auth()->user()->isSuperAdmin() ? '' : ($isSender ? '-' : '+') }}{{ number_format($transfer->amount, 2) }}
                                 </span>
                             </div>
                         </div>
                     @empty
-                        <p class="text-slate-600">No wallet transfers yet.</p>
+                        <p class="text-slate-400">No wallet transfers yet.</p>
                     @endforelse
                 </div>
             </div>

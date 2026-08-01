@@ -17,18 +17,18 @@
                         <a href="#pricing" class="hover:text-white">Pricing</a>
                         <a href="/login" class="hover:text-white">Login</a>
                     </nav>
-                    <a href="{{ route('business.register') }}" class="rounded-full bg-emerald-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-300">Start free onboarding</a>
+                    <a href="{{ route('business.register') }}" class="rounded-full bg-lime-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-lime-300">Start free onboarding</a>
                 </div>
             </header>
 
             <main class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
                 <section class="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:py-10">
                     <div>
-                        <p class="mb-4 inline-flex rounded-full border border-emerald-400/40 bg-emerald-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-emerald-300">East Africa payment infrastructure</p>
+                        <p class="mb-4 inline-flex rounded-full border border-lime-400/40 bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">East Africa payment infrastructure</p>
                         <h1 class="max-w-2xl text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">{{ $headline }}</h1>
                         <p class="mt-5 max-w-2xl text-lg text-slate-300">Launch modern payment collection for your business without owning a gateway. SentePro gives you a secure collection layer, verified onboarding, and settlement-ready workflows.</p>
                         <div class="mt-8 flex flex-wrap gap-3">
-                            <a href="{{ route('business.register') }}" class="rounded-xl bg-emerald-400 px-5 py-3 font-semibold text-slate-950 shadow-lg shadow-emerald-500/15 hover:bg-emerald-300">Register your business</a>
+                            <a href="{{ route('business.register') }}" class="rounded-xl bg-lime-400 px-5 py-3 font-semibold text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300">Register your business</a>
                             <a href="/login" class="rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5">Log in to dashboard</a>
                         </div>
                     </div>
@@ -76,13 +76,32 @@
                     </div>
                 </section>
 
+                <section id="how-it-works" class="mt-20">
+                    <h2 class="text-3xl font-bold">How it works</h2>
+                    <div class="mt-6 grid gap-4 md:grid-cols-3">
+                        <article class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">1</div>
+                            <h3 class="mt-3 text-lg font-semibold">Register your business</h3>
+                            <p class="mt-2 text-sm text-slate-300">Submit your business details and get verified through our onboarding pipeline.</p>
+                        </article>
+                        <article class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">2</div>
+                            <h3 class="mt-3 text-lg font-semibold">Connect a gateway</h3>
+                            <p class="mt-2 text-sm text-slate-300">Enable Pesapal for card collections and Yo Payments for MTN/Airtel mobile money.</p>
+                        </article>
+                        <article class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">3</div>
+                            <h3 class="mt-3 text-lg font-semibold">Collect and settle</h3>
+                            <p class="mt-2 text-sm text-slate-300">Share payment links and QR codes, then request settlements straight to your bank or mobile wallet.</p>
+                        </article>
+                    </div>
+                </section>
+
                 <section id="gateways" class="mt-20">
                     <h2 class="text-3xl font-bold">Supported payment ecosystem</h2>
-                    <div class="mt-6 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
-                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm font-medium text-slate-200">Flutterwave</div>
-                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm font-medium text-slate-200">PayPal</div>
-                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm font-medium text-slate-200">Pesapal</div>
-                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm font-medium text-slate-200">Yo Payments</div>
+                    <div class="mt-6 grid gap-3 sm:grid-cols-2">
+                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm font-medium text-slate-200">Pesapal — cards</div>
+                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm font-medium text-slate-200">Yo Payments — MTN &amp; Airtel mobile money</div>
                     </div>
                 </section>
 
@@ -93,10 +112,10 @@
                             <div class="mt-3 text-4xl font-bold">$0</div>
                             <p class="mt-4 text-sm text-slate-300">For early pilots and business onboarding evaluation.</p>
                         </article>
-                        <article class="rounded-2xl border border-emerald-400/40 bg-emerald-400/10 p-6">
-                            <div class="text-sm text-emerald-200">Growth</div>
+                        <article class="rounded-2xl border border-lime-400/40 bg-lime-400/10 p-6">
+                            <div class="text-sm text-lime-200">Growth</div>
                             <div class="mt-3 text-4xl font-bold">$79</div>
-                            <p class="mt-4 text-sm text-emerald-50">For payment collection teams that need richer dashboards and multi-user workflows.</p>
+                            <p class="mt-4 text-sm text-lime-50">For payment collection teams that need richer dashboards and multi-user workflows.</p>
                         </article>
                         <article class="rounded-2xl border border-white/10 bg-white/5 p-6">
                             <div class="text-sm text-slate-300">Enterprise</div>
