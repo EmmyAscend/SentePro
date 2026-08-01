@@ -32,4 +32,14 @@ interface PaymentGatewayDriver
      * @return array{status: 'completed'|'failed', raw: array}
      */
     public function refund(PaymentTransaction $transaction, float $amount, GatewayProvider $config): array;
+
+    /**
+     * A lightweight connectivity/credentials check — unlike the three methods
+     * above, this never throws. It's designed for a "Test connection" button,
+     * not a real operation, so a failure is a normal, expected outcome to
+     * report rather than an exception to propagate.
+     *
+     * @return array{healthy: bool, error: ?string}
+     */
+    public function ping(GatewayProvider $config): array;
 }

@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Enums\PaymentProvider;
 use App\Http\Requests\StoreGatewayProviderRequest;
 use App\Models\GatewayProvider;
+use App\Services\PaymentGatewayManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class GatewayProviderController extends Controller
 {
+    public function __construct(private readonly PaymentGatewayManager $gatewayManager) {}
+
     public function index(): View
     {
         $this->authorize('viewAny', GatewayProvider::class);
@@ -43,5 +46,18 @@ class GatewayProviderController extends Controller
         ]);
 
         return redirect()->route('gateways.index')->with('status', 'Gateway provider configured successfully.');
+    }
+
+    public function test(GatewayProvider $gatewayProvider): RedirectResponse
+    {
+        $this->authorize('update', $gatewayProvider);
+
+        $result = $this->gatewayManager->driver($gatewayProvider->provider)->ping($gatewayProvider);
+
+        $status = $result['healthy']
+            ? 'Connection healthy.'
+            : 'Connection failed: '.($result['error'] ?? 'unknown error');
+
+        return redirect()->route('gateways.index')->with('status', $status);
     }
 }

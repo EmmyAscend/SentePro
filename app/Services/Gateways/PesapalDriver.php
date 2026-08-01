@@ -161,4 +161,15 @@ class PesapalDriver implements PaymentGatewayDriver
             'raw' => $data,
         ];
     }
+
+    public function ping(GatewayProvider $config): array
+    {
+        try {
+            $this->token($config);
+
+            return ['healthy' => true, 'error' => null];
+        } catch (\Throwable $e) {
+            return ['healthy' => false, 'error' => $e->getMessage()];
+        }
+    }
 }

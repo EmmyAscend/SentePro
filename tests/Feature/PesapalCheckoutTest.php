@@ -69,6 +69,13 @@ class PesapalCheckoutTest extends TestCase
         // the ipn_id Pesapal returned gets cached on the gateway config so it
         // isn't re-registered on every checkout
         $this->assertSame('ipn-guid-123', $gatewayProvider->fresh()->credentials['ipn_id']);
+
+        $this->assertDatabaseHas('gateway_logs', [
+            'gateway_provider_id' => $gatewayProvider->id,
+            'method' => 'initiate',
+            'success' => 1,
+        ]);
+        $this->assertSame('healthy', $gatewayProvider->fresh()->last_health_status);
     }
 
     public function test_checkout_fails_validation_for_a_currency_the_chosen_gateway_does_not_support(): void

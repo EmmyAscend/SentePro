@@ -77,6 +77,9 @@
                         <x-nav-link :href="route('admin.wallet-monitoring')" :active="request()->routeIs('admin.wallet-monitoring')">
                             {{ __('Wallet Monitoring') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.gateway-monitoring')" :active="request()->routeIs('admin.gateway-monitoring')">
+                            {{ __('Gateway Monitoring') }}
+                        </x-nav-link>
                         <x-nav-link :href="route('admin.audit-logs')" :active="request()->routeIs('admin.audit-logs')">
                             {{ __('Audit Logs') }}
                         </x-nav-link>
@@ -197,6 +200,9 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.wallet-monitoring')" :active="request()->routeIs('admin.wallet-monitoring')">
                     {{ __('Wallet Monitoring') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.gateway-monitoring')" :active="request()->routeIs('admin.gateway-monitoring')">
+                    {{ __('Gateway Monitoring') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.audit-logs')" :active="request()->routeIs('admin.audit-logs')">
                     {{ __('Audit Logs') }}

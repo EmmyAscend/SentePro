@@ -97,6 +97,13 @@ class YoPaymentsCheckoutTest extends TestCase
             return str_contains($request->body(), '<Method>acdepositfunds</Method>')
                 && str_contains($request->body(), '<Account>256712345678</Account>');
         });
+
+        $this->assertDatabaseHas('gateway_logs', [
+            'gateway_provider_id' => $gatewayProvider->id,
+            'method' => 'initiate',
+            'success' => 1,
+        ]);
+        $this->assertSame('healthy', $gatewayProvider->fresh()->last_health_status);
     }
 
     public function test_yo_payments_webhook_reconciles_status_and_credits_the_wallet_on_completion(): void

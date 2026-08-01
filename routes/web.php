@@ -12,6 +12,7 @@ use App\Http\Controllers\DisputeController;
 use App\Http\Controllers\DisputeReviewController;
 use App\Http\Controllers\FeeBreakdownController;
 use App\Http\Controllers\FeeStructureController;
+use App\Http\Controllers\GatewayMonitoringController;
 use App\Http\Controllers\GatewayProviderController;
 use App\Http\Controllers\KnowledgeBaseController;
 use App\Http\Controllers\PaymentLinkController;
@@ -105,6 +106,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/payment-links', [PaymentLinkController::class, 'store'])->name('payment-links.store');
     Route::get('/gateways', [GatewayProviderController::class, 'index'])->name('gateways.index');
     Route::post('/gateways', [GatewayProviderController::class, 'store'])->name('gateways.store');
+    Route::post('/gateways/{gatewayProvider}/test', [GatewayProviderController::class, 'test'])->name('gateways.test');
+    Route::get('/admin/gateway-monitoring', [GatewayMonitoringController::class, 'index'])->name('admin.gateway-monitoring');
     Route::get('/transactions', [PaymentTransactionController::class, 'index'])->name('transactions.index');
     Route::post('/transactions', [PaymentTransactionController::class, 'store'])->name('transactions.store');
     Route::get('/transactions/export', [PaymentTransactionController::class, 'export'])->name('transactions.export');

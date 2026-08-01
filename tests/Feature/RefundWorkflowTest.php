@@ -65,7 +65,7 @@ class RefundWorkflowTest extends TestCase
         Mail::fake();
 
         $business = Business::factory()->create(['status' => 'approved']);
-        $this->gatewayProvider($business);
+        $gatewayProvider = $this->gatewayProvider($business);
         $transaction = $this->completedTransaction($business);
         $admin = User::factory()->businessAdmin($business)->create();
 
@@ -98,6 +98,12 @@ class RefundWorkflowTest extends TestCase
 
         Mail::assertQueued(RefundProcessedMail::class, fn ($mail) => $mail->refund->payment_transaction_id === $transaction->id
             && $mail->hasTo('refund-customer@example.test'));
+
+        $this->assertDatabaseHas('gateway_logs', [
+            'gateway_provider_id' => $gatewayProvider->id,
+            'method' => 'refund',
+            'success' => 1,
+        ]);
     }
 
     public function test_business_admin_can_partially_refund_a_transaction(): void

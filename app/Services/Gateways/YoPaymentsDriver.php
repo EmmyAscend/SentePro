@@ -109,4 +109,26 @@ class YoPaymentsDriver implements PaymentGatewayDriver
     {
         throw new RuntimeException('Yo Payments has no refund/reversal API — issue a manual disbursement instead.');
     }
+
+    /**
+     * Yo Payments has no separate auth step — credentials travel with every
+     * request — so there's no true "ping" endpoint. A round-trip against a
+     * nonsense reference that completes without throwing is the best signal
+     * available that connectivity/credentials are fine; it can't fully rule
+     * out "bad credentials that still return 200," the same unconfirmed-
+     * response-shape caveat already flagged for this driver.
+     */
+    public function ping(GatewayProvider $config): array
+    {
+        try {
+            $this->send('actransactioncheckstatus', [
+                'TransactionReference' => 'sentepro-health-check',
+                'DepositTransactionType' => 'PUSH',
+            ], $config);
+
+            return ['healthy' => true, 'error' => null];
+        } catch (\Throwable $e) {
+            return ['healthy' => false, 'error' => $e->getMessage()];
+        }
+    }
 }
