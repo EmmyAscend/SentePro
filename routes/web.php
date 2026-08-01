@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\BusinessManagementController;
 use App\Http\Controllers\BusinessRegistrationController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\FeeBreakdownController;
 use App\Http\Controllers\FeeStructureController;
 use App\Http\Controllers\GatewayProviderController;
+use App\Http\Controllers\KnowledgeBaseController;
 use App\Http\Controllers\PaymentLinkController;
 use App\Http\Controllers\PaymentTransactionController;
 use App\Http\Controllers\ProfileController;
@@ -117,6 +119,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/support-tickets/{ticket}/messages', [SupportTicketMessageController::class, 'store'])->name('support-tickets.messages.store');
     Route::post('/support-tickets/{ticket}/resolve', [SupportTicketReviewController::class, 'resolve'])->name('support-tickets.resolve');
     Route::post('/support-tickets/{ticket}/reopen', [SupportTicketReviewController::class, 'reopen'])->name('support-tickets.reopen');
+    Route::get('/knowledge-base', [KnowledgeBaseController::class, 'index'])->name('knowledge-base.index');
+    Route::post('/knowledge-base', [KnowledgeBaseController::class, 'store'])->name('knowledge-base.store');
+    Route::get('/knowledge-base/{article}', [KnowledgeBaseController::class, 'show'])->name('knowledge-base.show');
+    Route::put('/knowledge-base/{article}', [KnowledgeBaseController::class, 'update'])->name('knowledge-base.update');
+    Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+    Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
 });
 
 Route::middleware('auth')->group(function () {

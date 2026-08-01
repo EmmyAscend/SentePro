@@ -33,6 +33,12 @@
                     <x-nav-link :href="route('support-tickets.index')" :active="request()->routeIs('support-tickets.*')">
                         {{ __('Support') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('knowledge-base.index')" :active="request()->routeIs('knowledge-base.*')">
+                        {{ __('Knowledge Base') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('announcements.index')" :active="request()->routeIs('announcements.*')">
+                        {{ __('Announcements') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('gateways.index')" :active="request()->routeIs('gateways.*')">
                         {{ __('Gateways') }}
                     </x-nav-link>
@@ -139,6 +145,12 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('support-tickets.index')" :active="request()->routeIs('support-tickets.*')">
                 {{ __('Support') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('knowledge-base.index')" :active="request()->routeIs('knowledge-base.*')">
+                {{ __('Knowledge Base') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('announcements.index')" :active="request()->routeIs('announcements.*')">
+                {{ __('Announcements') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('gateways.index')" :active="request()->routeIs('gateways.*')">
                 {{ __('Gateways') }}
