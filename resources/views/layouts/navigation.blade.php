@@ -36,6 +36,11 @@
                     <x-nav-link :href="route('disputes.index')" :active="request()->routeIs('disputes.*')">
                         {{ __('Disputes') }}
                     </x-nav-link>
+                    @if (auth()->user()->isBusinessAdmin())
+                        <x-nav-link :href="route('api-keys.index')" :active="request()->routeIs('api-keys.*')">
+                            {{ __('API Keys') }}
+                        </x-nav-link>
+                    @endif
                     <x-nav-link :href="route('knowledge-base.index')" :active="request()->routeIs('knowledge-base.*')">
                         {{ __('Knowledge Base') }}
                     </x-nav-link>
@@ -152,6 +157,11 @@
             <x-responsive-nav-link :href="route('disputes.index')" :active="request()->routeIs('disputes.*')">
                 {{ __('Disputes') }}
             </x-responsive-nav-link>
+            @if (auth()->user()->isBusinessAdmin())
+                <x-responsive-nav-link :href="route('api-keys.index')" :active="request()->routeIs('api-keys.*')">
+                    {{ __('API Keys') }}
+                </x-responsive-nav-link>
+            @endif
             <x-responsive-nav-link :href="route('knowledge-base.index')" :active="request()->routeIs('knowledge-base.*')">
                 {{ __('Knowledge Base') }}
             </x-responsive-nav-link>

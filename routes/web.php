@@ -5,6 +5,7 @@ use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\BusinessManagementController;
 use App\Http\Controllers\BusinessRegistrationController;
 use App\Http\Controllers\BusinessReviewController;
+use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DisputeController;
@@ -113,6 +114,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/disputes/{dispute}', [DisputeController::class, 'show'])->name('disputes.show');
     Route::post('/admin/disputes/{dispute}/resolve', [DisputeReviewController::class, 'resolve'])->name('admin.disputes.resolve');
     Route::post('/admin/disputes/{dispute}/reject', [DisputeReviewController::class, 'reject'])->name('admin.disputes.reject');
+    Route::get('/api-keys', [ApiKeyController::class, 'index'])->name('api-keys.index');
+    Route::post('/api-keys', [ApiKeyController::class, 'store'])->name('api-keys.store');
+    Route::delete('/api-keys/{token}', [ApiKeyController::class, 'destroy'])->name('api-keys.destroy');
     Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts.index');
     Route::get('/webhooks', [WebhookController::class, 'index'])->name('webhooks.index');
     Route::post('/webhooks', [WebhookController::class, 'store'])->name('webhooks.store');
