@@ -32,5 +32,24 @@
             </div>
         </div>
     </div>
+
+    @if ($transaction)
+        <script>
+            (function () {
+                var message = {
+                    source: 'sentepro-checkout',
+                    status: {{ \Illuminate\Support\Js::from($transaction->status->value) }},
+                    reference: {{ \Illuminate\Support\Js::from($transaction->external_reference) }},
+                };
+
+                if (window.opener) {
+                    window.opener.postMessage(message, '*');
+                }
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage(message, '*');
+                }
+            })();
+        </script>
+    @endif
 </body>
 </html>
