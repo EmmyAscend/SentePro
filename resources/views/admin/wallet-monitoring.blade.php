@@ -8,7 +8,7 @@
 
     <div class="py-12">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
-            <div class="grid gap-4 md:grid-cols-4">
+            <div class="grid gap-4 md:grid-cols-5">
                 <div class="rounded-2xl bg-slate-900 p-6 text-white shadow-lg shadow-slate-950/20">
                     <p class="text-sm text-slate-300">Total Platform Float</p>
                     <p class="mt-2 text-3xl font-bold">
@@ -28,6 +28,11 @@
                     <p class="text-sm text-slate-500">Completed Settlements</p>
                     <p class="mt-2 text-3xl font-bold text-slate-900">{{ number_format($completedSettlementsAmount, 2) }}</p>
                     <p class="text-xs text-slate-400">{{ $completedSettlementsCount }} paid out</p>
+                </div>
+                <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                    <p class="text-sm text-slate-500">Wallet Transfers</p>
+                    <p class="mt-2 text-3xl font-bold text-slate-900">{{ number_format($walletTransfersAmount, 2) }}</p>
+                    <p class="text-xs text-slate-400">{{ $walletTransfersCount }} transfer{{ $walletTransfersCount === 1 ? '' : 's' }}</p>
                 </div>
             </div>
 

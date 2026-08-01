@@ -27,6 +27,9 @@
                     <x-nav-link :href="route('receipts.index')" :active="request()->routeIs('receipts.*')">
                         {{ __('Receipts') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('wallet-transfers.index')" :active="request()->routeIs('wallet-transfers.*')">
+                        {{ __('Wallet Transfers') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('gateways.index')" :active="request()->routeIs('gateways.*')">
                         {{ __('Gateways') }}
                     </x-nav-link>
@@ -127,6 +130,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('receipts.index')" :active="request()->routeIs('receipts.*')">
                 {{ __('Receipts') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('wallet-transfers.index')" :active="request()->routeIs('wallet-transfers.*')">
+                {{ __('Wallet Transfers') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('gateways.index')" :active="request()->routeIs('gateways.*')">
                 {{ __('Gateways') }}

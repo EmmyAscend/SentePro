@@ -6,6 +6,7 @@ use App\Enums\SettlementStatus;
 use App\Models\Business;
 use App\Models\Settlement;
 use App\Models\Wallet;
+use App\Models\WalletTransfer;
 use Illuminate\View\View;
 
 class WalletMonitoringController extends Controller
@@ -33,6 +34,9 @@ class WalletMonitoringController extends Controller
         $completedSettlementsCount = (clone $completedSettlements)->count();
         $completedSettlementsAmount = (clone $completedSettlements)->sum('net_amount');
 
+        $walletTransfersCount = WalletTransfer::query()->count();
+        $walletTransfersAmount = WalletTransfer::query()->sum('amount');
+
         return view('admin.wallet-monitoring', [
             'businesses' => $businesses,
             'platformTotals' => $platformTotals,
@@ -40,6 +44,8 @@ class WalletMonitoringController extends Controller
             'pendingSettlementsAmount' => $pendingSettlementsAmount,
             'completedSettlementsCount' => $completedSettlementsCount,
             'completedSettlementsAmount' => $completedSettlementsAmount,
+            'walletTransfersCount' => $walletTransfersCount,
+            'walletTransfersAmount' => $walletTransfersAmount,
         ]);
     }
 }

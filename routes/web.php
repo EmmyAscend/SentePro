@@ -20,6 +20,7 @@ use App\Http\Controllers\SettlementMethodController;
 use App\Http\Controllers\SettlementReviewController;
 use App\Http\Controllers\StaffManagementController;
 use App\Http\Controllers\WalletMonitoringController;
+use App\Http\Controllers\WalletTransferController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\Webhooks\PesapalWebhookController;
 use App\Http\Controllers\Webhooks\YoPaymentsWebhookController;
@@ -101,6 +102,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/fee-structures', [FeeStructureController::class, 'index'])->name('admin.fee-structures');
     Route::post('/admin/fee-structures', [FeeStructureController::class, 'store'])->name('admin.fee-structures.store');
     Route::put('/admin/fee-structures/{feeStructure}', [FeeStructureController::class, 'update'])->name('admin.fee-structures.update');
+    Route::get('/wallet-transfers', [WalletTransferController::class, 'index'])->name('wallet-transfers.index');
+    Route::post('/wallet-transfers', [WalletTransferController::class, 'store'])->name('wallet-transfers.store');
+    Route::get('/wallet-transfers/receive-qr-code', [WalletTransferController::class, 'receiveQrCode'])->name('wallet-transfers.receive-qr-code');
     Route::get('/admin/audit-logs', [AuditLogController::class, 'index'])->name('admin.audit-logs');
     Route::get('/admin/wallet-monitoring', [WalletMonitoringController::class, 'index'])->name('admin.wallet-monitoring');
     Route::get('/admin/businesses', [BusinessManagementController::class, 'index'])->name('admin.businesses.index');
