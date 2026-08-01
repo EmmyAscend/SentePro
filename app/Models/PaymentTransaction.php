@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PaymentProvider;
 use App\Enums\PaymentTransactionStatus;
+use App\Enums\RefundStatus;
 use App\Mail\PaymentReceivedMail;
 use App\Models\Concerns\BelongsToTenant;
 use App\Services\ReceiptService;
@@ -11,6 +12,7 @@ use App\Services\TransactionFeeService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Mail;
 
 class PaymentTransaction extends Model
@@ -101,5 +103,17 @@ class PaymentTransaction extends Model
     public function paymentLink(): BelongsTo
     {
         return $this->belongsTo(PaymentLink::class);
+    }
+
+    public function refunds(): HasMany
+    {
+        return $this->hasMany(Refund::class);
+    }
+
+    public function remainingRefundableAmount(): float
+    {
+        $refunded = $this->refunds()->where('status', RefundStatus::Completed)->sum('amount');
+
+        return max(0.0, (float) $this->amount - (float) $refunded);
     }
 }

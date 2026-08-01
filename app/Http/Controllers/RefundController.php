@@ -13,7 +13,14 @@ class RefundController extends Controller
 
     public function store(StoreRefundRequest $request, PaymentTransaction $transaction): RedirectResponse
     {
-        $this->refundService->refund($transaction, $request->user(), $request->validated()['reason'] ?? null);
+        $validated = $request->validated();
+
+        $this->refundService->refund(
+            $transaction,
+            $request->user(),
+            isset($validated['amount']) ? (float) $validated['amount'] : null,
+            $validated['reason'] ?? null,
+        );
 
         return redirect()->route('transactions.index')->with('status', 'Refund processed successfully.');
     }

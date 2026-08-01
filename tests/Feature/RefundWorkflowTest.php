@@ -100,6 +100,97 @@ class RefundWorkflowTest extends TestCase
             && $mail->hasTo('refund-customer@example.test'));
     }
 
+    public function test_business_admin_can_partially_refund_a_transaction(): void
+    {
+        $business = Business::factory()->create(['status' => 'approved']);
+        $this->gatewayProvider($business);
+        $transaction = $this->completedTransaction($business);
+        $admin = User::factory()->businessAdmin($business)->create();
+
+        $this->fakeSuccessfulRefund();
+
+        $response = $this->actingAs($admin)->post("/transactions/{$transaction->id}/refund", [
+            'amount' => 1000,
+            'reason' => 'Partial cancellation',
+        ]);
+
+        $response->assertRedirect(route('transactions.index'));
+        $this->assertSame('partially_refunded', $transaction->fresh()->status->value);
+        $this->assertSame(1500.0, $transaction->fresh()->remainingRefundableAmount());
+
+        $wallet = $business->wallet->fresh();
+        $this->assertSame('1500.00', (string) $wallet->available_balance);
+        $this->assertSame('1500.00', (string) $wallet->settlement_balance);
+
+        $this->assertDatabaseHas('refunds', [
+            'payment_transaction_id' => $transaction->id,
+            'amount' => '1000.00',
+            'net_amount_reversed' => '1000.00',
+            'status' => 'completed',
+        ]);
+    }
+
+    public function test_a_second_partial_refund_that_exhausts_the_remainder_fully_refunds_the_transaction(): void
+    {
+        $business = Business::factory()->create(['status' => 'approved']);
+        $this->gatewayProvider($business);
+        $transaction = $this->completedTransaction($business);
+        $admin = User::factory()->businessAdmin($business)->create();
+
+        $this->fakeSuccessfulRefund();
+
+        $this->actingAs($admin)->post("/transactions/{$transaction->id}/refund", ['amount' => 1000])->assertRedirect();
+        $response = $this->actingAs($admin)->post("/transactions/{$transaction->id}/refund", ['amount' => 1500]);
+
+        $response->assertRedirect(route('transactions.index'));
+        $this->assertSame('refunded', $transaction->fresh()->status->value);
+        $this->assertSame(0.0, $transaction->fresh()->remainingRefundableAmount());
+
+        $wallet = $business->wallet->fresh();
+        $this->assertSame('0.00', (string) $wallet->available_balance);
+        $this->assertSame(2, $transaction->fresh()->refunds()->count());
+    }
+
+    public function test_a_refund_exceeding_the_remaining_balance_is_rejected(): void
+    {
+        $business = Business::factory()->create(['status' => 'approved']);
+        $this->gatewayProvider($business);
+        $transaction = $this->completedTransaction($business);
+        $admin = User::factory()->businessAdmin($business)->create();
+
+        $this->fakeSuccessfulRefund();
+
+        $response = $this->actingAs($admin)->post("/transactions/{$transaction->id}/refund", [
+            'amount' => 3000,
+        ]);
+
+        $response->assertSessionHasErrors('amount');
+        $this->assertSame('completed', $transaction->fresh()->status->value);
+        $this->assertSame('2500.00', (string) $business->wallet->fresh()->available_balance);
+        $this->assertDatabaseMissing('refunds', ['payment_transaction_id' => $transaction->id]);
+    }
+
+    public function test_omitting_amount_refunds_the_full_remaining_balance_after_a_prior_partial_refund(): void
+    {
+        $business = Business::factory()->create(['status' => 'approved']);
+        $this->gatewayProvider($business);
+        $transaction = $this->completedTransaction($business);
+        $admin = User::factory()->businessAdmin($business)->create();
+
+        $this->fakeSuccessfulRefund();
+
+        $this->actingAs($admin)->post("/transactions/{$transaction->id}/refund", ['amount' => 1000])->assertRedirect();
+        $response = $this->actingAs($admin)->post("/transactions/{$transaction->id}/refund");
+
+        $response->assertRedirect(route('transactions.index'));
+        $this->assertSame('refunded', $transaction->fresh()->status->value);
+
+        $this->assertDatabaseHas('refunds', [
+            'payment_transaction_id' => $transaction->id,
+            'amount' => '1500.00',
+        ]);
+    }
+
     public function test_a_declined_refund_leaves_the_wallet_and_transaction_unchanged_but_records_the_attempt(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);

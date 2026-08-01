@@ -8,6 +8,7 @@ enum PaymentTransactionStatus: string
     case Completed = 'completed';
     case Failed = 'failed';
     case Refunded = 'refunded';
+    case PartiallyRefunded = 'partially_refunded';
 
     public function label(): string
     {
@@ -16,6 +17,7 @@ enum PaymentTransactionStatus: string
             self::Completed => 'Completed',
             self::Failed => 'Failed',
             self::Refunded => 'Refunded',
+            self::PartiallyRefunded => 'Partially Refunded',
         };
     }
 }

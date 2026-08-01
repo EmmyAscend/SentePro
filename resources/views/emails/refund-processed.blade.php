@@ -9,7 +9,11 @@
         <p style="text-transform: uppercase; letter-spacing: 0.2em; font-size: 12px; color:#059669; margin: 0 0 8px;">SentePro Refund</p>
         <h1 style="font-size: 20px; margin: 0 0 16px;">{{ $refund->business->business_name }}</h1>
 
-        <p style="margin: 0 0 4px; color:#475569;">Your payment has been refunded in full.</p>
+        @if ($refund->paymentTransaction->status === \App\Enums\PaymentTransactionStatus::PartiallyRefunded)
+            <p style="margin: 0 0 4px; color:#475569;">Part of your payment has been refunded.</p>
+        @else
+            <p style="margin: 0 0 4px; color:#475569;">Your payment has been refunded in full.</p>
+        @endif
 
         <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
             <tr>

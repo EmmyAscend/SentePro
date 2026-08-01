@@ -73,8 +73,8 @@
                             <span class="font-medium text-slate-700">Status</span>
                             <select name="status" class="rounded-xl border border-slate-300 px-3 py-2">
                                 <option value="">All statuses</option>
-                                @foreach (['processing', 'completed', 'failed', 'refunded'] as $status)
-                                    <option value="{{ $status }}" @selected(request('status') === $status)>{{ ucfirst($status) }}</option>
+                                @foreach (['processing', 'completed', 'failed', 'refunded', 'partially_refunded'] as $status)
+                                    <option value="{{ $status }}" @selected(request('status') === $status)>{{ ucwords(str_replace('_', ' ', $status)) }}</option>
                                 @endforeach
                             </select>
                         </label>
@@ -125,12 +125,14 @@
                                         'bg-amber-100 text-amber-700' => $transaction->status === \App\Enums\PaymentTransactionStatus::Processing,
                                         'bg-rose-100 text-rose-700' => $transaction->status === \App\Enums\PaymentTransactionStatus::Failed,
                                         'bg-slate-200 text-slate-600' => $transaction->status === \App\Enums\PaymentTransactionStatus::Refunded,
+                                        'bg-orange-100 text-orange-700' => $transaction->status === \App\Enums\PaymentTransactionStatus::PartiallyRefunded,
                                     ])>{{ strtoupper($transaction->status->value) }}</span>
                                 </div>
-                                @if ($transaction->status === \App\Enums\PaymentTransactionStatus::Completed && $transaction->provider !== \App\Enums\PaymentProvider::YoPayments)
+                                @if (in_array($transaction->status, [\App\Enums\PaymentTransactionStatus::Completed, \App\Enums\PaymentTransactionStatus::PartiallyRefunded], true) && $transaction->provider !== \App\Enums\PaymentProvider::YoPayments)
                                 @can('refund', $transaction)
                                     <form method="POST" action="{{ route('transactions.refund', $transaction) }}" class="mt-3 flex items-center gap-2" onsubmit="return confirm('Refund this transaction? This cannot be undone.');">
                                         @csrf
+                                        <input type="number" name="amount" step="0.01" min="0.01" max="{{ $transaction->remainingRefundableAmount() }}" value="{{ $transaction->remainingRefundableAmount() }}" class="w-28 rounded-xl border border-slate-300 px-3 py-1.5 text-sm" title="Up to {{ number_format($transaction->remainingRefundableAmount(), 2) }} remaining">
                                         <input type="text" name="reason" placeholder="Refund reason (optional)" class="flex-1 rounded-xl border border-slate-300 px-3 py-1.5 text-sm">
                                         <button type="submit" class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-200">Refund</button>
                                     </form>
