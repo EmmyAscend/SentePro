@@ -138,6 +138,15 @@
                                     </form>
                                 @endcan
                                 @endif
+                                @if (in_array($transaction->status, [\App\Enums\PaymentTransactionStatus::Completed, \App\Enums\PaymentTransactionStatus::PartiallyRefunded, \App\Enums\PaymentTransactionStatus::Refunded], true))
+                                @can('create', [\App\Models\Dispute::class, $transaction])
+                                    <form method="POST" action="{{ route('disputes.store', $transaction) }}" class="mt-2 flex items-center gap-2">
+                                        @csrf
+                                        <input type="text" name="reason" placeholder="Dispute reason" class="flex-1 rounded-xl border border-slate-300 px-3 py-1.5 text-sm" required>
+                                        <button type="submit" class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-200">Dispute</button>
+                                    </form>
+                                @endcan
+                                @endif
                             </div>
                         @empty
                             <p class="text-slate-600">No transactions match these filters.</p>

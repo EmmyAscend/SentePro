@@ -33,6 +33,9 @@
                     <x-nav-link :href="route('support-tickets.index')" :active="request()->routeIs('support-tickets.*')">
                         {{ __('Support') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('disputes.index')" :active="request()->routeIs('disputes.*')">
+                        {{ __('Disputes') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('knowledge-base.index')" :active="request()->routeIs('knowledge-base.*')">
                         {{ __('Knowledge Base') }}
                     </x-nav-link>
@@ -145,6 +148,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('support-tickets.index')" :active="request()->routeIs('support-tickets.*')">
                 {{ __('Support') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('disputes.index')" :active="request()->routeIs('disputes.*')">
+                {{ __('Disputes') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('knowledge-base.index')" :active="request()->routeIs('knowledge-base.*')">
                 {{ __('Knowledge Base') }}
