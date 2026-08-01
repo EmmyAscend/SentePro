@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Mail\BusinessReviewedMail;
 use App\Models\Business;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class BusinessVerificationService
 {
@@ -23,6 +25,16 @@ class BusinessVerificationService
             'notes' => $notes,
         ]);
 
-        return $business->fresh();
+        $business = $business->fresh();
+
+        if (in_array($status, ['approved', 'rejected', 'suspended'], true)) {
+            $recipients = $business->admins->pluck('email');
+
+            if ($recipients->isNotEmpty()) {
+                Mail::to($recipients)->queue(new BusinessReviewedMail($business, $status));
+            }
+        }
+
+        return $business;
     }
 }

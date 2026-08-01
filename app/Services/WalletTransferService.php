@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
+use App\Mail\WalletTransferReceivedMail;
 use App\Models\Business;
 use App\Models\Scopes\TenantScope;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Models\WalletTransfer;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -51,7 +53,7 @@ class WalletTransferService
      */
     public function transfer(Business $sender, Business $recipient, float $amount, ?string $note, User $initiatedBy): WalletTransfer
     {
-        return DB::transaction(function () use ($sender, $recipient, $amount, $note, $initiatedBy) {
+        $walletTransfer = DB::transaction(function () use ($sender, $recipient, $amount, $note, $initiatedBy) {
             if ($sender->id === $recipient->id) {
                 throw ValidationException::withMessages([
                     'recipient' => 'You cannot transfer to your own business.',
@@ -108,5 +110,13 @@ class WalletTransferService
 
             return $walletTransfer;
         });
+
+        $recipients = $recipient->admins->pluck('email');
+
+        if ($recipients->isNotEmpty()) {
+            Mail::to($recipients)->queue(new WalletTransferReceivedMail($walletTransfer));
+        }
+
+        return $walletTransfer;
     }
 }

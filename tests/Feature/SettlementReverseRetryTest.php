@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Mail\SettlementStatusMail;
 use App\Models\Business;
 use App\Models\Settlement;
 use App\Models\SettlementMethod;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class SettlementReverseRetryTest extends TestCase
@@ -43,7 +45,10 @@ class SettlementReverseRetryTest extends TestCase
 
     public function test_super_admin_can_reverse_a_completed_settlement(): void
     {
+        Mail::fake();
+
         $business = Business::factory()->create(['status' => 'approved']);
+        $admin = User::factory()->businessAdmin($business)->create();
         $method = SettlementMethod::factory()->create();
         $settlement = $this->completedSettlement($business, $method);
         $superAdmin = User::factory()->superAdmin()->create();
@@ -63,6 +68,9 @@ class SettlementReverseRetryTest extends TestCase
             'action' => 'settlement.reversed',
             'subject_id' => $settlement->id,
         ]);
+
+        Mail::assertQueued(SettlementStatusMail::class, fn ($mail) => $mail->event === 'reversed'
+            && $mail->hasTo($admin->email));
     }
 
     public function test_a_non_completed_settlement_cannot_be_reversed(): void
@@ -80,7 +88,10 @@ class SettlementReverseRetryTest extends TestCase
 
     public function test_super_admin_can_retry_a_rejected_settlement(): void
     {
+        Mail::fake();
+
         $business = Business::factory()->create(['status' => 'approved']);
+        $admin = User::factory()->businessAdmin($business)->create();
         $business->wallet->update(['available_balance' => 5000]);
         $method = SettlementMethod::factory()->create();
         $settlement = $this->rejectedSettlement($business, $method);
@@ -99,6 +110,9 @@ class SettlementReverseRetryTest extends TestCase
             'action' => 'settlement.retried',
             'subject_id' => $settlement->id,
         ]);
+
+        Mail::assertQueued(SettlementStatusMail::class, fn ($mail) => $mail->event === 'retrying'
+            && $mail->hasTo($admin->email));
     }
 
     public function test_a_non_rejected_or_failed_settlement_cannot_be_retried(): void

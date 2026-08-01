@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Mail\SettlementStatusMail;
 use App\Models\Business;
 use App\Models\PublicHoliday;
 use App\Models\Settlement;
@@ -10,6 +11,7 @@ use App\Models\User;
 use App\Services\SettlementEstimateService;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class SettlementConfigurationTest extends TestCase
@@ -143,6 +145,8 @@ class SettlementConfigurationTest extends TestCase
 
     public function test_super_admin_completing_a_settlement_credits_the_net_amount_to_settlement_balance(): void
     {
+        Mail::fake();
+
         $business = Business::factory()->create(['status' => 'approved']);
         $business->wallet->update(['available_balance' => 10000]);
         $method = SettlementMethod::factory()->create([
@@ -171,10 +175,16 @@ class SettlementConfigurationTest extends TestCase
         $this->assertSame('7500.00', (string) $wallet->available_balance);
         $this->assertSame('0.00', (string) $wallet->pending_balance);
         $this->assertSame('2425.00', (string) $wallet->settlement_balance);
+
+        Mail::assertQueued(SettlementStatusMail::class, fn ($mail) => $mail->settlement->is($settlement->fresh())
+            && $mail->event === 'completed'
+            && $mail->hasTo($admin->email));
     }
 
     public function test_super_admin_rejecting_a_settlement_returns_the_full_amount_to_available_balance(): void
     {
+        Mail::fake();
+
         $business = Business::factory()->create(['status' => 'approved']);
         $business->wallet->update(['available_balance' => 10000]);
         $method = SettlementMethod::factory()->create();
@@ -198,6 +208,10 @@ class SettlementConfigurationTest extends TestCase
         $wallet = $business->wallet->fresh();
         $this->assertSame('10000.00', (string) $wallet->available_balance);
         $this->assertSame('0.00', (string) $wallet->pending_balance);
+
+        Mail::assertQueued(SettlementStatusMail::class, fn ($mail) => $mail->settlement->is($settlement->fresh())
+            && $mail->event === 'rejected'
+            && $mail->hasTo($admin->email));
     }
 
     public function test_business_admin_cannot_complete_or_reject_a_settlement(): void

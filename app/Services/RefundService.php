@@ -5,12 +5,14 @@ namespace App\Services;
 use App\Enums\PaymentProvider;
 use App\Enums\PaymentTransactionStatus;
 use App\Enums\RefundStatus;
+use App\Mail\RefundProcessedMail;
 use App\Models\FeeBreakdown;
 use App\Models\GatewayProvider;
 use App\Models\PaymentTransaction;
 use App\Models\Refund;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class RefundService
@@ -75,6 +77,10 @@ class RefundService
             throw ValidationException::withMessages([
                 'transaction' => 'The gateway declined the refund request.',
             ]);
+        }
+
+        if ($transaction->customer_email) {
+            Mail::to($transaction->customer_email)->queue(new RefundProcessedMail($refund));
         }
 
         return $refund;

@@ -4,12 +4,14 @@ namespace App\Models;
 
 use App\Enums\PaymentProvider;
 use App\Enums\PaymentTransactionStatus;
+use App\Mail\PaymentReceivedMail;
 use App\Models\Concerns\BelongsToTenant;
 use App\Services\ReceiptService;
 use App\Services\TransactionFeeService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentTransaction extends Model
 {
@@ -82,7 +84,13 @@ class PaymentTransaction extends Model
             'settlement_balance' => $transaction->business->wallet->settlement_balance + $breakdown['netAmount'],
         ]);
 
-        app(ReceiptService::class)->generate($transaction, $breakdown);
+        $receipt = app(ReceiptService::class)->generate($transaction, $breakdown);
+
+        $recipients = $transaction->business->admins->pluck('email');
+
+        if ($recipients->isNotEmpty()) {
+            Mail::to($recipients)->queue(new PaymentReceivedMail($receipt));
+        }
     }
 
     public function business(): BelongsTo

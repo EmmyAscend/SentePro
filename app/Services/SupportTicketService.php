@@ -3,17 +3,21 @@
 namespace App\Services;
 
 use App\Enums\SupportTicketStatus;
+use App\Enums\UserRole;
+use App\Mail\SupportTicketMail;
 use App\Models\Business;
 use App\Models\SupportTicket;
 use App\Models\SupportTicketMessage;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class SupportTicketService
 {
     public function open(Business $business, User $user, string $subject, string $body): SupportTicket
     {
-        return DB::transaction(function () use ($business, $user, $subject, $body) {
+        [$ticket, $message] = DB::transaction(function () use ($business, $user, $subject, $body) {
             $ticket = SupportTicket::create([
                 'business_id' => $business->id,
                 'created_by' => $user->id,
@@ -21,15 +25,19 @@ class SupportTicketService
                 'status' => SupportTicketStatus::Open,
             ]);
 
-            SupportTicketMessage::create([
+            $message = SupportTicketMessage::create([
                 'business_id' => $business->id,
                 'support_ticket_id' => $ticket->id,
                 'user_id' => $user->id,
                 'body' => $body,
             ]);
 
-            return $ticket;
+            return [$ticket, $message];
         });
+
+        $this->notify($this->superAdminEmails(), $ticket, $message, 'opened');
+
+        return $ticket;
     }
 
     /**
@@ -38,7 +46,7 @@ class SupportTicketService
      */
     public function reply(SupportTicket $ticket, User $user, string $body): SupportTicketMessage
     {
-        return DB::transaction(function () use ($ticket, $user, $body) {
+        $message = DB::transaction(function () use ($ticket, $user, $body) {
             $message = SupportTicketMessage::create([
                 'business_id' => $ticket->business_id,
                 'support_ticket_id' => $ticket->id,
@@ -52,6 +60,26 @@ class SupportTicketService
 
             return $message;
         });
+
+        $recipients = $user->isSuperAdmin()
+            ? $ticket->business->admins->pluck('email')
+            : $this->superAdminEmails();
+
+        $this->notify($recipients, $ticket, $message, 'replied');
+
+        return $message;
+    }
+
+    private function superAdminEmails(): Collection
+    {
+        return User::query()->where('role', UserRole::SuperAdmin)->pluck('email');
+    }
+
+    private function notify(Collection $recipients, SupportTicket $ticket, SupportTicketMessage $message, string $event): void
+    {
+        if ($recipients->isNotEmpty()) {
+            Mail::to($recipients)->queue(new SupportTicketMail($ticket, $message, $event));
+        }
     }
 
     public function resolve(SupportTicket $ticket): SupportTicket

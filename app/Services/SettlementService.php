@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Enums\SettlementStatus;
+use App\Mail\SettlementStatusMail;
 use App\Models\Business;
 use App\Models\Settlement;
 use App\Models\SettlementMethod;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class SettlementService
@@ -105,7 +107,7 @@ class SettlementService
      */
     public function complete(Settlement $settlement): Settlement
     {
-        return DB::transaction(function () use ($settlement) {
+        $settlement = DB::transaction(function () use ($settlement) {
             $this->assertProcessable($settlement);
 
             $wallet = $settlement->business->wallet()->lockForUpdate()->first();
@@ -121,6 +123,10 @@ class SettlementService
 
             return $settlement->fresh();
         });
+
+        $this->notifyBusiness($settlement, 'completed');
+
+        return $settlement;
     }
 
     /**
@@ -129,7 +135,7 @@ class SettlementService
      */
     public function reject(Settlement $settlement, ?string $reason = null): Settlement
     {
-        return DB::transaction(function () use ($settlement, $reason) {
+        $settlement = DB::transaction(function () use ($settlement, $reason) {
             $this->assertProcessable($settlement);
 
             $wallet = $settlement->business->wallet()->lockForUpdate()->first();
@@ -145,6 +151,10 @@ class SettlementService
 
             return $settlement->fresh();
         });
+
+        $this->notifyBusiness($settlement, 'rejected');
+
+        return $settlement;
     }
 
     private function assertProcessable(Settlement $settlement): void
@@ -165,7 +175,7 @@ class SettlementService
      */
     public function reverse(Settlement $settlement, ?string $reason = null): Settlement
     {
-        return DB::transaction(function () use ($settlement, $reason) {
+        $settlement = DB::transaction(function () use ($settlement, $reason) {
             if ($settlement->status !== SettlementStatus::Completed) {
                 throw ValidationException::withMessages([
                     'status' => 'Only completed settlements can be reversed.',
@@ -185,6 +195,10 @@ class SettlementService
 
             return $settlement->fresh();
         });
+
+        $this->notifyBusiness($settlement, 'reversed');
+
+        return $settlement;
     }
 
     /**
@@ -200,7 +214,7 @@ class SettlementService
      */
     public function retry(Settlement $settlement): Settlement
     {
-        return DB::transaction(function () use ($settlement) {
+        $settlement = DB::transaction(function () use ($settlement) {
             if (! in_array($settlement->status, [SettlementStatus::Rejected, SettlementStatus::Failed], true)) {
                 throw ValidationException::withMessages([
                     'status' => 'Only rejected or failed settlements can be retried.',
@@ -255,5 +269,18 @@ class SettlementService
 
             return $settlement->fresh();
         });
+
+        $this->notifyBusiness($settlement, 'retrying');
+
+        return $settlement;
+    }
+
+    private function notifyBusiness(Settlement $settlement, string $event): void
+    {
+        $recipients = $settlement->business->admins->pluck('email');
+
+        if ($recipients->isNotEmpty()) {
+            Mail::to($recipients)->queue(new SettlementStatusMail($settlement, $event));
+        }
     }
 }

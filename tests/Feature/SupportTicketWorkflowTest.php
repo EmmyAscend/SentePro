@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Mail\SupportTicketMail;
 use App\Models\Business;
 use App\Models\SupportTicket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class SupportTicketWorkflowTest extends TestCase
@@ -14,8 +16,11 @@ class SupportTicketWorkflowTest extends TestCase
 
     public function test_business_admin_can_open_a_ticket_with_an_initial_message(): void
     {
+        Mail::fake();
+
         $business = Business::factory()->create(['status' => 'approved']);
         $admin = User::factory()->businessAdmin($business)->create();
+        $superAdmin = User::factory()->superAdmin()->create();
 
         $response = $this->actingAs($admin)->post('/support-tickets', [
             'subject' => 'Cannot see my settlement',
@@ -32,13 +37,20 @@ class SupportTicketWorkflowTest extends TestCase
             'user_id' => $admin->id,
             'body' => 'My settlement request from yesterday has not shown up.',
         ]);
+
+        Mail::assertQueued(SupportTicketMail::class, fn ($mail) => $mail->event === 'opened'
+            && $mail->ticket->is($ticket)
+            && $mail->hasTo($superAdmin->email));
     }
 
     public function test_staff_can_reply_to_their_own_businesss_ticket(): void
     {
+        Mail::fake();
+
         $business = Business::factory()->create(['status' => 'approved']);
         $admin = User::factory()->businessAdmin($business)->create();
         $staff = User::factory()->staff($business)->create();
+        $superAdmin = User::factory()->superAdmin()->create();
 
         $ticket = SupportTicket::create([
             'business_id' => $business->id,
@@ -57,6 +69,9 @@ class SupportTicketWorkflowTest extends TestCase
             'user_id' => $staff->id,
             'body' => 'Following up on this.',
         ]);
+
+        Mail::assertQueued(SupportTicketMail::class, fn ($mail) => $mail->event === 'replied'
+            && $mail->hasTo($superAdmin->email));
     }
 
     public function test_a_business_cannot_view_or_reply_to_another_businesss_ticket(): void
@@ -79,8 +94,11 @@ class SupportTicketWorkflowTest extends TestCase
 
     public function test_super_admin_sees_tickets_across_every_business_and_can_reply(): void
     {
+        Mail::fake();
+
         $businessA = Business::factory()->create(['status' => 'approved', 'business_name' => 'Business A']);
         $businessB = Business::factory()->create(['status' => 'approved', 'business_name' => 'Business B']);
+        $adminA = User::factory()->businessAdmin($businessA)->create();
 
         $ticketA = SupportTicket::create(['business_id' => $businessA->id, 'subject' => 'Issue A', 'status' => 'open']);
         $ticketB = SupportTicket::create(['business_id' => $businessB->id, 'subject' => 'Issue B', 'status' => 'open']);
@@ -101,6 +119,10 @@ class SupportTicketWorkflowTest extends TestCase
             'support_ticket_id' => $ticketA->id,
             'user_id' => $superAdmin->id,
         ]);
+
+        Mail::assertQueued(SupportTicketMail::class, fn ($mail) => $mail->event === 'replied'
+            && $mail->ticket->is($ticketA)
+            && $mail->hasTo($adminA->email));
     }
 
     public function test_the_owning_business_can_resolve_and_reopen_its_own_ticket(): void

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -54,6 +55,11 @@ class Business extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    public function admins(): HasMany
+    {
+        return $this->hasMany(User::class)->where('role', UserRole::BusinessAdmin);
     }
 
     public function reviewedBy(): BelongsTo

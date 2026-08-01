@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Mail\WalletTransferReceivedMail;
 use App\Models\Business;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class WalletTransferTest extends TestCase
@@ -13,12 +15,15 @@ class WalletTransferTest extends TestCase
 
     public function test_business_admin_can_send_a_transfer_by_business_id(): void
     {
+        Mail::fake();
+
         $sender = Business::factory()->create(['status' => 'approved']);
         $sender->wallet->update(['available_balance' => 5000]);
         $recipient = Business::factory()->create(['status' => 'approved']);
         // Cache the relation now, while unauthenticated — Wallet is tenant-scoped,
         // so lazy-loading it after actingAs() as the sender would filter it out.
         $recipient->load('wallet');
+        $recipientAdmin = User::factory()->businessAdmin($recipient)->create();
         $admin = User::factory()->businessAdmin($sender)->create();
 
         $response = $this->actingAs($admin)->post('/wallet-transfers', [
@@ -41,6 +46,9 @@ class WalletTransferTest extends TestCase
         $this->assertDatabaseHas('audit_logs', [
             'action' => 'wallet.transferred',
         ]);
+
+        Mail::assertQueued(WalletTransferReceivedMail::class, fn ($mail) => $mail->walletTransfer->recipient_business_id === $recipient->id
+            && $mail->hasTo($recipientAdmin->email));
     }
 
     public function test_business_admin_can_send_a_transfer_by_email(): void

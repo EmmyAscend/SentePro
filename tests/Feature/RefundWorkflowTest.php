@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Mail\RefundProcessedMail;
 use App\Models\Business;
 use App\Models\GatewayProvider;
 use App\Models\PaymentTransaction;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class RefundWorkflowTest extends TestCase
@@ -41,6 +43,7 @@ class RefundWorkflowTest extends TestCase
             'status' => 'completed',
             'external_reference' => 'txn-refund-1',
             'provider_reference' => 'tracking-refund-1',
+            'customer_email' => 'refund-customer@example.test',
         ]);
     }
 
@@ -59,6 +62,8 @@ class RefundWorkflowTest extends TestCase
 
     public function test_business_admin_can_refund_a_completed_pesapal_transaction(): void
     {
+        Mail::fake();
+
         $business = Business::factory()->create(['status' => 'approved']);
         $this->gatewayProvider($business);
         $transaction = $this->completedTransaction($business);
@@ -90,6 +95,9 @@ class RefundWorkflowTest extends TestCase
             'action' => 'transaction.refunded',
             'subject_id' => $transaction->id,
         ]);
+
+        Mail::assertQueued(RefundProcessedMail::class, fn ($mail) => $mail->refund->payment_transaction_id === $transaction->id
+            && $mail->hasTo('refund-customer@example.test'));
     }
 
     public function test_a_declined_refund_leaves_the_wallet_and_transaction_unchanged_but_records_the_attempt(): void

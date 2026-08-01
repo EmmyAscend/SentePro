@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Mail\PaymentReceivedMail;
 use App\Mail\ReceiptMail;
 use App\Models\Business;
 use App\Models\GatewayProvider;
@@ -23,6 +24,7 @@ class ReceiptGenerationTest extends TestCase
         Mail::fake();
 
         $business = Business::factory()->create(['status' => 'approved']);
+        $admin = User::factory()->businessAdmin($business)->create();
         $gatewayProvider = GatewayProvider::create([
             'business_id' => $business->id,
             'name' => 'Pesapal Cards',
@@ -75,6 +77,9 @@ class ReceiptGenerationTest extends TestCase
 
         Mail::assertQueued(ReceiptMail::class, fn ($mail) => $mail->receipt->is($receipt)
             && $mail->hasTo('jane@example.test'));
+
+        Mail::assertQueued(PaymentReceivedMail::class, fn ($mail) => $mail->receipt->is($receipt)
+            && $mail->hasTo($admin->email));
     }
 
     public function test_the_public_receipt_page_is_viewable_by_a_guest(): void
