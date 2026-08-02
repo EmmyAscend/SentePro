@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BusinessType;
 use Illuminate\Database\Eloquent\Model;
 
 class LandingPageContent extends Model
@@ -16,6 +17,19 @@ class LandingPageContent extends Model
         'home', 'banknotes', 'link', 'receipt', 'transfer', 'chat', 'flag',
         'book', 'megaphone', 'server', 'webhook', 'chart', 'key', 'users',
         'shield', 'wallet', 'clipboard', 'check',
+    ];
+
+    /**
+     * Registration types a Requirements section can link its register button
+     * to, so `/business/register?type=...` lands a visitor straight on the
+     * matching field group instead of asking again. '' means "no particular
+     * type" — the register button just links to the plain registration page.
+     */
+    public const REQUIREMENT_TYPE_OPTIONS = [
+        '' => 'None',
+        BusinessType::Individual->value => 'Individual',
+        BusinessType::Business->value => 'Business',
+        BusinessType::Ngo->value => 'Non-Profit Organisation',
     ];
 
     /**
@@ -56,9 +70,14 @@ class LandingPageContent extends Model
         'hero_badge_text',
         'hero_headline',
         'hero_subtext',
+        'hero_cta_text',
         'features',
         'faqs',
+        'faq_heading',
+        'faq_subtext',
         'requirements',
+        'requirements_heading',
+        'requirements_subtext',
         'cta_banner_heading',
         'cta_banner_subtext',
         'gateways_heading',
@@ -68,6 +87,9 @@ class LandingPageContent extends Model
         'footer_tagline',
         'heading_sizes',
         'hero_image_path',
+        'how_it_works_heading',
+        'how_it_works_steps',
+        'how_it_works_cta_text',
         'how_it_works_image_path',
         'payment_links_image_path',
         'payment_logos',
@@ -79,6 +101,7 @@ class LandingPageContent extends Model
         'requirements' => 'array',
         'payment_logos' => 'array',
         'heading_sizes' => 'array',
+        'how_it_works_steps' => 'array',
     ];
 
     /**
@@ -105,10 +128,13 @@ class LandingPageContent extends Model
             'hero_badge_text' => 'East Africa payment infrastructure',
             'hero_headline' => 'Collect Payments. Settle Faster. Grow Your Business.',
             'hero_subtext' => 'Launch modern payment collection for your business without owning a gateway. SentePro gives you a secure collection layer, verified onboarding, and settlement-ready workflows.',
+            'hero_cta_text' => 'Start free onboarding',
+            'requirements_heading' => 'Who can use SentePro?',
+            'requirements_subtext' => "Whatever kind of organization you run, here's what you'll need to get verified.",
             'requirements' => [
-                ['title' => 'NGOs', 'description' => "Registered non-profits and NGOs can collect donations and program payments — you'll need your registration certificate details and organization contact information to get verified.", 'icon' => 'shield'],
-                ['title' => 'Businesses', 'description' => "Any registered business can start collecting payments — you'll need your business registration number, trading name, and expected monthly transaction volume.", 'icon' => 'banknotes'],
-                ['title' => 'Individuals', 'description' => 'Freelancers and sole proprietors can collect payments too — a valid form of identification and your contact details are all you need to get started.', 'icon' => 'users'],
+                ['title' => 'NGOs', 'description' => "Registered non-profits and NGOs can collect donations and program payments — you'll need your registration certificate details and organization contact information to get verified.", 'icon' => 'shield', 'type' => 'ngo', 'image_path' => null],
+                ['title' => 'Businesses', 'description' => "Any registered business can start collecting payments — you'll need your business registration number, trading name, and expected monthly transaction volume.", 'icon' => 'banknotes', 'type' => 'business', 'image_path' => null],
+                ['title' => 'Individuals', 'description' => 'Freelancers and sole proprietors can collect payments too — a valid form of identification and your contact details are all you need to get started.', 'icon' => 'users', 'type' => 'individual', 'image_path' => null],
             ],
             'features' => [
                 ['title' => 'Unified payment collection', 'description' => 'Collect through one marketplace-ready flow without requiring each business to maintain its own gateway.', 'icon' => 'link'],
@@ -123,6 +149,16 @@ class LandingPageContent extends Model
                 ['question' => 'How long do settlements take?', 'answer' => 'It depends on the settlement method you choose — each one shows its own processing time and fees before you request a payout.'],
                 ['question' => 'Can I refund a customer?', 'answer' => 'Yes — full or partial refunds are supported for card transactions, with the fee automatically reversed proportionally.'],
             ],
+            'faq_heading' => 'Frequently Asked Questions',
+            'faq_subtext' => 'Find answers to frequently asked questions about SentePro.',
+            'how_it_works_heading' => "It's simple to start using SentePro",
+            'how_it_works_steps' => [
+                ['title' => 'Register your business', 'description' => 'Submit your business and owner details in one form.'],
+                ['title' => 'Get verified', 'description' => 'A super admin reviews and approves your business.'],
+                ['title' => 'Connect a gateway', 'description' => 'Enable Pesapal for cards, Yo Payments for mobile money.'],
+                ['title' => 'Collect & settle', 'description' => 'Share payment links and request settlements to your bank or wallet.'],
+            ],
+            'how_it_works_cta_text' => 'Get started now',
             'cta_banner_heading' => 'Get started for $0. No setup fees.',
             'cta_banner_subtext' => 'Register your business today and start collecting payments as soon as you\'re verified.',
             'gateways_heading' => 'Supported payment ecosystem',

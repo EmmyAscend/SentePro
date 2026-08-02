@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LandingPageContentRequest;
 use App\Models\LandingPageContent;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -34,7 +35,7 @@ class LandingPageContentController extends Controller
         $content = LandingPageContent::current();
         $validated = $request->validated();
 
-        $data = collect($validated)->except([...array_keys(self::IMAGE_COLUMNS), 'payment_logos'])->toArray();
+        $data = collect($validated)->except([...array_keys(self::IMAGE_COLUMNS), 'payment_logos', 'requirements'])->toArray();
 
         foreach (self::IMAGE_COLUMNS as $field => $column) {
             if ($request->hasFile($field)) {
@@ -46,20 +47,42 @@ class LandingPageContentController extends Controller
         }
 
         $data['payment_logos'] = collect($validated['payment_logos'])->map(function (array $logo, int $i) use ($request) {
-            $imagePath = $logo['image_path'] ?? null;
+            return [
+                'label' => $logo['label'] ?? null,
+                'image_path' => $this->resolveItemImage($logo, 'payment_logos', $i, $request),
+            ];
+        })->all();
 
-            if ($request->hasFile("payment_logos.{$i}.image")) {
-                if ($imagePath) {
-                    Storage::disk('public')->delete($imagePath);
-                }
-                $imagePath = $request->file("payment_logos.{$i}.image")->store('landing-page', 'public');
-            }
+        $data['requirements'] = collect($validated['requirements'])->map(function (array $requirement, int $i) use ($request) {
+            $requirement['image_path'] = $this->resolveItemImage($requirement, 'requirements', $i, $request);
+            unset($requirement['image']);
 
-            return ['label' => $logo['label'] ?? null, 'image_path' => $imagePath];
+            return $requirement;
         })->all();
 
         $content->update($data);
 
         return redirect()->route('admin.landing-page.edit')->with('status', 'Landing page content updated.');
+    }
+
+    /**
+     * Resolve the image path a dynamic repeater item (payment logo,
+     * requirement) should be saved with: the current path it carried
+     * forward as a hidden field, replaced with a freshly uploaded file if
+     * one was submitted for that item's index (deleting the old file so
+     * storage doesn't accumulate orphans).
+     */
+    private function resolveItemImage(array $item, string $field, int $index, Request $request): ?string
+    {
+        $imagePath = $item['image_path'] ?? null;
+
+        if ($request->hasFile("{$field}.{$index}.image")) {
+            if ($imagePath) {
+                Storage::disk('public')->delete($imagePath);
+            }
+            $imagePath = $request->file("{$field}.{$index}.image")->store('landing-page', 'public');
+        }
+
+        return $imagePath;
     }
 }

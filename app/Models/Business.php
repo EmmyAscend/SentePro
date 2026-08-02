@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BusinessType;
 use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,8 +16,10 @@ class Business extends Model
 
     protected $fillable = [
         'business_name',
+        'business_type',
         'trading_name',
         'registration_number',
+        'id_number',
         'country',
         'phone',
         'email',
@@ -30,6 +33,7 @@ class Business extends Model
     ];
 
     protected $casts = [
+        'business_type' => BusinessType::class,
         'reviewed_at' => 'datetime',
     ];
 

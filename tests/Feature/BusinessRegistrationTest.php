@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Business;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -24,6 +25,7 @@ class BusinessRegistrationTest extends TestCase
             'owner_email' => 'owner@sentepro.test',
             'owner_password' => 'password123',
             'owner_password_confirmation' => 'password123',
+            'business_type' => 'business',
             'business_name' => 'SentePro Demo Business',
             'trading_name' => 'SentePro Demo',
             'registration_number' => 'REG-123456',
@@ -37,5 +39,100 @@ class BusinessRegistrationTest extends TestCase
 
         $response->assertRedirect(route('dashboard'));
         $this->assertAuthenticated();
+    }
+
+    public function test_business_type_is_required(): void
+    {
+        $response = $this->post('/business/register', $this->baseOwnerPayload());
+
+        $response->assertSessionHasErrors('business_type');
+    }
+
+    public function test_registering_as_an_individual_only_requires_individual_fields(): void
+    {
+        $response = $this->post('/business/register', array_merge($this->baseOwnerPayload(), [
+            'business_type' => 'individual',
+            'business_name' => 'Jane Freelancer',
+            'id_number' => 'ID-987654',
+            'country' => 'Uganda',
+            'phone' => '+256700000001',
+            'email' => 'jane@sentepro.test',
+        ]));
+
+        $response->assertRedirect(route('dashboard'));
+        $this->assertAuthenticated();
+        $this->assertSame('individual', Business::first()->business_type->value);
+    }
+
+    public function test_individual_registration_requires_an_id_number(): void
+    {
+        $response = $this->post('/business/register', array_merge($this->baseOwnerPayload(), [
+            'business_type' => 'individual',
+            'business_name' => 'Jane Freelancer',
+            'country' => 'Uganda',
+            'phone' => '+256700000001',
+            'email' => 'jane@sentepro.test',
+        ]));
+
+        $response->assertSessionHasErrors('id_number');
+    }
+
+    public function test_registering_as_a_non_profit_requires_a_registration_number_but_not_trading_name(): void
+    {
+        $response = $this->post('/business/register', array_merge($this->baseOwnerPayload(), [
+            'business_type' => 'ngo',
+            'business_name' => 'Helping Hands NGO',
+            'registration_number' => 'NGO-123456',
+            'country' => 'Uganda',
+            'phone' => '+256700000002',
+            'email' => 'ngo@sentepro.test',
+        ]));
+
+        $response->assertRedirect(route('dashboard'));
+        $this->assertAuthenticated();
+        $business = Business::first();
+        $this->assertSame('ngo', $business->business_type->value);
+        $this->assertNull($business->trading_name);
+    }
+
+    public function test_business_registration_requires_trading_name_and_industry(): void
+    {
+        $response = $this->post('/business/register', array_merge($this->baseOwnerPayload(), [
+            'business_type' => 'business',
+            'business_name' => 'SentePro Demo Business',
+            'registration_number' => 'REG-123456',
+            'country' => 'Uganda',
+            'phone' => '+256700000000',
+            'email' => 'admin@sentepro.test',
+        ]));
+
+        $response->assertSessionHasErrors(['trading_name', 'industry', 'expected_monthly_volume']);
+    }
+
+    public function test_registration_page_preselects_a_valid_type_from_the_query_string(): void
+    {
+        $response = $this->get('/business/register?type=ngo');
+
+        $response->assertOk();
+        $response->assertSee("x-data=\"{ type: 'ngo' }\"", false);
+    }
+
+    public function test_registration_page_ignores_an_invalid_type_query_value(): void
+    {
+        $response = $this->get("/business/register?type='};alert(1);//");
+
+        $response->assertOk();
+        $response->assertSee("x-data=\"{ type: '' }\"", false);
+        $response->assertDontSee('alert(1)', false);
+    }
+
+    private function baseOwnerPayload(): array
+    {
+        return [
+            'owner_name' => 'Jane Owner',
+            'owner_email' => 'owner-'.uniqid().'@sentepro.test',
+            'owner_password' => 'password123',
+            'owner_password_confirmation' => 'password123',
+        ];
     }
 }

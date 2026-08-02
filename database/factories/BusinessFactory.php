@@ -16,6 +16,7 @@ class BusinessFactory extends Factory
     {
         return [
             'business_name' => $this->faker->company(),
+            'business_type' => 'business',
             'trading_name' => $this->faker->company(),
             'registration_number' => strtoupper($this->faker->bothify('REG-#######')),
             'country' => 'Uganda',

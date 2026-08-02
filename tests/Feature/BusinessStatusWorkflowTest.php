@@ -18,6 +18,7 @@ class BusinessStatusWorkflowTest extends TestCase
             'owner_email' => 'owner@sentepro.test',
             'owner_password' => 'password123',
             'owner_password_confirmation' => 'password123',
+            'business_type' => 'business',
             'business_name' => 'SentePro Demo Business',
             'trading_name' => 'SentePro Demo',
             'registration_number' => 'REG-123456',

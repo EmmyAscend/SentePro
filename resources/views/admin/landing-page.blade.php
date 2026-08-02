@@ -34,6 +34,11 @@
                             <textarea name="hero_subtext" rows="3" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>{{ old('hero_subtext', $content->hero_subtext) }}</textarea>
                             <x-input-error :messages="$errors->get('hero_subtext')" />
                         </label>
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Button text</span>
+                            <input type="text" name="hero_cta_text" value="{{ old('hero_cta_text', $content->hero_cta_text) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('hero_cta_text')" />
+                        </label>
                         <label class="flex flex-col gap-2 text-sm">
                             <span class="font-medium text-slate-300">Hero image</span>
                             @if ($content->hero_image_path)
@@ -102,13 +107,25 @@
                     <div class="flex items-center justify-between gap-4">
                         <div>
                             <h3 class="text-lg font-semibold text-white">Requirements</h3>
-                            <p class="mt-1 text-sm text-slate-400">Who can use SentePro — shown on the homepage.</p>
+                            <p class="mt-1 text-sm text-slate-400">Who can use SentePro — shown immediately below the payment logos on the homepage, as full alternating image/text sections.</p>
                         </div>
-                        <button type="button" @click="items.push({ title: '', description: '', icon: 'shield' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add requirement</button>
+                        <button type="button" @click="items.push({ title: '', description: '', icon: 'shield', type: '', image_path: null })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add requirement</button>
+                    </div>
+                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Section heading</span>
+                            <input type="text" name="requirements_heading" value="{{ old('requirements_heading', $content->requirements_heading) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('requirements_heading')" />
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Section subtext</span>
+                            <input type="text" name="requirements_subtext" value="{{ old('requirements_subtext', $content->requirements_subtext) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('requirements_subtext')" />
+                        </label>
                     </div>
                     <div class="mt-4 space-y-4">
                         <template x-for="(item, index) in items" :key="index">
-                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_1fr_2fr_auto] md:items-end">
+                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_1fr_1fr_2fr_auto] md:items-end">
                                 <label class="flex flex-col gap-1 text-sm">
                                     <span class="font-medium text-slate-300">Title</span>
                                     <input type="text" :name="`requirements[${index}][title]`" x-model="item.title" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
@@ -122,10 +139,27 @@
                                     </select>
                                 </label>
                                 <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Register button links to</span>
+                                    <select :name="`requirements[${index}][type]`" x-model="item.type" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                                        @foreach (\App\Models\LandingPageContent::REQUIREMENT_TYPE_OPTIONS as $typeValue => $typeLabel)
+                                            <option value="{{ $typeValue }}">{{ $typeLabel }}</option>
+                                        @endforeach
+                                    </select>
+                                </label>
+                                <label class="flex flex-col gap-1 text-sm">
                                     <span class="font-medium text-slate-300">Description</span>
                                     <input type="text" :name="`requirements[${index}][description]`" x-model="item.description" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
                                 </label>
                                 <button type="button" @click="items.splice(index, 1)" x-show="items.length > 1" class="shrink-0 rounded-full border border-rose-400/30 px-3 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-500/10">Remove</button>
+                                <label class="flex flex-col gap-2 text-sm md:col-span-5">
+                                    <span class="font-medium text-slate-300">Section image</span>
+                                    <template x-if="item.image_path">
+                                        <img :src="'/storage/' + item.image_path" :alt="item.title" class="h-24 w-full max-w-sm rounded-lg object-cover">
+                                    </template>
+                                    <input type="hidden" :name="`requirements[${index}][image_path]`" :value="item.image_path">
+                                    <input type="file" :name="`requirements[${index}][image]`" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-950 file:px-3 file:py-2 file:text-white">
+                                    <span class="text-xs text-slate-500">Leave blank to fall back to the hero image, then an illustration.</span>
+                                </label>
                             </div>
                         </template>
                     </div>
@@ -177,16 +211,48 @@
                     </label>
                 </div>
 
-                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
-                    <h3 class="text-lg font-semibold text-white">"It's simple to start" section</h3>
-                    <label class="mt-4 flex flex-col gap-2 text-sm">
-                        <span class="font-medium text-slate-300">Image</span>
-                        @if ($content->how_it_works_image_path)
-                            <img src="{{ \Illuminate\Support\Facades\Storage::url($content->how_it_works_image_path) }}" alt="Current how-it-works image" class="h-32 w-full max-w-sm rounded-lg object-cover">
-                        @endif
-                        <input type="file" name="how_it_works_image" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-white">
-                        <span class="text-xs text-slate-500">Leave blank to keep the current image. Capped at 2MB.</span>
-                        <x-input-error :messages="$errors->get('how_it_works_image')" />
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10" x-data="{ items: @js(old('how_it_works_steps', $content->how_it_works_steps ?? [])) }">
+                    <div class="flex items-center justify-between gap-4">
+                        <h3 class="text-lg font-semibold text-white">"It's simple to start" section</h3>
+                        <button type="button" @click="items.push({ title: '', description: '' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add step</button>
+                    </div>
+                    <div class="mt-4 grid gap-4">
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Heading</span>
+                            <input type="text" name="how_it_works_heading" value="{{ old('how_it_works_heading', $content->how_it_works_heading) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('how_it_works_heading')" />
+                        </label>
+                        <label class="flex flex-col gap-2 text-sm">
+                            <span class="font-medium text-slate-300">Image</span>
+                            @if ($content->how_it_works_image_path)
+                                <img src="{{ \Illuminate\Support\Facades\Storage::url($content->how_it_works_image_path) }}" alt="Current how-it-works image" class="h-32 w-full max-w-sm rounded-lg object-cover">
+                            @endif
+                            <input type="file" name="how_it_works_image" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-white">
+                            <span class="text-xs text-slate-500">Leave blank to keep the current image. Capped at 2MB.</span>
+                            <x-input-error :messages="$errors->get('how_it_works_image')" />
+                        </label>
+                    </div>
+                    <div class="mt-4 space-y-4">
+                        <template x-for="(item, index) in items" :key="index">
+                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[auto_1fr_2fr_auto] md:items-end">
+                                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300" x-text="index + 1"></span>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Title</span>
+                                    <input type="text" :name="`how_it_works_steps[${index}][title]`" x-model="item.title" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                </label>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Description</span>
+                                    <input type="text" :name="`how_it_works_steps[${index}][description]`" x-model="item.description" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                </label>
+                                <button type="button" @click="items.splice(index, 1)" x-show="items.length > 1" class="shrink-0 rounded-full border border-rose-400/30 px-3 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-500/10">Remove</button>
+                            </div>
+                        </template>
+                    </div>
+                    <x-array-errors field="how_it_works_steps" class="mt-2" />
+                    <label class="mt-4 flex flex-col gap-1 text-sm">
+                        <span class="font-medium text-slate-300">Button text</span>
+                        <input type="text" name="how_it_works_cta_text" value="{{ old('how_it_works_cta_text', $content->how_it_works_cta_text) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                        <x-input-error :messages="$errors->get('how_it_works_cta_text')" />
                     </label>
                 </div>
 
@@ -195,6 +261,18 @@
                     <div class="flex items-center justify-between gap-4">
                         <h3 class="text-lg font-semibold text-white">FAQ</h3>
                         <button type="button" @click="items.push({ question: '', answer: '' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add question</button>
+                    </div>
+                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Section heading</span>
+                            <input type="text" name="faq_heading" value="{{ old('faq_heading', $content->faq_heading) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('faq_heading')" />
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Section subtext</span>
+                            <input type="text" name="faq_subtext" value="{{ old('faq_subtext', $content->faq_subtext) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('faq_subtext')" />
+                        </label>
                     </div>
                     <div class="mt-4 space-y-4">
                         <template x-for="(item, index) in items" :key="index">

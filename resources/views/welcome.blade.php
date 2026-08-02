@@ -7,7 +7,7 @@
                 <h1 class="max-w-2xl font-black tracking-tight text-white" style="font-size: {{ $content->headingSize('hero') }}">{{ $content->hero_headline }}</h1>
                 <p class="mt-5 max-w-2xl text-lg text-slate-300">{{ $content->hero_subtext }}</p>
                 <div class="mt-8 flex flex-wrap gap-2 sm:gap-3">
-                    <a href="{{ route('business.register') }}" class="flex-1 whitespace-nowrap rounded-xl bg-lime-400 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">Register your business</a>
+                    <a href="{{ route('business.register') }}" class="flex-1 whitespace-nowrap rounded-xl bg-lime-400 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">{{ $content->hero_cta_text }}</a>
                     <a href="/login" class="flex-1 whitespace-nowrap rounded-xl border border-white/15 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-white hover:border-white/30 hover:bg-white/5 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">Log in to dashboard</a>
                 </div>
             </div>
@@ -24,49 +24,40 @@
         <x-payment-method-logos :logos="$content->payment_logos" class="mt-14" />
     </div>
 
-    <div class="mx-auto max-w-6xl space-y-20 px-4 py-20 sm:px-6 lg:px-8">
-        {{-- For business / for customers --}}
-        <section class="grid gap-6 md:grid-cols-2">
-            <div class="rounded-3xl bg-slate-900 p-8 ring-1 ring-white/10">
-                <p class="text-xs font-semibold uppercase tracking-widest text-slate-400">For your business</p>
-                <h3 class="mt-2 font-bold text-white" style="font-size: {{ $content->headingSize('for_business') }}">Run your payment operations from one dashboard</h3>
-                <ul class="mt-5 space-y-3 text-sm text-slate-300">
-                    <li>• Track every settlement, transaction, and payment link in real time</li>
-                    <li>• Invite staff with role-based permissions</li>
-                    <li>• Export reports and reconcile fees automatically</li>
-                </ul>
-                <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-lime-300">Register your business</a>
-            </div>
-            <div class="rounded-3xl border border-lime-400/40 bg-lime-400/10 p-8">
-                <p class="text-xs font-semibold uppercase tracking-widest text-lime-300">For your customers</p>
-                <h3 class="mt-2 font-bold text-white" style="font-size: {{ $content->headingSize('for_customers') }}">A fast, familiar checkout</h3>
-                <ul class="mt-5 space-y-3 text-sm text-lime-50">
-                    <li>• Pay by card via Pesapal or mobile money via MTN/Airtel</li>
-                    <li>• Get an instant receipt by email, with a scannable verification QR code</li>
-                    <li>• No account or app download required</li>
-                </ul>
-            </div>
-        </section>
-
-        {{-- Requirements --}}
-        <section id="requirements">
-            <div class="mb-8 max-w-2xl">
-                <h2 class="font-bold" style="font-size: {{ $content->headingSize('requirements') }}">Who can use SentePro?</h2>
-                <p class="mt-2 text-slate-300">Whatever kind of organization you run, here's what you'll need to get verified.</p>
-            </div>
-            <div class="grid gap-6 sm:grid-cols-3">
-                @foreach (($content->requirements ?? []) as $requirement)
-                    <div class="rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400/10 text-lime-300">
-                            <x-sidebar-icon :name="$requirement['icon'] ?? 'shield'" class="h-5 w-5" />
-                        </div>
-                        <h3 class="mt-4 font-semibold text-white">{{ $requirement['title'] }}</h3>
-                        <p class="mt-1 text-sm text-slate-400">{{ $requirement['description'] }}</p>
+    {{-- Requirements: who can use SentePro, each as its own alternating image/text section --}}
+    <div class="mx-auto max-w-6xl space-y-16 px-4 py-16 sm:px-6 lg:px-8" id="requirements">
+        <div class="max-w-2xl">
+            <h2 class="font-bold" style="font-size: {{ $content->headingSize('requirements') }}">{{ $content->requirements_heading }}</h2>
+            <p class="mt-2 text-slate-300">{{ $content->requirements_subtext }}</p>
+        </div>
+        @foreach (($content->requirements ?? []) as $requirement)
+            @php
+                $typeLabel = \App\Models\LandingPageContent::REQUIREMENT_TYPE_OPTIONS[$requirement['type'] ?? ''] ?? '';
+                $registerUrl = route('business.register', ($requirement['type'] ?? '') ? ['type' => $requirement['type']] : []);
+            @endphp
+            <section class="grid gap-10 lg:grid-cols-2 lg:items-center">
+                <div class="{{ $loop->iteration % 2 === 0 ? 'lg:order-2' : 'lg:order-1' }} overflow-hidden rounded-3xl border border-white/10 bg-slate-900">
+                    @if (! empty($requirement['image_path']))
+                        <img src="{{ \Illuminate\Support\Facades\Storage::url($requirement['image_path']) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-cover">
+                    @elseif ($content->hero_image_path)
+                        <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-cover">
+                    @else
+                        <x-illustration-shop-payment class="aspect-[4/3] w-full" />
+                    @endif
+                </div>
+                <div class="{{ $loop->iteration % 2 === 0 ? 'lg:order-1' : 'lg:order-2' }}">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400/10 text-lime-300">
+                        <x-sidebar-icon :name="$requirement['icon'] ?? 'shield'" class="h-5 w-5" />
                     </div>
-                @endforeach
-            </div>
-        </section>
+                    <h3 class="mt-4 font-semibold text-white">{{ $requirement['title'] }}</h3>
+                    <p class="mt-1 text-slate-400">{{ $requirement['description'] }}</p>
+                    <a href="{{ $registerUrl }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-lime-300">{{ $typeLabel ? 'Register as '.$typeLabel : 'Register now' }}</a>
+                </div>
+            </section>
+        @endforeach
+    </div>
 
+    <div class="mx-auto max-w-6xl space-y-20 px-4 py-20 sm:px-6 lg:px-8">
         {{-- Features --}}
         <section id="features">
             <div class="mb-8 max-w-2xl">
@@ -155,38 +146,19 @@
                 @endif
             </div>
             <div>
-                <h2 class="font-bold" style="font-size: {{ $content->headingSize('how_it_works') }}">It's simple to start using SentePro</h2>
+                <h2 class="font-bold" style="font-size: {{ $content->headingSize('how_it_works') }}">{{ $content->how_it_works_heading }}</h2>
                 <ol class="mt-6 space-y-5">
-                    <li class="flex gap-4">
-                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">1</span>
-                        <div>
-                            <p class="font-semibold text-white">Register your business</p>
-                            <p class="text-sm text-slate-400">Submit your business and owner details in one form.</p>
-                        </div>
-                    </li>
-                    <li class="flex gap-4">
-                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">2</span>
-                        <div>
-                            <p class="font-semibold text-white">Get verified</p>
-                            <p class="text-sm text-slate-400">A super admin reviews and approves your business.</p>
-                        </div>
-                    </li>
-                    <li class="flex gap-4">
-                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">3</span>
-                        <div>
-                            <p class="font-semibold text-white">Connect a gateway</p>
-                            <p class="text-sm text-slate-400">Enable Pesapal for cards, Yo Payments for mobile money.</p>
-                        </div>
-                    </li>
-                    <li class="flex gap-4">
-                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">4</span>
-                        <div>
-                            <p class="font-semibold text-white">Collect &amp; settle</p>
-                            <p class="text-sm text-slate-400">Share payment links and request settlements to your bank or wallet.</p>
-                        </div>
-                    </li>
+                    @foreach (($content->how_it_works_steps ?? []) as $i => $step)
+                        <li class="flex gap-4">
+                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">{{ $i + 1 }}</span>
+                            <div>
+                                <p class="font-semibold text-white">{{ $step['title'] }}</p>
+                                <p class="text-sm text-slate-400">{{ $step['description'] }}</p>
+                            </div>
+                        </li>
+                    @endforeach
                 </ol>
-                <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-3 font-semibold text-slate-950 hover:bg-lime-300">Get started now</a>
+                <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-3 font-semibold text-slate-950 hover:bg-lime-300">{{ $content->how_it_works_cta_text }}</a>
             </div>
         </section>
 
@@ -200,8 +172,8 @@
         {{-- FAQ --}}
         <section id="faq" class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
-                <h2 class="font-bold" style="font-size: {{ $content->headingSize('faq') }}">Common questions</h2>
-                <p class="mt-3 text-slate-300">Find answers to frequently asked questions about SentePro.</p>
+                <h2 class="font-bold" style="font-size: {{ $content->headingSize('faq') }}">{{ $content->faq_heading }}</h2>
+                <p class="mt-3 text-slate-300">{{ $content->faq_subtext }}</p>
                 <a href="/login" class="mt-4 inline-flex text-sm font-semibold text-lime-300 hover:text-lime-200">Have another question? Log in and open a support ticket →</a>
             </div>
             <div x-data="{ open: 0 }" class="space-y-3">

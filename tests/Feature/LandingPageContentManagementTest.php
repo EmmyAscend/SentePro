@@ -19,8 +19,13 @@ class LandingPageContentManagementTest extends TestCase
             'hero_badge_text' => 'Updated badge',
             'hero_headline' => 'Updated headline',
             'hero_subtext' => 'Updated subtext',
+            'hero_cta_text' => 'Start free onboarding',
             'features' => array_fill(0, 4, ['title' => 'Feature title', 'description' => 'Feature description', 'icon' => 'link']),
-            'requirements' => array_fill(0, 3, ['title' => 'Requirement title', 'description' => 'Requirement description', 'icon' => 'shield']),
+            'requirements_heading' => 'Updated requirements heading',
+            'requirements_subtext' => 'Updated requirements subtext',
+            'requirements' => array_fill(0, 3, ['title' => 'Requirement title', 'description' => 'Requirement description', 'icon' => 'shield', 'type' => 'business']),
+            'faq_heading' => 'Frequently Asked Questions',
+            'faq_subtext' => 'Updated FAQ subtext',
             'faqs' => array_fill(0, 5, ['question' => 'A question?', 'answer' => 'An answer.']),
             'cta_banner_heading' => 'Updated banner heading',
             'cta_banner_subtext' => 'Updated banner subtext',
@@ -29,6 +34,9 @@ class LandingPageContentManagementTest extends TestCase
             'contact_location' => 'Kampala, Uganda',
             'contact_phone' => '+256700000000',
             'footer_tagline' => 'Updated footer tagline',
+            'how_it_works_heading' => 'Updated how it works heading',
+            'how_it_works_steps' => array_fill(0, 4, ['title' => 'Step title', 'description' => 'Step description']),
+            'how_it_works_cta_text' => 'Get started now',
             'payment_logos' => array_fill(0, 4, ['label' => 'Visa']),
         ];
     }
@@ -328,5 +336,95 @@ class LandingPageContentManagementTest extends TestCase
         $payload = array_merge($this->validPayload(), ['heading_sizes' => ['hero' => 'not-a-real-size']]);
 
         $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertSessionHasErrors('heading_sizes.hero');
+    }
+
+    public function test_super_admin_can_update_the_hero_cta_text(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), ['hero_cta_text' => 'Join SentePro today']);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $this->assertSame('Join SentePro today', LandingPageContent::current()->hero_cta_text);
+        $this->get('/')->assertSee('Join SentePro today');
+    }
+
+    public function test_super_admin_can_update_the_requirements_heading_and_a_requirements_type(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'requirements_heading' => 'A brand new requirements heading',
+            'requirements' => [['title' => 'Freelancers', 'description' => 'Solo operators.', 'icon' => 'users', 'type' => 'individual']],
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame('A brand new requirements heading', $content->requirements_heading);
+        $this->assertSame('individual', $content->requirements[0]['type']);
+
+        $home = $this->get('/');
+        $home->assertSee('A brand new requirements heading');
+        $home->assertSee(route('business.register', ['type' => 'individual']), false);
+    }
+
+    public function test_super_admin_can_upload_a_requirement_image(): void
+    {
+        Storage::fake('public');
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $requirements = [['title' => 'Freelancers', 'description' => 'Solo operators.', 'icon' => 'users', 'type' => 'individual', 'image' => UploadedFile::fake()->image('individual.png')]];
+
+        $payload = array_merge($this->validPayload(), ['requirements' => $requirements]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $path = LandingPageContent::current()->requirements[0]['image_path'];
+        $this->assertNotNull($path);
+        Storage::disk('public')->assertExists($path);
+    }
+
+    public function test_super_admin_can_update_how_it_works_text_and_steps(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'how_it_works_heading' => 'A brand new how-it-works heading',
+            'how_it_works_steps' => [['title' => 'Sign up', 'description' => 'Create your account.']],
+            'how_it_works_cta_text' => 'Begin now',
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame('A brand new how-it-works heading', $content->how_it_works_heading);
+        $this->assertCount(1, $content->how_it_works_steps);
+        $this->assertSame('Begin now', $content->how_it_works_cta_text);
+
+        $home = $this->get('/');
+        $home->assertSee('A brand new how-it-works heading');
+        $home->assertSee('Sign up');
+        $home->assertSee('Begin now');
+    }
+
+    public function test_super_admin_can_update_the_faq_heading(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'faq_heading' => 'FAQ - a brand new heading',
+            'faq_subtext' => 'A brand new FAQ subtext',
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame('FAQ - a brand new heading', $content->faq_heading);
+        $this->assertSame('A brand new FAQ subtext', $content->faq_subtext);
+
+        $home = $this->get('/');
+        $home->assertSee('FAQ - a brand new heading');
     }
 }

@@ -9,7 +9,7 @@
         'Airtel' => ['class' => 'text-5xl font-black tracking-wide', 'style' => 'color:#ED1C24'],
     ];
 @endphp
-<div {{ $attributes->merge(['class' => "flex flex-wrap items-center $justify gap-x-14 gap-y-8"]) }}>
+<div {{ $attributes->merge(['class' => "grid grid-cols-3 place-items-center gap-x-4 gap-y-4 sm:flex sm:flex-wrap sm:items-center sm:$justify sm:gap-x-10 sm:gap-y-6"]) }}>
     @forelse ($logos as $logo)
         @if (! empty($logo['image_path']))
             <img src="{{ \Illuminate\Support\Facades\Storage::url($logo['image_path']) }}" alt="{{ $logo['label'] }}" class="h-16 w-auto max-w-[16rem] object-contain" title="{{ $logo['label'] }}">
