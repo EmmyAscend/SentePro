@@ -7,6 +7,7 @@
         <div>
             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Product</p>
             <ul class="mt-4 space-y-2 text-sm text-slate-300">
+                <li><a href="/#requirements" class="hover:text-white">Requirements</a></li>
                 <li><a href="/#features" class="hover:text-white">Features</a></li>
                 <li><a href="/#gateways" class="hover:text-white">Supported Payments</a></li>
                 <li><a href="/#faq" class="hover:text-white">FAQ</a></li>

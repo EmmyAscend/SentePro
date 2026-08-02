@@ -19,11 +19,8 @@ class LandingPageContentManagementTest extends TestCase
             'hero_badge_text' => 'Updated badge',
             'hero_headline' => 'Updated headline',
             'hero_subtext' => 'Updated subtext',
-            'stat_1_label' => 'Stat one',
-            'stat_1_value' => '10%',
-            'stat_2_label' => 'Stat two',
-            'stat_2_value' => '5',
             'features' => array_fill(0, 4, ['title' => 'Feature title', 'description' => 'Feature description']),
+            'requirements' => array_fill(0, 3, ['title' => 'Requirement title', 'description' => 'Requirement description']),
             'faqs' => array_fill(0, 5, ['question' => 'A question?', 'answer' => 'An answer.']),
             'cta_banner_heading' => 'Updated banner heading',
             'cta_banner_subtext' => 'Updated banner subtext',
@@ -52,6 +49,7 @@ class LandingPageContentManagementTest extends TestCase
 
         $home = $this->get('/');
         $home->assertSee('Updated headline');
+        $home->assertSee('Requirement title');
     }
 
     public function test_business_admin_cannot_view_or_update_the_landing_page_editor(): void

@@ -20,14 +20,9 @@
                 @endif
             </div>
         </section>
-    </div>
 
-    {{-- Trust strip --}}
-    <section class="border-y border-white/10 bg-white/[0.02] py-6">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <x-payment-method-logos :logos="$content->payment_logos" />
-        </div>
-    </section>
+        <x-payment-method-logos :logos="$content->payment_logos" class="mt-14" />
+    </div>
 
     <div class="mx-auto max-w-6xl space-y-20 px-4 py-20 sm:px-6 lg:px-8">
         {{-- For business / for customers --}}
@@ -50,6 +45,26 @@
                     <li>• Get an instant receipt by email, with a scannable verification QR code</li>
                     <li>• No account or app download required</li>
                 </ul>
+            </div>
+        </section>
+
+        {{-- Requirements --}}
+        <section id="requirements">
+            <div class="mb-8 max-w-2xl">
+                <h2 class="text-3xl font-bold">Who can use SentePro?</h2>
+                <p class="mt-2 text-slate-300">Whatever kind of organization you run, here's what you'll need to get verified.</p>
+            </div>
+            <div class="grid gap-6 sm:grid-cols-3">
+                @foreach (($content->requirements ?? []) as $i => $requirement)
+                    @php $icon = ['shield', 'banknotes', 'users'][$i] ?? 'shield'; @endphp
+                    <div class="rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400/10 text-lime-300">
+                            <x-sidebar-icon :name="$icon" class="h-5 w-5" />
+                        </div>
+                        <h3 class="mt-4 font-semibold text-white">{{ $requirement['title'] }}</h3>
+                        <p class="mt-1 text-sm text-slate-400">{{ $requirement['description'] }}</p>
+                    </div>
+                @endforeach
             </div>
         </section>
 

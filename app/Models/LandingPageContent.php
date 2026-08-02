@@ -10,12 +10,9 @@ class LandingPageContent extends Model
         'hero_badge_text',
         'hero_headline',
         'hero_subtext',
-        'stat_1_label',
-        'stat_1_value',
-        'stat_2_label',
-        'stat_2_value',
         'features',
         'faqs',
+        'requirements',
         'cta_banner_heading',
         'cta_banner_subtext',
         'hero_image_path',
@@ -27,6 +24,7 @@ class LandingPageContent extends Model
     protected $casts = [
         'features' => 'array',
         'faqs' => 'array',
+        'requirements' => 'array',
         'payment_logos' => 'array',
     ];
 
@@ -40,10 +38,11 @@ class LandingPageContent extends Model
             'hero_badge_text' => 'East Africa payment infrastructure',
             'hero_headline' => 'Collect Payments. Settle Faster. Grow Your Business.',
             'hero_subtext' => 'Launch modern payment collection for your business without owning a gateway. SentePro gives you a secure collection layer, verified onboarding, and settlement-ready workflows.',
-            'stat_1_label' => 'Settlement rate',
-            'stat_1_value' => '1.8%',
-            'stat_2_label' => 'Supported gateways',
-            'stat_2_value' => '2',
+            'requirements' => [
+                ['title' => 'NGOs', 'description' => "Registered non-profits and NGOs can collect donations and program payments — you'll need your registration certificate details and organization contact information to get verified."],
+                ['title' => 'Businesses', 'description' => "Any registered business can start collecting payments — you'll need your business registration number, trading name, and expected monthly transaction volume."],
+                ['title' => 'Individuals', 'description' => 'Freelancers and sole proprietors can collect payments too — a valid form of identification and your contact details are all you need to get started.'],
+            ],
             'features' => [
                 ['title' => 'Unified payment collection', 'description' => 'Collect through one marketplace-ready flow without requiring each business to maintain its own gateway.'],
                 ['title' => 'Verified business onboarding', 'description' => 'Capture business, owner, and documentation details under a production-safe verification pipeline.'],
