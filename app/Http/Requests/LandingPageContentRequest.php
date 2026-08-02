@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Models\LandingPageContent;
+use Illuminate\Foundation\Http\FormRequest;
+
+class LandingPageContentRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this->user()->can('manage', LandingPageContent::class);
+    }
+
+    public function rules(): array
+    {
+        return [
+            'hero_badge_text' => ['required', 'string', 'max:255'],
+            'hero_headline' => ['required', 'string', 'max:255'],
+            'hero_subtext' => ['required', 'string', 'max:1000'],
+            'stat_1_label' => ['required', 'string', 'max:255'],
+            'stat_1_value' => ['required', 'string', 'max:255'],
+            'stat_2_label' => ['required', 'string', 'max:255'],
+            'stat_2_value' => ['required', 'string', 'max:255'],
+            'features' => ['required', 'array', 'size:4'],
+            'features.*.title' => ['required', 'string', 'max:255'],
+            'features.*.description' => ['required', 'string', 'max:500'],
+            'faqs' => ['required', 'array', 'size:5'],
+            'faqs.*.question' => ['required', 'string', 'max:255'],
+            'faqs.*.answer' => ['required', 'string', 'max:1000'],
+            'cta_banner_heading' => ['required', 'string', 'max:255'],
+            'cta_banner_subtext' => ['required', 'string', 'max:500'],
+        ];
+    }
+}

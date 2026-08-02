@@ -1,13 +1,13 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\BusinessManagementController;
 use App\Http\Controllers\BusinessRegistrationController;
 use App\Http\Controllers\BusinessReviewController;
-use App\Http\Controllers\ApiKeyController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DisputeController;
 use App\Http\Controllers\DisputeReviewController;
 use App\Http\Controllers\FeeBreakdownController;
@@ -15,6 +15,7 @@ use App\Http\Controllers\FeeStructureController;
 use App\Http\Controllers\GatewayMonitoringController;
 use App\Http\Controllers\GatewayProviderController;
 use App\Http\Controllers\KnowledgeBaseController;
+use App\Http\Controllers\LandingPageContentController;
 use App\Http\Controllers\PaymentLinkController;
 use App\Http\Controllers\PaymentTransactionController;
 use App\Http\Controllers\ProfileController;
@@ -33,11 +34,12 @@ use App\Http\Controllers\WalletTransferController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\Webhooks\PesapalWebhookController;
 use App\Http\Controllers\Webhooks\YoPaymentsWebhookController;
+use App\Models\LandingPageContent;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome', [
-        'headline' => 'Collect Payments. Settle Faster. Grow Your Business.',
+        'content' => LandingPageContent::current(),
     ]);
 });
 
@@ -149,6 +151,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
     Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
     Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+    Route::get('/admin/landing-page', [LandingPageContentController::class, 'edit'])->name('admin.landing-page.edit');
+    Route::put('/admin/landing-page', [LandingPageContentController::class, 'update'])->name('admin.landing-page.update');
 });
 
 Route::middleware('auth')->group(function () {
