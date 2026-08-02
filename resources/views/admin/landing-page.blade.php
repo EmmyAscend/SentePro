@@ -217,6 +217,22 @@
                 </div>
 
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                    <h3 class="text-lg font-semibold text-white">"Supported payment ecosystem" section</h3>
+                    <div class="mt-4 grid gap-4">
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Heading</span>
+                            <input type="text" name="gateways_heading" value="{{ old('gateways_heading', $content->gateways_heading) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('gateways_heading')" />
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Subtext</span>
+                            <input type="text" name="gateways_subtext" value="{{ old('gateways_subtext', $content->gateways_subtext) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('gateways_subtext')" />
+                        </label>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
                     <h3 class="text-lg font-semibold text-white">Footer</h3>
                     <p class="mt-1 text-sm text-slate-400">Shown in the site footer. Leave a Contact field blank to hide that section.</p>
                     <div class="mt-4 grid gap-4">

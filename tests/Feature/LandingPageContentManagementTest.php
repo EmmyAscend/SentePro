@@ -24,6 +24,8 @@ class LandingPageContentManagementTest extends TestCase
             'faqs' => array_fill(0, 5, ['question' => 'A question?', 'answer' => 'An answer.']),
             'cta_banner_heading' => 'Updated banner heading',
             'cta_banner_subtext' => 'Updated banner subtext',
+            'gateways_heading' => 'Updated gateways heading',
+            'gateways_subtext' => 'Updated gateways subtext',
             'contact_location' => 'Kampala, Uganda',
             'contact_phone' => '+256700000000',
             'footer_tagline' => 'Updated footer tagline',
@@ -209,6 +211,26 @@ class LandingPageContentManagementTest extends TestCase
 
         $this->assertSame('A brand new footer tagline', LandingPageContent::current()->footer_tagline);
         $this->get('/')->assertSee('A brand new footer tagline');
+    }
+
+    public function test_super_admin_can_update_the_gateways_section_text(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'gateways_heading' => 'A brand new gateways heading',
+            'gateways_subtext' => 'A brand new gateways subtext',
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame('A brand new gateways heading', $content->gateways_heading);
+        $this->assertSame('A brand new gateways subtext', $content->gateways_subtext);
+
+        $home = $this->get('/');
+        $home->assertSee('A brand new gateways heading');
+        $home->assertSee('A brand new gateways subtext');
     }
 
     public function test_super_admin_can_upload_a_payment_logo_image(): void

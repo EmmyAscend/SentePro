@@ -32,6 +32,8 @@ class LandingPageContentRequest extends FormRequest
             'faqs.*.answer' => ['required', 'string', 'max:1000'],
             'cta_banner_heading' => ['required', 'string', 'max:255'],
             'cta_banner_subtext' => ['required', 'string', 'max:500'],
+            'gateways_heading' => ['required', 'string', 'max:255'],
+            'gateways_subtext' => ['required', 'string', 'max:500'],
             'contact_location' => ['nullable', 'string', 'max:255'],
             'contact_phone' => ['nullable', 'string', 'max:50'],
             'footer_tagline' => ['required', 'string', 'max:255'],

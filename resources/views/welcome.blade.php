@@ -192,8 +192,8 @@
 
         {{-- Gateways --}}
         <section id="gateways">
-            <h2 class="font-bold" style="font-size: {{ $content->headingSize('gateways') }}">Supported payment ecosystem</h2>
-            <p class="mt-2 text-slate-300">Pesapal for cards, Yo Payments for mobile money.</p>
+            <h2 class="font-bold" style="font-size: {{ $content->headingSize('gateways') }}">{{ $content->gateways_heading }}</h2>
+            <p class="mt-2 text-slate-300">{{ $content->gateways_subtext }}</p>
             <x-payment-method-logos align="start" :logos="$content->payment_logos" class="mt-8" />
         </section>
 

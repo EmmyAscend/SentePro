@@ -61,6 +61,8 @@ class LandingPageContent extends Model
         'requirements',
         'cta_banner_heading',
         'cta_banner_subtext',
+        'gateways_heading',
+        'gateways_subtext',
         'contact_location',
         'contact_phone',
         'footer_tagline',
@@ -123,6 +125,8 @@ class LandingPageContent extends Model
             ],
             'cta_banner_heading' => 'Get started for $0. No setup fees.',
             'cta_banner_subtext' => 'Register your business today and start collecting payments as soon as you\'re verified.',
+            'gateways_heading' => 'Supported payment ecosystem',
+            'gateways_subtext' => 'Pesapal for cards, Yo Payments for mobile money.',
             'footer_tagline' => 'Payment collection infrastructure for East African businesses.',
             'heading_sizes' => array_map(fn (array $heading) => $heading['default'], self::HEADING_KEYS),
             'payment_logos' => [
