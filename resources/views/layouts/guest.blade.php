@@ -9,7 +9,7 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600|pacifico:400&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -17,9 +17,8 @@
     <body class="font-sans text-white antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-slate-950">
             <div>
-                <a href="/" class="flex items-center gap-2">
-                    <x-application-logo class="w-10 h-10 fill-current text-lime-400" />
-                    <span class="text-lg font-semibold tracking-tight text-white">SentePro</span>
+                <a href="/">
+                    <x-brand-mark class="text-3xl" />
                 </a>
             </div>
 

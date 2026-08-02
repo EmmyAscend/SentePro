@@ -72,9 +72,8 @@ if (auth()->user()->isSuperAdmin()) {
 
 <div class="flex h-full flex-col">
     <div class="flex items-center gap-2 px-5 py-5">
-        <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-            <x-application-logo class="h-7 w-7 fill-current text-lime-400" />
-            <span class="text-base font-semibold tracking-tight text-white">SentePro</span>
+        <a href="{{ route('dashboard') }}">
+            <x-brand-mark class="text-xl" />
         </a>
     </div>
 

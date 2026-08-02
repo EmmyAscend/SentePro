@@ -4,17 +4,18 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>SentePro | Collect Payments. Settle Faster. Grow Your Business.</title>
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=pacifico:400&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-slate-950 text-white">
         <div class="min-h-screen">
             <header class="sticky top-0 z-20 border-b border-white/10 bg-slate-950/80 backdrop-blur">
                 <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-                    <div class="text-xl font-semibold tracking-tight">SentePro</div>
+                    <x-brand-mark class="text-2xl" />
                     <nav class="hidden gap-6 text-sm text-slate-300 md:flex">
                         <a href="#features" class="hover:text-white">Features</a>
                         <a href="#gateways" class="hover:text-white">Gateways</a>
-                        <a href="#pricing" class="hover:text-white">Pricing</a>
                         <a href="#faq" class="hover:text-white">FAQ</a>
                         <a href="/login" class="hover:text-white">Login</a>
                     </nav>
@@ -26,7 +27,7 @@
             <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
                 <section class="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:py-10">
                     <div>
-                        <p class="mb-4 inline-flex rounded-full border border-lime-400/40 bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">{{ $content->hero_badge_text }}</p>
+                        <p class="mb-4 inline-flex border border-lime-400/40 bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">{{ $content->hero_badge_text }}</p>
                         <h1 class="max-w-2xl text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">{{ $content->hero_headline }}</h1>
                         <p class="mt-5 max-w-2xl text-lg text-slate-300">{{ $content->hero_subtext }}</p>
                         <div class="mt-8 flex flex-wrap gap-3">
@@ -68,19 +69,8 @@
 
             {{-- Trust strip --}}
             <section class="border-y border-white/10 bg-white/[0.02] py-6">
-                <div class="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 text-sm text-slate-300 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
-                    <div class="flex items-center gap-2">
-                        <x-sidebar-icon name="check" class="h-5 w-5 text-lime-400" />
-                        Verified business onboarding
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <x-sidebar-icon name="shield" class="h-5 w-5 text-lime-400" />
-                        Tenant-isolated accounts
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <x-sidebar-icon name="clipboard" class="h-5 w-5 text-lime-400" />
-                        Every action audit-logged
-                    </div>
+                <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+                    <x-payment-method-logos />
                 </div>
             </section>
 
@@ -162,7 +152,7 @@
             <section class="bg-slate-900 py-20">
                 <div class="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
                     <div class="order-2 lg:order-1">
-                        <p class="inline-flex rounded-full border border-lime-400/40 bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
+                        <p class="inline-flex border border-lime-400/40 bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
                         <h2 class="mt-4 text-3xl font-bold text-white">Share a link or QR code, get paid instantly</h2>
                         <p class="mt-3 text-slate-300">Every payment link comes with a scannable QR code and a copyable checkout URL — no integration work required to start collecting.</p>
                         <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5">Get started</a>
@@ -234,30 +224,9 @@
                 {{-- Gateways --}}
                 <section id="gateways">
                     <h2 class="text-3xl font-bold">Supported payment ecosystem</h2>
-                    <div class="mt-6 grid gap-3 sm:grid-cols-2">
-                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm font-medium text-slate-200">Pesapal — cards</div>
-                        <div class="rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm font-medium text-slate-200">Yo Payments — MTN &amp; Airtel mobile money</div>
-                    </div>
-                </section>
-
-                {{-- Pricing --}}
-                <section id="pricing">
-                    <div class="grid gap-4 md:grid-cols-3">
-                        <article class="rounded-2xl border border-white/10 bg-white/5 p-6">
-                            <div class="text-sm text-slate-300">Starter</div>
-                            <div class="mt-3 text-4xl font-bold">$0</div>
-                            <p class="mt-4 text-sm text-slate-300">For early pilots and business onboarding evaluation.</p>
-                        </article>
-                        <article class="rounded-2xl border border-lime-400/40 bg-lime-400/10 p-6">
-                            <div class="text-sm text-lime-200">Growth</div>
-                            <div class="mt-3 text-4xl font-bold">$79</div>
-                            <p class="mt-4 text-sm text-lime-50">For payment collection teams that need richer dashboards and multi-user workflows.</p>
-                        </article>
-                        <article class="rounded-2xl border border-white/10 bg-white/5 p-6">
-                            <div class="text-sm text-slate-300">Enterprise</div>
-                            <div class="mt-3 text-4xl font-bold">Custom</div>
-                            <p class="mt-4 text-sm text-slate-300">For larger orgs with custom settlement, compliance, and support requirements.</p>
-                        </article>
+                    <p class="mt-2 text-slate-300">Pesapal for cards, Yo Payments for mobile money.</p>
+                    <div class="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6">
+                        <x-payment-method-logos />
                     </div>
                 </section>
 
@@ -298,7 +267,7 @@
             <footer class="border-t border-white/10 py-12">
                 <div class="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr] lg:px-8">
                     <div>
-                        <div class="text-xl font-semibold tracking-tight text-white">SentePro</div>
+                        <x-brand-mark class="text-2xl" />
                         <p class="mt-3 max-w-xs text-sm text-slate-400">Payment collection infrastructure for East African businesses.</p>
                     </div>
                     <div>
@@ -306,7 +275,6 @@
                         <ul class="mt-4 space-y-2 text-sm text-slate-300">
                             <li><a href="#features" class="hover:text-white">Features</a></li>
                             <li><a href="#gateways" class="hover:text-white">Gateways</a></li>
-                            <li><a href="#pricing" class="hover:text-white">Pricing</a></li>
                             <li><a href="#faq" class="hover:text-white">FAQ</a></li>
                         </ul>
                     </div>
