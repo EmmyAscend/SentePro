@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBusinessRequest;
+use App\Models\LandingPageContent;
 use App\Services\BusinessRegistrationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ class BusinessRegistrationController extends Controller
 
     public function index(): View
     {
-        return view('business.register');
+        return view('business.register', ['content' => LandingPageContent::current()]);
     }
 
     public function store(StoreBusinessRequest $request): RedirectResponse

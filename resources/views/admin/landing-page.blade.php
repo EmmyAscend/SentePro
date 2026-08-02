@@ -335,6 +335,59 @@
                 </div>
 
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                    <h3 class="text-lg font-semibold text-white">Business registration page</h3>
+                    <p class="mt-1 text-sm text-slate-400">The "What are you registering?" step shown on /business/register before the form fields.</p>
+                    <div class="mt-4 grid gap-4">
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Prompt heading</span>
+                            <input type="text" name="register_prompt_heading" value="{{ old('register_prompt_heading', $content->register_prompt_heading) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('register_prompt_heading')" />
+                        </label>
+                        <div class="grid gap-4 sm:grid-cols-3">
+                            <div class="space-y-3 rounded-xl bg-slate-800/60 p-4">
+                                <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Individual card</p>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Title</span>
+                                    <input type="text" name="register_individual_title" value="{{ old('register_individual_title', $content->register_individual_title) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                    <x-input-error :messages="$errors->get('register_individual_title')" />
+                                </label>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Description</span>
+                                    <input type="text" name="register_individual_description" value="{{ old('register_individual_description', $content->register_individual_description) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                    <x-input-error :messages="$errors->get('register_individual_description')" />
+                                </label>
+                            </div>
+                            <div class="space-y-3 rounded-xl bg-slate-800/60 p-4">
+                                <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Business card</p>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Title</span>
+                                    <input type="text" name="register_business_title" value="{{ old('register_business_title', $content->register_business_title) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                    <x-input-error :messages="$errors->get('register_business_title')" />
+                                </label>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Description</span>
+                                    <input type="text" name="register_business_description" value="{{ old('register_business_description', $content->register_business_description) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                    <x-input-error :messages="$errors->get('register_business_description')" />
+                                </label>
+                            </div>
+                            <div class="space-y-3 rounded-xl bg-slate-800/60 p-4">
+                                <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Non-Profit card</p>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Title</span>
+                                    <input type="text" name="register_ngo_title" value="{{ old('register_ngo_title', $content->register_ngo_title) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                    <x-input-error :messages="$errors->get('register_ngo_title')" />
+                                </label>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Description</span>
+                                    <input type="text" name="register_ngo_description" value="{{ old('register_ngo_description', $content->register_ngo_description) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                    <x-input-error :messages="$errors->get('register_ngo_description')" />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
                     <h3 class="text-lg font-semibold text-white">Footer</h3>
                     <p class="mt-1 text-sm text-slate-400">Shown in the site footer. Leave a Contact field blank to hide that section.</p>
                     <div class="mt-4 grid gap-4">

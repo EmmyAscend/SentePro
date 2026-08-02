@@ -18,6 +18,18 @@ class BusinessRegistrationTest extends TestCase
         $response->assertSee('Business Registration');
     }
 
+    public function test_registration_page_shows_the_type_prompt_and_a_checkbox_affordance_per_card(): void
+    {
+        $response = $this->get('/business/register');
+
+        $response->assertOk();
+        $response->assertSee('What are you registering? Choose one below');
+        $response->assertSee('Individual');
+        $response->assertSee('Business');
+        $response->assertSee('Non-Profit Organisation');
+        $response->assertSee('h-5 w-5 rounded-full border-2 border-white/20', false);
+    }
+
     public function test_business_registration_form_accepts_valid_business_details(): void
     {
         $response = $this->post('/business/register', [

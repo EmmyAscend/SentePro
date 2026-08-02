@@ -28,19 +28,22 @@
             @endif
 
             <div x-show="! type" @if ($selectedType) style="display: none;" @endif>
-                <p class="mb-4 text-sm font-medium text-slate-200">What are you registering?</p>
+                <p class="mb-4 text-sm font-medium text-slate-200">{{ $content->register_prompt_heading }}</p>
                 <div class="grid gap-4 sm:grid-cols-3">
-                    <button type="button" @click="type = 'individual'" class="rounded-2xl border border-white/10 bg-slate-900 p-6 text-left hover:border-lime-400/40 hover:bg-lime-400/5">
-                        <span class="font-semibold text-white">Individual</span>
-                        <p class="mt-1 text-sm text-slate-400">Freelancers and sole proprietors collecting payments.</p>
+                    <button type="button" @click="type = 'individual'" class="group relative rounded-2xl border border-white/10 bg-slate-900 p-6 text-left hover:border-lime-400/40 hover:bg-lime-400/5">
+                        <span class="absolute right-4 top-4 h-5 w-5 rounded-full border-2 border-white/20 group-hover:border-lime-400/60"></span>
+                        <span class="block pr-8 font-semibold text-white">{{ $content->register_individual_title }}</span>
+                        <p class="mt-1 pr-8 text-sm text-slate-400">{{ $content->register_individual_description }}</p>
                     </button>
-                    <button type="button" @click="type = 'business'" class="rounded-2xl border border-white/10 bg-slate-900 p-6 text-left hover:border-lime-400/40 hover:bg-lime-400/5">
-                        <span class="font-semibold text-white">Business</span>
-                        <p class="mt-1 text-sm text-slate-400">Registered companies collecting payments for goods or services.</p>
+                    <button type="button" @click="type = 'business'" class="group relative rounded-2xl border border-white/10 bg-slate-900 p-6 text-left hover:border-lime-400/40 hover:bg-lime-400/5">
+                        <span class="absolute right-4 top-4 h-5 w-5 rounded-full border-2 border-white/20 group-hover:border-lime-400/60"></span>
+                        <span class="block pr-8 font-semibold text-white">{{ $content->register_business_title }}</span>
+                        <p class="mt-1 pr-8 text-sm text-slate-400">{{ $content->register_business_description }}</p>
                     </button>
-                    <button type="button" @click="type = 'ngo'" class="rounded-2xl border border-white/10 bg-slate-900 p-6 text-left hover:border-lime-400/40 hover:bg-lime-400/5">
-                        <span class="font-semibold text-white">Non-Profit Organisation</span>
-                        <p class="mt-1 text-sm text-slate-400">NGOs collecting donations and program payments.</p>
+                    <button type="button" @click="type = 'ngo'" class="group relative rounded-2xl border border-white/10 bg-slate-900 p-6 text-left hover:border-lime-400/40 hover:bg-lime-400/5">
+                        <span class="absolute right-4 top-4 h-5 w-5 rounded-full border-2 border-white/20 group-hover:border-lime-400/60"></span>
+                        <span class="block pr-8 font-semibold text-white">{{ $content->register_ngo_title }}</span>
+                        <p class="mt-1 pr-8 text-sm text-slate-400">{{ $content->register_ngo_description }}</p>
                     </button>
                 </div>
             </div>

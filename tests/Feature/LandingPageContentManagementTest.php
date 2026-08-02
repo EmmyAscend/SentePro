@@ -37,6 +37,13 @@ class LandingPageContentManagementTest extends TestCase
             'balances_subtext' => 'Updated balances subtext',
             'payment_links_heading' => 'Updated payment links heading',
             'payment_links_subtext' => 'Updated payment links subtext',
+            'register_prompt_heading' => 'What are you registering? Choose one below',
+            'register_individual_title' => 'Individual',
+            'register_individual_description' => 'Updated individual description',
+            'register_business_title' => 'Business',
+            'register_business_description' => 'Updated business description',
+            'register_ngo_title' => 'Non-Profit Organisation',
+            'register_ngo_description' => 'Updated NGO description',
             'contact_location' => 'Kampala, Uganda',
             'contact_phone' => '+256700000000',
             'footer_tagline' => 'Updated footer tagline',
@@ -471,5 +478,34 @@ class LandingPageContentManagementTest extends TestCase
         $this->actingAs($superAdmin)->put('/admin/landing-page', $this->validPayload())
             ->assertRedirect()
             ->assertSessionHasNoErrors();
+    }
+
+    public function test_super_admin_can_update_the_registration_page_prompt_and_cards(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'register_prompt_heading' => 'A brand new registration prompt',
+            'register_individual_title' => 'Solo Freelancer',
+            'register_individual_description' => 'A brand new individual description',
+            'register_business_title' => 'Registered Business',
+            'register_business_description' => 'A brand new business description',
+            'register_ngo_title' => 'Charity',
+            'register_ngo_description' => 'A brand new NGO description',
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame('A brand new registration prompt', $content->register_prompt_heading);
+        $this->assertSame('Solo Freelancer', $content->register_individual_title);
+        $this->assertSame('Registered Business', $content->register_business_title);
+        $this->assertSame('Charity', $content->register_ngo_title);
+
+        $register = $this->get('/business/register');
+        $register->assertSee('A brand new registration prompt');
+        $register->assertSee('Solo Freelancer');
+        $register->assertSee('Registered Business');
+        $register->assertSee('Charity');
     }
 }
