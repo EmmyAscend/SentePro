@@ -17,5 +17,19 @@
             </main>
             <x-public-footer />
         </div>
+
+        <button
+            type="button"
+            x-data="{ show: false }"
+            x-init="window.addEventListener('scroll', () => { show = window.scrollY > 400 })"
+            x-show="show"
+            style="display: none;"
+            x-transition
+            @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+            aria-label="Back to top"
+            class="fixed bottom-6 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-xl bg-lime-400 text-slate-950 shadow-lg shadow-lime-500/20 hover:bg-lime-300"
+        >
+            <x-sidebar-icon name="chevron" class="h-5 w-5 -rotate-90" />
+        </button>
     </body>
 </html>

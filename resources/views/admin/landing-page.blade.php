@@ -198,19 +198,26 @@
                 </div>
 
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
-                    <h3 class="text-lg font-semibold text-white">Contact</h3>
-                    <p class="mt-1 text-sm text-slate-400">Shown in the footer's Contact section. Leave a field blank to hide it.</p>
-                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                    <h3 class="text-lg font-semibold text-white">Footer</h3>
+                    <p class="mt-1 text-sm text-slate-400">Shown in the site footer. Leave a Contact field blank to hide that section.</p>
+                    <div class="mt-4 grid gap-4">
                         <label class="flex flex-col gap-1 text-sm">
-                            <span class="font-medium text-slate-300">Location</span>
-                            <input type="text" name="contact_location" value="{{ old('contact_location', $content->contact_location) }}" placeholder="e.g. Kampala, Uganda" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
-                            <x-input-error :messages="$errors->get('contact_location')" />
+                            <span class="font-medium text-slate-300">Tagline</span>
+                            <input type="text" name="footer_tagline" value="{{ old('footer_tagline', $content->footer_tagline) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('footer_tagline')" />
                         </label>
-                        <label class="flex flex-col gap-1 text-sm">
-                            <span class="font-medium text-slate-300">Phone number</span>
-                            <input type="text" name="contact_phone" value="{{ old('contact_phone', $content->contact_phone) }}" placeholder="e.g. +256 700 000000" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
-                            <x-input-error :messages="$errors->get('contact_phone')" />
-                        </label>
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <label class="flex flex-col gap-1 text-sm">
+                                <span class="font-medium text-slate-300">Contact location</span>
+                                <input type="text" name="contact_location" value="{{ old('contact_location', $content->contact_location) }}" placeholder="e.g. Kampala, Uganda" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                                <x-input-error :messages="$errors->get('contact_location')" />
+                            </label>
+                            <label class="flex flex-col gap-1 text-sm">
+                                <span class="font-medium text-slate-300">Contact phone number</span>
+                                <input type="text" name="contact_phone" value="{{ old('contact_phone', $content->contact_phone) }}" placeholder="e.g. +256 700 000000" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                                <x-input-error :messages="$errors->get('contact_phone')" />
+                            </label>
+                        </div>
                     </div>
                 </div>
 

@@ -26,6 +26,7 @@ class LandingPageContentManagementTest extends TestCase
             'cta_banner_subtext' => 'Updated banner subtext',
             'contact_location' => 'Kampala, Uganda',
             'contact_phone' => '+256700000000',
+            'footer_tagline' => 'Updated footer tagline',
             'payment_logos' => array_fill(0, 4, ['label' => 'Visa']),
         ];
     }
@@ -196,6 +197,18 @@ class LandingPageContentManagementTest extends TestCase
         $this->assertSame('+256700000000', $content->contact_phone);
 
         $this->get('/')->assertSee('Kampala, Uganda');
+    }
+
+    public function test_super_admin_can_update_the_footer_tagline(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), ['footer_tagline' => 'A brand new footer tagline']);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $this->assertSame('A brand new footer tagline', LandingPageContent::current()->footer_tagline);
+        $this->get('/')->assertSee('A brand new footer tagline');
     }
 
     public function test_super_admin_can_upload_a_payment_logo_image(): void

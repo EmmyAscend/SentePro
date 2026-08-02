@@ -29,6 +29,7 @@ class LandingPageContent extends Model
         'cta_banner_subtext',
         'contact_location',
         'contact_phone',
+        'footer_tagline',
         'hero_image_path',
         'how_it_works_image_path',
         'payment_links_image_path',
@@ -72,6 +73,7 @@ class LandingPageContent extends Model
             ],
             'cta_banner_heading' => 'Get started for $0. No setup fees.',
             'cta_banner_subtext' => 'Register your business today and start collecting payments as soon as you\'re verified.',
+            'footer_tagline' => 'Payment collection infrastructure for East African businesses.',
             'payment_logos' => [
                 ['label' => 'Visa', 'image_path' => null],
                 ['label' => 'Mastercard', 'image_path' => null],

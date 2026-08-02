@@ -3,7 +3,7 @@
         <a href="/">
             <x-brand-mark class="text-2xl" />
         </a>
-        <nav class="hidden gap-6 text-sm uppercase tracking-wide text-slate-300 md:flex">
+        <nav class="hidden gap-6 text-xs uppercase tracking-wide text-slate-300 md:flex">
             <a href="/#requirements" class="hover:text-white">Requirements</a>
             <a href="/#features" class="hover:text-white">Features</a>
             <a href="/#gateways" class="hover:text-white">Supported Payments</a>
@@ -20,7 +20,7 @@
     </div>
 
     <div x-show="mobileOpen" style="display: none;" x-transition class="border-t border-white/10 md:hidden">
-        <nav class="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 text-sm uppercase tracking-wide text-slate-300 sm:px-6">
+        <nav class="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-4 text-xs uppercase tracking-wide text-slate-300 sm:px-6">
             <a href="/#requirements" class="rounded-lg px-3 py-2 hover:bg-white/5 hover:text-white" @click="mobileOpen = false">Requirements</a>
             <a href="/#features" class="rounded-lg px-3 py-2 hover:bg-white/5 hover:text-white" @click="mobileOpen = false">Features</a>
             <a href="/#gateways" class="rounded-lg px-3 py-2 hover:bg-white/5 hover:text-white" @click="mobileOpen = false">Supported Payments</a>
