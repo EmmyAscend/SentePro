@@ -1,5 +1,7 @@
+@php $content = \App\Models\LandingPageContent::current(); @endphp
+
 <footer class="border-t border-white/10 py-12">
-    <div class="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr_1fr] lg:gap-10 lg:px-8">
+    <div class="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1fr] lg:gap-10 lg:px-8">
         <div class="col-span-2 lg:col-span-1">
             <x-brand-mark class="text-2xl" />
             <p class="mt-3 max-w-xs text-sm text-slate-400">Payment collection infrastructure for East African businesses.</p>
@@ -28,8 +30,21 @@
                 <li><a href="{{ route('legal.show', 'refund-policy') }}" class="hover:text-white">Refund Policy</a></li>
             </ul>
         </div>
+        @if ($content->contact_location || $content->contact_phone)
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Contact</p>
+                <ul class="mt-4 space-y-2 text-sm text-slate-300">
+                    @if ($content->contact_location)
+                        <li>{{ $content->contact_location }}</li>
+                    @endif
+                    @if ($content->contact_phone)
+                        <li><a href="tel:{{ preg_replace('/[^0-9+]/', '', $content->contact_phone) }}" class="hover:text-white">{{ $content->contact_phone }}</a></li>
+                    @endif
+                </ul>
+            </div>
+        @endif
     </div>
     <div class="mx-auto mt-10 max-w-6xl border-t border-white/10 px-4 pt-6 text-sm text-slate-500 sm:px-6 lg:px-8">
-        &copy; {{ date('Y') }} SentePro. All rights reserved.
+        Powered by <a href="https://razertechnology.com" target="_blank" rel="noopener noreferrer" class="font-medium text-slate-400 hover:text-white">RAZERTECH</a> &middot; &copy; {{ date('Y') }} SentePro. All rights reserved.
     </div>
 </footer>

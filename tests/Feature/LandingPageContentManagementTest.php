@@ -19,11 +19,13 @@ class LandingPageContentManagementTest extends TestCase
             'hero_badge_text' => 'Updated badge',
             'hero_headline' => 'Updated headline',
             'hero_subtext' => 'Updated subtext',
-            'features' => array_fill(0, 4, ['title' => 'Feature title', 'description' => 'Feature description']),
-            'requirements' => array_fill(0, 3, ['title' => 'Requirement title', 'description' => 'Requirement description']),
+            'features' => array_fill(0, 4, ['title' => 'Feature title', 'description' => 'Feature description', 'icon' => 'link']),
+            'requirements' => array_fill(0, 3, ['title' => 'Requirement title', 'description' => 'Requirement description', 'icon' => 'shield']),
             'faqs' => array_fill(0, 5, ['question' => 'A question?', 'answer' => 'An answer.']),
             'cta_banner_heading' => 'Updated banner heading',
             'cta_banner_subtext' => 'Updated banner subtext',
+            'contact_location' => 'Kampala, Uganda',
+            'contact_phone' => '+256700000000',
             'payment_logos' => array_fill(0, 4, ['label' => 'Visa']),
         ];
     }
@@ -127,8 +129,8 @@ class LandingPageContentManagementTest extends TestCase
         $superAdmin = User::factory()->superAdmin()->create();
 
         $payload = array_merge($this->validPayload(), [
-            'features' => array_fill(0, 6, ['title' => 'Extra feature', 'description' => 'Extra description']),
-            'requirements' => array_fill(0, 5, ['title' => 'Extra requirement', 'description' => 'Extra description']),
+            'features' => array_fill(0, 6, ['title' => 'Extra feature', 'description' => 'Extra description', 'icon' => 'link']),
+            'requirements' => array_fill(0, 5, ['title' => 'Extra requirement', 'description' => 'Extra description', 'icon' => 'shield']),
             'faqs' => array_fill(0, 7, ['question' => 'Extra question?', 'answer' => 'Extra answer.']),
             'payment_logos' => array_fill(0, 6, ['label' => 'Extra Network']),
         ]);
@@ -149,6 +151,51 @@ class LandingPageContentManagementTest extends TestCase
         $payload = array_merge($this->validPayload(), ['features' => []]);
 
         $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertSessionHasErrors('features');
+    }
+
+    public function test_super_admin_can_choose_icons_for_requirements_and_features(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'requirements' => [['title' => 'Custom requirement', 'description' => 'Custom description', 'icon' => 'wallet']],
+            'features' => [['title' => 'Custom feature', 'description' => 'Custom description', 'icon' => 'chart']],
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame('wallet', $content->requirements[0]['icon']);
+        $this->assertSame('chart', $content->features[0]['icon']);
+    }
+
+    public function test_an_invalid_icon_is_rejected(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'requirements' => [['title' => 'Custom requirement', 'description' => 'Custom description', 'icon' => 'not-a-real-icon']],
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertSessionHasErrors('requirements.0.icon');
+    }
+
+    public function test_super_admin_can_update_the_contact_section(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'contact_location' => 'Kampala, Uganda',
+            'contact_phone' => '+256700000000',
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame('Kampala, Uganda', $content->contact_location);
+        $this->assertSame('+256700000000', $content->contact_phone);
+
+        $this->get('/')->assertSee('Kampala, Uganda');
     }
 
     public function test_super_admin_can_upload_a_payment_logo_image(): void

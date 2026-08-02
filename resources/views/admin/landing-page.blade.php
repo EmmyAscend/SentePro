@@ -85,14 +85,22 @@
                             <h3 class="text-lg font-semibold text-white">Requirements</h3>
                             <p class="mt-1 text-sm text-slate-400">Who can use SentePro — shown on the homepage.</p>
                         </div>
-                        <button type="button" @click="items.push({ title: '', description: '' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add requirement</button>
+                        <button type="button" @click="items.push({ title: '', description: '', icon: 'shield' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add requirement</button>
                     </div>
                     <div class="mt-4 space-y-4">
                         <template x-for="(item, index) in items" :key="index">
-                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_2fr_auto] md:items-end">
+                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_1fr_2fr_auto] md:items-end">
                                 <label class="flex flex-col gap-1 text-sm">
                                     <span class="font-medium text-slate-300">Title</span>
                                     <input type="text" :name="`requirements[${index}][title]`" x-model="item.title" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                </label>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Icon</span>
+                                    <select :name="`requirements[${index}][icon]`" x-model="item.icon" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                                        @foreach (\App\Models\LandingPageContent::ICON_OPTIONS as $iconOption)
+                                            <option value="{{ $iconOption }}">{{ ucfirst($iconOption) }}</option>
+                                        @endforeach
+                                    </select>
                                 </label>
                                 <label class="flex flex-col gap-1 text-sm">
                                     <span class="font-medium text-slate-300">Description</span>
@@ -109,14 +117,22 @@
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10" x-data="{ items: @js(old('features', $content->features ?? [])) }">
                     <div class="flex items-center justify-between gap-4">
                         <h3 class="text-lg font-semibold text-white">Features</h3>
-                        <button type="button" @click="items.push({ title: '', description: '' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add feature</button>
+                        <button type="button" @click="items.push({ title: '', description: '', icon: 'link' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add feature</button>
                     </div>
                     <div class="mt-4 space-y-4">
                         <template x-for="(item, index) in items" :key="index">
-                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_2fr_auto] md:items-end">
+                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_1fr_2fr_auto] md:items-end">
                                 <label class="flex flex-col gap-1 text-sm">
                                     <span class="font-medium text-slate-300">Title</span>
                                     <input type="text" :name="`features[${index}][title]`" x-model="item.title" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                </label>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Icon</span>
+                                    <select :name="`features[${index}][icon]`" x-model="item.icon" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                                        @foreach (\App\Models\LandingPageContent::ICON_OPTIONS as $iconOption)
+                                            <option value="{{ $iconOption }}">{{ ucfirst($iconOption) }}</option>
+                                        @endforeach
+                                    </select>
                                 </label>
                                 <label class="flex flex-col gap-1 text-sm">
                                     <span class="font-medium text-slate-300">Description</span>
@@ -179,6 +195,23 @@
                         </template>
                     </div>
                     <x-input-error :messages="$errors->get('faqs')" class="mt-2" />
+                </div>
+
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                    <h3 class="text-lg font-semibold text-white">Contact</h3>
+                    <p class="mt-1 text-sm text-slate-400">Shown in the footer's Contact section. Leave a field blank to hide it.</p>
+                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Location</span>
+                            <input type="text" name="contact_location" value="{{ old('contact_location', $content->contact_location) }}" placeholder="e.g. Kampala, Uganda" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                            <x-input-error :messages="$errors->get('contact_location')" />
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Phone number</span>
+                            <input type="text" name="contact_phone" value="{{ old('contact_phone', $content->contact_phone) }}" placeholder="e.g. +256 700 000000" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                            <x-input-error :messages="$errors->get('contact_phone')" />
+                        </label>
+                    </div>
                 </div>
 
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">

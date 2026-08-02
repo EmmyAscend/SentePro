@@ -55,11 +55,10 @@
                 <p class="mt-2 text-slate-300">Whatever kind of organization you run, here's what you'll need to get verified.</p>
             </div>
             <div class="grid gap-6 sm:grid-cols-3">
-                @foreach (($content->requirements ?? []) as $i => $requirement)
-                    @php $icon = ['shield', 'banknotes', 'users'][$i] ?? 'shield'; @endphp
+                @foreach (($content->requirements ?? []) as $requirement)
                     <div class="rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10">
                         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400/10 text-lime-300">
-                            <x-sidebar-icon :name="$icon" class="h-5 w-5" />
+                            <x-sidebar-icon :name="$requirement['icon'] ?? 'shield'" class="h-5 w-5" />
                         </div>
                         <h3 class="mt-4 font-semibold text-white">{{ $requirement['title'] }}</h3>
                         <p class="mt-1 text-sm text-slate-400">{{ $requirement['description'] }}</p>
@@ -75,11 +74,10 @@
                 <p class="mt-2 text-slate-300">Fast, flexible, and secure payment collection for growing businesses.</p>
             </div>
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                @foreach ($content->features as $i => $feature)
-                    @php $icon = ['link', 'check', 'users', 'clipboard'][$i] ?? 'link'; @endphp
+                @foreach ($content->features as $feature)
                     <div>
                         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400/10 text-lime-300">
-                            <x-sidebar-icon :name="$icon" class="h-5 w-5" />
+                            <x-sidebar-icon :name="$feature['icon'] ?? 'link'" class="h-5 w-5" />
                         </div>
                         <h3 class="mt-4 font-semibold text-white">{{ $feature['title'] }}</h3>
                         <p class="mt-1 text-sm text-slate-400">{{ $feature['description'] }}</p>
