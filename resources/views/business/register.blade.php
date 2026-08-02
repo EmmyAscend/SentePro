@@ -1,14 +1,20 @@
 @php
     $selectedType = old('business_type', request()->query('type'));
     $selectedType = in_array($selectedType, ['individual', 'business', 'ngo'], true) ? $selectedType : '';
+    $typeTitles = [
+        'individual' => $content->register_individual_title,
+        'business' => $content->register_business_title,
+        'ngo' => $content->register_ngo_title,
+    ];
+    $initialTitle = $typeTitles[$selectedType] ?? 'Business';
 @endphp
 
-<x-public-layout title="Business Registration | SentePro">
+<x-public-layout title="{{ $initialTitle }} Registration | SentePro">
     <div class="px-4 py-10 sm:px-6 lg:px-8">
-        <div class="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-slate-950/40 sm:p-8" x-data="{ type: '{{ $selectedType }}' }">
+        <div class="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-slate-950/40 sm:p-8" x-data="{ type: '{{ $selectedType }}', typeTitles: { individual: @js($content->register_individual_title), business: @js($content->register_business_title), ngo: @js($content->register_ngo_title) } }">
             <div class="mb-8">
-                <p class="text-sm uppercase tracking-[0.25em] text-lime-300">Business onboarding</p>
-                <h1 class="mt-2 text-[clamp(1.25rem,4.5vw,2.25rem)] font-bold">Business Registration</h1>
+                <p class="text-sm uppercase tracking-[0.25em] text-lime-300" x-text="(type ? typeTitles[type] : 'Business') + ' onboarding'">{{ $initialTitle }} onboarding</p>
+                <h1 class="mt-2 text-[clamp(1.25rem,4.5vw,2.25rem)] font-bold" x-text="(type ? typeTitles[type] : 'Business') + ' Registration'">{{ $initialTitle }} Registration</h1>
             </div>
 
             @if (session('status'))

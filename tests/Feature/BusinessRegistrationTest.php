@@ -126,7 +126,7 @@ class BusinessRegistrationTest extends TestCase
         $response = $this->get('/business/register?type=ngo');
 
         $response->assertOk();
-        $response->assertSee("x-data=\"{ type: 'ngo' }\"", false);
+        $response->assertSee("type: 'ngo'", false);
     }
 
     public function test_registration_page_ignores_an_invalid_type_query_value(): void
@@ -134,8 +134,26 @@ class BusinessRegistrationTest extends TestCase
         $response = $this->get("/business/register?type='};alert(1);//");
 
         $response->assertOk();
-        $response->assertSee("x-data=\"{ type: '' }\"", false);
+        $response->assertSee("type: ''", false);
         $response->assertDontSee('alert(1)', false);
+    }
+
+    public function test_registration_page_title_reflects_the_preselected_type_before_any_click(): void
+    {
+        $response = $this->get('/business/register?type=ngo');
+
+        $response->assertOk();
+        $response->assertSee('Non-Profit Organisation Registration');
+        $response->assertSee('Non-Profit Organisation onboarding');
+    }
+
+    public function test_registration_page_title_defaults_to_business_when_no_type_is_chosen(): void
+    {
+        $response = $this->get('/business/register');
+
+        $response->assertOk();
+        $response->assertSee('Business Registration');
+        $response->assertSee('Business onboarding');
     }
 
     private function baseOwnerPayload(): array

@@ -507,5 +507,12 @@ class LandingPageContentManagementTest extends TestCase
         $register->assertSee('Solo Freelancer');
         $register->assertSee('Registered Business');
         $register->assertSee('Charity');
+
+        // The onboarding/registration titles derive from these same
+        // per-type card titles, so a custom title should flow through to
+        // the server-rendered heading when that type is preselected.
+        $preselected = $this->get('/business/register?type=individual');
+        $preselected->assertSee('Solo Freelancer Registration');
+        $preselected->assertSee('Solo Freelancer onboarding');
     }
 }
