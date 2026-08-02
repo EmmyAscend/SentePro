@@ -27,6 +27,20 @@ class LandingPageTest extends TestCase
         $response->assertSee('RAZERTECH');
     }
 
+    public function test_footer_shows_copyright_before_the_razertech_credit(): void
+    {
+        $response = $this->get('/');
+        $response->assertOk();
+
+        $content = $response->getContent();
+        $copyrightPos = strpos($content, 'All rights reserved.');
+        $poweredByPos = strpos($content, 'Powered by');
+
+        $this->assertNotFalse($copyrightPos);
+        $this->assertNotFalse($poweredByPos);
+        $this->assertTrue($copyrightPos < $poweredByPos);
+    }
+
     public function test_footer_hides_contact_section_when_not_configured(): void
     {
         $response = $this->get('/');
