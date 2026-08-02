@@ -45,9 +45,8 @@ class LandingPageContentController extends Controller
             }
         }
 
-        $existingLogos = $content->payment_logos ?? [];
-        $data['payment_logos'] = collect($validated['payment_logos'])->map(function (array $logo, int $i) use ($request, $existingLogos) {
-            $imagePath = $existingLogos[$i]['image_path'] ?? null;
+        $data['payment_logos'] = collect($validated['payment_logos'])->map(function (array $logo, int $i) use ($request) {
+            $imagePath = $logo['image_path'] ?? null;
 
             if ($request->hasFile("payment_logos.{$i}.image")) {
                 if ($imagePath) {
@@ -56,7 +55,7 @@ class LandingPageContentController extends Controller
                 $imagePath = $request->file("payment_logos.{$i}.image")->store('landing-page', 'public');
             }
 
-            return ['label' => $logo['label'], 'image_path' => $imagePath];
+            return ['label' => $logo['label'] ?? null, 'image_path' => $imagePath];
         })->all();
 
         $content->update($data);

@@ -46,6 +46,24 @@
                     </div>
                 </div>
 
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                    <h3 class="text-lg font-semibold text-white">Heading sizes</h3>
+                    <p class="mt-1 text-sm text-slate-400">Adjust how large each heading appears on the homepage. Sizes scale smoothly with screen width.</p>
+                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                        @foreach (\App\Models\LandingPageContent::HEADING_KEYS as $key => $heading)
+                            <label class="flex flex-col gap-1 text-sm">
+                                <span class="font-medium text-slate-300">{{ $heading['label'] }}</span>
+                                <select name="heading_sizes[{{ $key }}]" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                                    @foreach (array_keys(\App\Models\LandingPageContent::HEADING_SIZES) as $size)
+                                        <option value="{{ $size }}" @selected(old("heading_sizes.$key", $content->heading_sizes[$key] ?? $heading['default']) === $size)>{{ strtoupper($size) }}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                        @endforeach
+                    </div>
+                    <x-array-errors field="heading_sizes" class="mt-2" />
+                </div>
+
                 {{-- Payment method logos: dynamic, add as many as needed --}}
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10" x-data="{ items: @js(old('payment_logos', $content->payment_logos ?? [])) }">
                     <div class="flex items-center justify-between gap-4">
@@ -61,7 +79,7 @@
                                 <div class="flex items-start justify-between gap-3">
                                     <label class="flex flex-1 flex-col gap-1 text-sm">
                                         <span class="font-medium text-slate-300">Label</span>
-                                        <input type="text" :name="`payment_logos[${index}][label]`" x-model="item.label" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                        <input type="text" :name="`payment_logos[${index}][label]`" x-model="item.label" placeholder="Optional if you upload an image" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
                                     </label>
                                     <button type="button" @click="items.splice(index, 1)" x-show="items.length > 1" class="mt-5 shrink-0 rounded-full border border-rose-400/30 px-3 py-1.5 text-xs font-semibold text-rose-300 hover:bg-rose-500/10">Remove</button>
                                 </div>
@@ -70,12 +88,13 @@
                                     <template x-if="item.image_path">
                                         <img :src="'/storage/' + item.image_path" :alt="item.label" class="h-10 w-auto max-w-[8rem] bg-white object-contain p-1">
                                     </template>
+                                    <input type="hidden" :name="`payment_logos[${index}][image_path]`" :value="item.image_path">
                                     <input type="file" :name="`payment_logos[${index}][image]`" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-950 file:px-3 file:py-2 file:text-white">
                                 </label>
                             </div>
                         </template>
                     </div>
-                    <x-input-error :messages="$errors->get('payment_logos')" class="mt-2" />
+                    <x-array-errors field="payment_logos" class="mt-2" />
                 </div>
 
                 {{-- Requirements: dynamic, add as many as needed --}}
@@ -110,7 +129,7 @@
                             </div>
                         </template>
                     </div>
-                    <x-input-error :messages="$errors->get('requirements')" class="mt-2" />
+                    <x-array-errors field="requirements" class="mt-2" />
                 </div>
 
                 {{-- Features: dynamic, add as many as needed --}}
@@ -142,7 +161,7 @@
                             </div>
                         </template>
                     </div>
-                    <x-input-error :messages="$errors->get('features')" class="mt-2" />
+                    <x-array-errors field="features" class="mt-2" />
                 </div>
 
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
@@ -194,7 +213,7 @@
                             </div>
                         </template>
                     </div>
-                    <x-input-error :messages="$errors->get('faqs')" class="mt-2" />
+                    <x-array-errors field="faqs" class="mt-2" />
                 </div>
 
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">

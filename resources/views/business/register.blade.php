@@ -3,7 +3,7 @@
         <div class="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-slate-950/40 sm:p-8">
             <div class="mb-8">
                 <p class="text-sm uppercase tracking-[0.25em] text-lime-300">Business onboarding</p>
-                <h1 class="mt-2 text-[clamp(1.25rem,4.5vw,2.25rem)] font-bold uppercase">Business Registration</h1>
+                <h1 class="mt-2 text-[clamp(1.25rem,4.5vw,2.25rem)] font-bold">Business Registration</h1>
             </div>
 
             @if (session('status'))

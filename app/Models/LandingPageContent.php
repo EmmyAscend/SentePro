@@ -18,6 +18,40 @@ class LandingPageContent extends Model
         'shield', 'wallet', 'clipboard', 'check',
     ];
 
+    /**
+     * Shared "T-shirt size" vocabulary every individually-configurable
+     * heading picks from, rendered as fluid clamp() CSS so a heading still
+     * scales smoothly between the given floor and ceiling on every screen
+     * width instead of jumping at fixed breakpoints.
+     */
+    public const HEADING_SIZES = [
+        'xs' => 'clamp(1rem,2.5vw,1.25rem)',
+        'sm' => 'clamp(1.125rem,3vw,1.5rem)',
+        'md' => 'clamp(1.25rem,3.5vw,1.875rem)',
+        'lg' => 'clamp(1.5rem,4.5vw,2.25rem)',
+        'xl' => 'clamp(1.75rem,5vw,3rem)',
+        '2xl' => 'clamp(2rem,6vw,3.75rem)',
+    ];
+
+    /**
+     * Every individually-sizeable heading on the public site, keyed by the
+     * identifier a super admin picks a size for, with its default tier and
+     * an admin-facing label.
+     */
+    public const HEADING_KEYS = [
+        'hero' => ['label' => 'Hero headline', 'default' => 'xl'],
+        'for_business' => ['label' => '"Run your payment operations" card', 'default' => 'sm'],
+        'for_customers' => ['label' => '"A fast, familiar checkout" card', 'default' => 'sm'],
+        'requirements' => ['label' => '"Who can use SentePro?"', 'default' => 'md'],
+        'features' => ['label' => '"Why SentePro?"', 'default' => 'md'],
+        'balances' => ['label' => '"One dashboard for every balance"', 'default' => 'md'],
+        'payment_links' => ['label' => '"Share a link or QR code..."', 'default' => 'md'],
+        'how_it_works' => ['label' => '"It\'s simple to start using SentePro"', 'default' => 'md'],
+        'gateways' => ['label' => '"Supported payment ecosystem"', 'default' => 'md'],
+        'faq' => ['label' => '"Common questions"', 'default' => 'md'],
+        'cta' => ['label' => 'CTA banner heading', 'default' => 'lg'],
+    ];
+
     protected $fillable = [
         'hero_badge_text',
         'hero_headline',
@@ -30,6 +64,7 @@ class LandingPageContent extends Model
         'contact_location',
         'contact_phone',
         'footer_tagline',
+        'heading_sizes',
         'hero_image_path',
         'how_it_works_image_path',
         'payment_links_image_path',
@@ -41,7 +76,22 @@ class LandingPageContent extends Model
         'faqs' => 'array',
         'requirements' => 'array',
         'payment_logos' => 'array',
+        'heading_sizes' => 'array',
     ];
+
+    /**
+     * The fluid clamp() CSS to use for a given heading, honoring a super
+     * admin's chosen tier for that heading if one was ever saved, falling
+     * back to that heading's own default tier otherwise.
+     */
+    public function headingSize(string $key): string
+    {
+        $tier = $this->heading_sizes[$key]
+            ?? self::HEADING_KEYS[$key]['default']
+            ?? 'md';
+
+        return self::HEADING_SIZES[$tier] ?? self::HEADING_SIZES['md'];
+    }
 
     /**
      * The landing page's content is a single platform-wide row, created with
@@ -74,6 +124,7 @@ class LandingPageContent extends Model
             'cta_banner_heading' => 'Get started for $0. No setup fees.',
             'cta_banner_subtext' => 'Register your business today and start collecting payments as soon as you\'re verified.',
             'footer_tagline' => 'Payment collection infrastructure for East African businesses.',
+            'heading_sizes' => array_map(fn (array $heading) => $heading['default'], self::HEADING_KEYS),
             'payment_logos' => [
                 ['label' => 'Visa', 'image_path' => null],
                 ['label' => 'Mastercard', 'image_path' => null],

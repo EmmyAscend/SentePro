@@ -4,7 +4,7 @@
         <section class="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:py-10">
             <div>
                 <p class="mb-4 inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">{{ $content->hero_badge_text }}</p>
-                <h1 class="max-w-2xl text-[clamp(1.75rem,6vw,3.75rem)] font-black uppercase tracking-tight text-white">{{ $content->hero_headline }}</h1>
+                <h1 class="max-w-2xl font-black tracking-tight text-white" style="font-size: {{ $content->headingSize('hero') }}">{{ $content->hero_headline }}</h1>
                 <p class="mt-5 max-w-2xl text-lg text-slate-300">{{ $content->hero_subtext }}</p>
                 <div class="mt-8 flex flex-wrap gap-2 sm:gap-3">
                     <a href="{{ route('business.register') }}" class="flex-1 whitespace-nowrap rounded-xl bg-lime-400 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">Register your business</a>
@@ -29,7 +29,7 @@
         <section class="grid gap-6 md:grid-cols-2">
             <div class="rounded-3xl bg-slate-900 p-8 ring-1 ring-white/10">
                 <p class="text-xs font-semibold uppercase tracking-widest text-slate-400">For your business</p>
-                <h3 class="mt-2 text-[clamp(1.125rem,3.5vw,1.5rem)] font-bold uppercase text-white">Run your payment operations from one dashboard</h3>
+                <h3 class="mt-2 font-bold text-white" style="font-size: {{ $content->headingSize('for_business') }}">Run your payment operations from one dashboard</h3>
                 <ul class="mt-5 space-y-3 text-sm text-slate-300">
                     <li>• Track every settlement, transaction, and payment link in real time</li>
                     <li>• Invite staff with role-based permissions</li>
@@ -39,7 +39,7 @@
             </div>
             <div class="rounded-3xl border border-lime-400/40 bg-lime-400/10 p-8">
                 <p class="text-xs font-semibold uppercase tracking-widest text-lime-300">For your customers</p>
-                <h3 class="mt-2 text-[clamp(1.125rem,3.5vw,1.5rem)] font-bold uppercase text-white">A fast, familiar checkout</h3>
+                <h3 class="mt-2 font-bold text-white" style="font-size: {{ $content->headingSize('for_customers') }}">A fast, familiar checkout</h3>
                 <ul class="mt-5 space-y-3 text-sm text-lime-50">
                     <li>• Pay by card via Pesapal or mobile money via MTN/Airtel</li>
                     <li>• Get an instant receipt by email, with a scannable verification QR code</li>
@@ -51,7 +51,7 @@
         {{-- Requirements --}}
         <section id="requirements">
             <div class="mb-8 max-w-2xl">
-                <h2 class="text-[clamp(1.25rem,4vw,1.875rem)] font-bold uppercase">Who can use SentePro?</h2>
+                <h2 class="font-bold" style="font-size: {{ $content->headingSize('requirements') }}">Who can use SentePro?</h2>
                 <p class="mt-2 text-slate-300">Whatever kind of organization you run, here's what you'll need to get verified.</p>
             </div>
             <div class="grid gap-6 sm:grid-cols-3">
@@ -60,7 +60,7 @@
                         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400/10 text-lime-300">
                             <x-sidebar-icon :name="$requirement['icon'] ?? 'shield'" class="h-5 w-5" />
                         </div>
-                        <h3 class="mt-4 font-semibold uppercase tracking-wide text-white">{{ $requirement['title'] }}</h3>
+                        <h3 class="mt-4 font-semibold text-white">{{ $requirement['title'] }}</h3>
                         <p class="mt-1 text-sm text-slate-400">{{ $requirement['description'] }}</p>
                     </div>
                 @endforeach
@@ -70,7 +70,7 @@
         {{-- Features --}}
         <section id="features">
             <div class="mb-8 max-w-2xl">
-                <h2 class="text-[clamp(1.25rem,4vw,1.875rem)] font-bold uppercase">Why SentePro?</h2>
+                <h2 class="font-bold" style="font-size: {{ $content->headingSize('features') }}">Why SentePro?</h2>
                 <p class="mt-2 text-slate-300">Fast, flexible, and secure payment collection for growing businesses.</p>
             </div>
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -79,7 +79,7 @@
                         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400/10 text-lime-300">
                             <x-sidebar-icon :name="$feature['icon'] ?? 'link'" class="h-5 w-5" />
                         </div>
-                        <h3 class="mt-4 font-semibold uppercase tracking-wide text-white">{{ $feature['title'] }}</h3>
+                        <h3 class="mt-4 font-semibold text-white">{{ $feature['title'] }}</h3>
                         <p class="mt-1 text-sm text-slate-400">{{ $feature['description'] }}</p>
                     </div>
                 @endforeach
@@ -89,7 +89,7 @@
         {{-- Wallet balances --}}
         <section class="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
-                <h2 class="text-[clamp(1.25rem,4vw,1.875rem)] font-bold uppercase">One dashboard for every balance</h2>
+                <h2 class="font-bold" style="font-size: {{ $content->headingSize('balances') }}">One dashboard for every balance</h2>
                 <p class="mt-3 text-slate-300">See exactly where your money is — available to withdraw, reserved for settlement, or already paid out.</p>
                 <ul class="mt-5 space-y-2 text-sm text-slate-300">
                     <li>• Request a settlement the moment funds are available</li>
@@ -121,7 +121,7 @@
         <div class="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
             <div class="order-2 lg:order-1">
                 <p class="inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
-                <h2 class="mt-4 text-[clamp(1.25rem,4vw,1.875rem)] font-bold uppercase text-white">Share a link or QR code, get paid instantly</h2>
+                <h2 class="mt-4 font-bold text-white" style="font-size: {{ $content->headingSize('payment_links') }}">Share a link or QR code, get paid instantly</h2>
                 <p class="mt-3 text-slate-300">Every payment link comes with a scannable QR code and a copyable checkout URL — no integration work required to start collecting.</p>
                 <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5">Get started</a>
             </div>
@@ -155,7 +155,7 @@
                 @endif
             </div>
             <div>
-                <h2 class="text-[clamp(1.25rem,4vw,1.875rem)] font-bold uppercase">It's simple to start using SentePro</h2>
+                <h2 class="font-bold" style="font-size: {{ $content->headingSize('how_it_works') }}">It's simple to start using SentePro</h2>
                 <ol class="mt-6 space-y-5">
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">1</span>
@@ -192,7 +192,7 @@
 
         {{-- Gateways --}}
         <section id="gateways">
-            <h2 class="text-[clamp(1.25rem,4vw,1.875rem)] font-bold uppercase">Supported payment ecosystem</h2>
+            <h2 class="font-bold" style="font-size: {{ $content->headingSize('gateways') }}">Supported payment ecosystem</h2>
             <p class="mt-2 text-slate-300">Pesapal for cards, Yo Payments for mobile money.</p>
             <x-payment-method-logos align="start" :logos="$content->payment_logos" class="mt-8" />
         </section>
@@ -200,7 +200,7 @@
         {{-- FAQ --}}
         <section id="faq" class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
-                <h2 class="text-[clamp(1.25rem,4vw,1.875rem)] font-bold uppercase">Common questions</h2>
+                <h2 class="font-bold" style="font-size: {{ $content->headingSize('faq') }}">Common questions</h2>
                 <p class="mt-3 text-slate-300">Find answers to frequently asked questions about SentePro.</p>
                 <a href="/login" class="mt-4 inline-flex text-sm font-semibold text-lime-300 hover:text-lime-200">Have another question? Log in and open a support ticket →</a>
             </div>
@@ -224,7 +224,7 @@
     <section class="relative overflow-hidden bg-slate-900 py-20">
         <span class="pointer-events-none absolute -right-6 -top-10 select-none text-[10rem] font-black leading-none text-lime-400/10 sm:text-[14rem]">$0</span>
         <div class="relative mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8">
-            <h2 class="text-[clamp(1.25rem,4.5vw,2.25rem)] font-bold uppercase text-white">{{ $content->cta_banner_heading }}</h2>
+            <h2 class="font-bold text-white" style="font-size: {{ $content->headingSize('cta') }}">{{ $content->cta_banner_heading }}</h2>
             <p class="max-w-xl text-slate-300">{{ $content->cta_banner_subtext }}</p>
             <a href="{{ route('business.register') }}" class="rounded-xl bg-lime-400 px-6 py-3 font-semibold text-slate-950 hover:bg-lime-300">Register now</a>
         </div>

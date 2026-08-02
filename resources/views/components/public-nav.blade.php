@@ -11,7 +11,7 @@
             <a href="/login" class="hover:text-white">Login</a>
         </nav>
         <div class="flex items-center gap-3">
-            <a href="{{ route('business.register') }}" class="rounded-full bg-lime-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-lime-300">Start free onboarding</a>
+            <a href="{{ route('business.register') }}" class="rounded-xl bg-lime-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-lime-300">Start free onboarding</a>
             <button type="button" class="text-slate-300 hover:text-white md:hidden" @click="mobileOpen = ! mobileOpen" aria-label="Toggle menu">
                 <x-sidebar-icon name="menu" class="h-6 w-6" x-show="! mobileOpen" />
                 <x-sidebar-icon name="x" class="h-6 w-6" x-show="mobileOpen" style="display: none;" />

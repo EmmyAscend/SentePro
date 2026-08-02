@@ -227,4 +227,84 @@ class LandingPageContentManagementTest extends TestCase
         $this->assertNotNull($path);
         Storage::disk('public')->assertExists($path);
     }
+
+    public function test_a_payment_logo_can_be_saved_with_only_an_image_and_no_label(): void
+    {
+        Storage::fake('public');
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $logos = array_fill(0, 4, ['label' => 'Visa']);
+        $logos[] = ['label' => '', 'image' => UploadedFile::fake()->image('new-network.png')];
+
+        $payload = array_merge($this->validPayload(), ['payment_logos' => $logos]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect()->assertSessionHasNoErrors();
+
+        $content = LandingPageContent::current();
+        $this->assertCount(5, $content->payment_logos);
+        $this->assertNotNull($content->payment_logos[4]['image_path']);
+    }
+
+    public function test_resubmitting_a_payment_logos_existing_image_path_keeps_the_image(): void
+    {
+        Storage::fake('public');
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $logos = array_fill(0, 4, ['label' => 'Visa']);
+        $logos[0]['image'] = UploadedFile::fake()->image('visa.png');
+        $this->actingAs($superAdmin)->put('/admin/landing-page', array_merge($this->validPayload(), ['payment_logos' => $logos]));
+        $originalPath = LandingPageContent::current()->payment_logos[0]['image_path'];
+
+        // The real admin form carries each logo's current image_path forward
+        // as a hidden field on every save, exactly like this.
+        $resubmitted = LandingPageContent::current()->payment_logos;
+        $this->actingAs($superAdmin)->put('/admin/landing-page', array_merge($this->validPayload(), ['payment_logos' => $resubmitted]))->assertRedirect();
+
+        $this->assertSame($originalPath, LandingPageContent::current()->payment_logos[0]['image_path']);
+        Storage::disk('public')->assertExists($originalPath);
+    }
+
+    public function test_removing_a_logo_does_not_corrupt_the_remaining_images(): void
+    {
+        Storage::fake('public');
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $logos = array_fill(0, 4, ['label' => 'Visa']);
+        $logos[0]['image'] = UploadedFile::fake()->image('first.png');
+        $logos[1]['image'] = UploadedFile::fake()->image('second.png');
+        $this->actingAs($superAdmin)->put('/admin/landing-page', array_merge($this->validPayload(), ['payment_logos' => $logos]));
+
+        $saved = LandingPageContent::current()->payment_logos;
+        $secondLogoPath = $saved[1]['image_path'];
+
+        // Remove the first logo — the client re-sends the remaining items
+        // (each carrying its own real image_path) shifted down by one index.
+        $afterRemoval = array_values(array_slice($saved, 1));
+        $this->actingAs($superAdmin)->put('/admin/landing-page', array_merge($this->validPayload(), ['payment_logos' => $afterRemoval]))->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertCount(3, $content->payment_logos);
+        $this->assertSame($secondLogoPath, $content->payment_logos[0]['image_path']);
+    }
+
+    public function test_super_admin_can_adjust_an_individual_headings_size(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), ['heading_sizes' => ['hero' => 'sm']]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $this->assertSame('sm', LandingPageContent::current()->heading_sizes['hero']);
+        $this->get('/')->assertSee(LandingPageContent::HEADING_SIZES['sm'], false);
+    }
+
+    public function test_an_invalid_heading_size_is_rejected(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), ['heading_sizes' => ['hero' => 'not-a-real-size']]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertSessionHasErrors('heading_sizes.hero');
+    }
 }

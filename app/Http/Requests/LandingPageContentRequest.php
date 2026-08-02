@@ -35,11 +35,14 @@ class LandingPageContentRequest extends FormRequest
             'contact_location' => ['nullable', 'string', 'max:255'],
             'contact_phone' => ['nullable', 'string', 'max:50'],
             'footer_tagline' => ['required', 'string', 'max:255'],
+            'heading_sizes' => ['nullable', 'array'],
+            'heading_sizes.*' => ['nullable', 'string', Rule::in(array_keys(LandingPageContent::HEADING_SIZES))],
             'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'how_it_works_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'payment_links_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'payment_logos' => ['required', 'array', 'min:1', 'max:20'],
-            'payment_logos.*.label' => ['required', 'string', 'max:255'],
+            'payment_logos.*.label' => ['nullable', 'string', 'max:255'],
+            'payment_logos.*.image_path' => ['nullable', 'string', 'max:255'],
             'payment_logos.*.image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
         ];
     }
