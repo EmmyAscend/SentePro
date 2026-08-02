@@ -70,4 +70,45 @@ class LandingPageTest extends TestCase
         $response->assertSee(route('business.register', ['type' => 'business']), false);
         $response->assertSee(route('business.register', ['type' => 'individual']), false);
     }
+
+    public function test_requirements_default_order_is_individual_business_ngo(): void
+    {
+        $response = $this->get('/');
+        $response->assertOk();
+
+        $content = $response->getContent();
+        $individualPos = strpos($content, 'Individuals');
+        $businessPos = strpos($content, 'Businesses');
+        $ngoPos = strpos($content, 'NGOs');
+
+        $this->assertNotFalse($individualPos);
+        $this->assertNotFalse($businessPos);
+        $this->assertNotFalse($ngoPos);
+        $this->assertTrue($individualPos < $businessPos);
+        $this->assertTrue($businessPos < $ngoPos);
+    }
+
+    public function test_requirements_and_features_no_longer_render_icon_circles(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertDontSee('h-10 w-10 items-center justify-center rounded-full bg-lime-400/10', false);
+    }
+
+    public function test_features_render_as_cards(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10', false);
+    }
+
+    public function test_footer_wraps_powered_by_and_copyright_onto_separate_lines_on_mobile(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('mx-auto mt-10 flex max-w-6xl flex-col border-t border-white/10 px-4 pt-6 text-xs text-slate-500 sm:flex-row', false);
+    }
 }

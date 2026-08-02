@@ -46,10 +46,7 @@
                     @endif
                 </div>
                 <div class="{{ $loop->iteration % 2 === 0 ? 'lg:order-1' : 'lg:order-2' }}">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400/10 text-lime-300">
-                        <x-sidebar-icon :name="$requirement['icon'] ?? 'shield'" class="h-5 w-5" />
-                    </div>
-                    <h3 class="mt-4 font-semibold text-white">{{ $requirement['title'] }}</h3>
+                    <h3 class="font-semibold text-white">{{ $requirement['title'] }}</h3>
                     <p class="mt-1 text-slate-400">{{ $requirement['description'] }}</p>
                     <a href="{{ $registerUrl }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-lime-300">{{ $typeLabel ? 'Register as '.$typeLabel : 'Register now' }}</a>
                 </div>
@@ -61,16 +58,13 @@
         {{-- Features --}}
         <section id="features">
             <div class="mb-8 max-w-2xl">
-                <h2 class="font-bold" style="font-size: {{ $content->headingSize('features') }}">Why SentePro?</h2>
-                <p class="mt-2 text-slate-300">Fast, flexible, and secure payment collection for growing businesses.</p>
+                <h2 class="font-bold" style="font-size: {{ $content->headingSize('features') }}">{{ $content->features_heading }}</h2>
+                <p class="mt-2 text-slate-300">{{ $content->features_subtext }}</p>
             </div>
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($content->features as $feature)
-                    <div>
-                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400/10 text-lime-300">
-                            <x-sidebar-icon :name="$feature['icon'] ?? 'link'" class="h-5 w-5" />
-                        </div>
-                        <h3 class="mt-4 font-semibold text-white">{{ $feature['title'] }}</h3>
+                    <div class="rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10">
+                        <h3 class="font-semibold text-white">{{ $feature['title'] }}</h3>
                         <p class="mt-1 text-sm text-slate-400">{{ $feature['description'] }}</p>
                     </div>
                 @endforeach
@@ -80,8 +74,8 @@
         {{-- Wallet balances --}}
         <section class="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
-                <h2 class="font-bold" style="font-size: {{ $content->headingSize('balances') }}">One dashboard for every balance</h2>
-                <p class="mt-3 text-slate-300">See exactly where your money is — available to withdraw, reserved for settlement, or already paid out.</p>
+                <h2 class="font-bold" style="font-size: {{ $content->headingSize('balances') }}">{{ $content->balances_heading }}</h2>
+                <p class="mt-3 text-slate-300">{{ $content->balances_subtext }}</p>
                 <ul class="mt-5 space-y-2 text-sm text-slate-300">
                     <li>• Request a settlement the moment funds are available</li>
                     <li>• Fees are calculated and locked in upfront</li>
@@ -112,8 +106,8 @@
         <div class="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
             <div class="order-2 lg:order-1">
                 <p class="inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
-                <h2 class="mt-4 font-bold text-white" style="font-size: {{ $content->headingSize('payment_links') }}">Share a link or QR code, get paid instantly</h2>
-                <p class="mt-3 text-slate-300">Every payment link comes with a scannable QR code and a copyable checkout URL — no integration work required to start collecting.</p>
+                <h2 class="mt-4 font-bold text-white" style="font-size: {{ $content->headingSize('payment_links') }}">{{ $content->payment_links_heading }}</h2>
+                <p class="mt-3 text-slate-300">{{ $content->payment_links_subtext }}</p>
                 <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5">Get started</a>
             </div>
             <div class="order-1 flex justify-center lg:order-2">

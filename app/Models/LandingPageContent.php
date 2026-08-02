@@ -8,18 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class LandingPageContent extends Model
 {
     /**
-     * Content icons offered to a super admin for Requirements/Features items,
-     * matching a curated subset of <x-sidebar-icon>'s registry — excludes
-     * pure UI-chrome names (menu/x/chevron) that aren't meaningful as a
-     * standalone content icon.
-     */
-    public const ICON_OPTIONS = [
-        'home', 'banknotes', 'link', 'receipt', 'transfer', 'chat', 'flag',
-        'book', 'megaphone', 'server', 'webhook', 'chart', 'key', 'users',
-        'shield', 'wallet', 'clipboard', 'check',
-    ];
-
-    /**
      * Registration types a Requirements section can link its register button
      * to, so `/business/register?type=...` lands a visitor straight on the
      * matching field group instead of asking again. '' means "no particular
@@ -72,6 +60,8 @@ class LandingPageContent extends Model
         'hero_subtext',
         'hero_cta_text',
         'features',
+        'features_heading',
+        'features_subtext',
         'faqs',
         'faq_heading',
         'faq_subtext',
@@ -82,6 +72,10 @@ class LandingPageContent extends Model
         'cta_banner_subtext',
         'gateways_heading',
         'gateways_subtext',
+        'balances_heading',
+        'balances_subtext',
+        'payment_links_heading',
+        'payment_links_subtext',
         'contact_location',
         'contact_phone',
         'footer_tagline',
@@ -132,15 +126,17 @@ class LandingPageContent extends Model
             'requirements_heading' => 'Who can use SentePro?',
             'requirements_subtext' => "Whatever kind of organization you run, here's what you'll need to get verified.",
             'requirements' => [
-                ['title' => 'NGOs', 'description' => "Registered non-profits and NGOs can collect donations and program payments — you'll need your registration certificate details and organization contact information to get verified.", 'icon' => 'shield', 'type' => 'ngo', 'image_path' => null],
-                ['title' => 'Businesses', 'description' => "Any registered business can start collecting payments — you'll need your business registration number, trading name, and expected monthly transaction volume.", 'icon' => 'banknotes', 'type' => 'business', 'image_path' => null],
-                ['title' => 'Individuals', 'description' => 'Freelancers and sole proprietors can collect payments too — a valid form of identification and your contact details are all you need to get started.', 'icon' => 'users', 'type' => 'individual', 'image_path' => null],
+                ['title' => 'Individuals', 'description' => 'Freelancers and sole proprietors can collect payments too — a valid form of identification and your contact details are all you need to get started.', 'type' => 'individual', 'image_path' => null],
+                ['title' => 'Businesses', 'description' => "Any registered business can start collecting payments — you'll need your business registration number, trading name, and expected monthly transaction volume.", 'type' => 'business', 'image_path' => null],
+                ['title' => 'NGOs', 'description' => "Registered non-profits and NGOs can collect donations and program payments — you'll need your registration certificate details and organization contact information to get verified.", 'type' => 'ngo', 'image_path' => null],
             ],
+            'features_heading' => 'Why SentePro?',
+            'features_subtext' => 'Fast, flexible, and secure payment collection for growing businesses.',
             'features' => [
-                ['title' => 'Unified payment collection', 'description' => 'Collect through one marketplace-ready flow without requiring each business to maintain its own gateway.', 'icon' => 'link'],
-                ['title' => 'Verified business onboarding', 'description' => 'Capture business, owner, and documentation details under a production-safe verification pipeline.', 'icon' => 'check'],
-                ['title' => 'Role-aware access', 'description' => 'Super admins, business admins, and staff all operate through structured, permission-based workflows.', 'icon' => 'users'],
-                ['title' => 'Transparent settlement fees', 'description' => 'Every settlement method shows its fees and timing upfront, locked in the moment you request a payout.', 'icon' => 'clipboard'],
+                ['title' => 'Unified payment collection', 'description' => 'Collect through one marketplace-ready flow without requiring each business to maintain its own gateway.'],
+                ['title' => 'Verified business onboarding', 'description' => 'Capture business, owner, and documentation details under a production-safe verification pipeline.'],
+                ['title' => 'Role-aware access', 'description' => 'Super admins, business admins, and staff all operate through structured, permission-based workflows.'],
+                ['title' => 'Transparent settlement fees', 'description' => 'Every settlement method shows its fees and timing upfront, locked in the moment you request a payout.'],
             ],
             'faqs' => [
                 ['question' => 'How do I register my business on SentePro?', 'answer' => "Submit your business details and an owner account together — you're logged in immediately, and a super admin reviews and approves your business before you can accept live payments."],
@@ -163,6 +159,10 @@ class LandingPageContent extends Model
             'cta_banner_subtext' => 'Register your business today and start collecting payments as soon as you\'re verified.',
             'gateways_heading' => 'Supported payment ecosystem',
             'gateways_subtext' => 'Pesapal for cards, Yo Payments for mobile money.',
+            'balances_heading' => 'One dashboard for every balance',
+            'balances_subtext' => 'See exactly where your money is — available to withdraw, reserved for settlement, or already paid out.',
+            'payment_links_heading' => 'Share a link or QR code, get paid instantly',
+            'payment_links_subtext' => 'Every payment link comes with a scannable QR code and a copyable checkout URL — no integration work required to start collecting.',
             'footer_tagline' => 'Payment collection infrastructure for East African businesses.',
             'heading_sizes' => array_map(fn (array $heading) => $heading['default'], self::HEADING_KEYS),
             'payment_logos' => [

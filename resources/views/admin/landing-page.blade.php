@@ -109,7 +109,7 @@
                             <h3 class="text-lg font-semibold text-white">Requirements</h3>
                             <p class="mt-1 text-sm text-slate-400">Who can use SentePro — shown immediately below the payment logos on the homepage, as full alternating image/text sections.</p>
                         </div>
-                        <button type="button" @click="items.push({ title: '', description: '', icon: 'shield', type: '', image_path: null })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add requirement</button>
+                        <button type="button" @click="items.push({ title: '', description: '', type: '', image_path: null })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add requirement</button>
                     </div>
                     <div class="mt-4 grid gap-4 sm:grid-cols-2">
                         <label class="flex flex-col gap-1 text-sm">
@@ -125,18 +125,10 @@
                     </div>
                     <div class="mt-4 space-y-4">
                         <template x-for="(item, index) in items" :key="index">
-                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_1fr_1fr_2fr_auto] md:items-end">
+                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_1fr_2fr_auto] md:items-end">
                                 <label class="flex flex-col gap-1 text-sm">
                                     <span class="font-medium text-slate-300">Title</span>
                                     <input type="text" :name="`requirements[${index}][title]`" x-model="item.title" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
-                                </label>
-                                <label class="flex flex-col gap-1 text-sm">
-                                    <span class="font-medium text-slate-300">Icon</span>
-                                    <select :name="`requirements[${index}][icon]`" x-model="item.icon" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
-                                        @foreach (\App\Models\LandingPageContent::ICON_OPTIONS as $iconOption)
-                                            <option value="{{ $iconOption }}">{{ ucfirst($iconOption) }}</option>
-                                        @endforeach
-                                    </select>
                                 </label>
                                 <label class="flex flex-col gap-1 text-sm">
                                     <span class="font-medium text-slate-300">Register button links to</span>
@@ -170,22 +162,26 @@
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10" x-data="{ items: @js(old('features', $content->features ?? [])) }">
                     <div class="flex items-center justify-between gap-4">
                         <h3 class="text-lg font-semibold text-white">Features</h3>
-                        <button type="button" @click="items.push({ title: '', description: '', icon: 'link' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add feature</button>
+                        <button type="button" @click="items.push({ title: '', description: '' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add feature</button>
+                    </div>
+                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Section heading</span>
+                            <input type="text" name="features_heading" value="{{ old('features_heading', $content->features_heading) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('features_heading')" />
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Section subtext</span>
+                            <input type="text" name="features_subtext" value="{{ old('features_subtext', $content->features_subtext) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('features_subtext')" />
+                        </label>
                     </div>
                     <div class="mt-4 space-y-4">
                         <template x-for="(item, index) in items" :key="index">
-                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_1fr_2fr_auto] md:items-end">
+                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_2fr_auto] md:items-end">
                                 <label class="flex flex-col gap-1 text-sm">
                                     <span class="font-medium text-slate-300">Title</span>
                                     <input type="text" :name="`features[${index}][title]`" x-model="item.title" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
-                                </label>
-                                <label class="flex flex-col gap-1 text-sm">
-                                    <span class="font-medium text-slate-300">Icon</span>
-                                    <select :name="`features[${index}][icon]`" x-model="item.icon" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
-                                        @foreach (\App\Models\LandingPageContent::ICON_OPTIONS as $iconOption)
-                                            <option value="{{ $iconOption }}">{{ ucfirst($iconOption) }}</option>
-                                        @endforeach
-                                    </select>
                                 </label>
                                 <label class="flex flex-col gap-1 text-sm">
                                     <span class="font-medium text-slate-300">Description</span>
@@ -200,15 +196,43 @@
 
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
                     <h3 class="text-lg font-semibold text-white">"Payment links &amp; QR codes" section</h3>
-                    <label class="mt-4 flex flex-col gap-2 text-sm">
-                        <span class="font-medium text-slate-300">Image</span>
-                        @if ($content->payment_links_image_path)
-                            <img src="{{ \Illuminate\Support\Facades\Storage::url($content->payment_links_image_path) }}" alt="Current payment links image" class="h-32 w-full max-w-sm rounded-lg object-cover">
-                        @endif
-                        <input type="file" name="payment_links_image" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-white">
-                        <span class="text-xs text-slate-500">Leave blank to keep the current image. Capped at 2MB.</span>
-                        <x-input-error :messages="$errors->get('payment_links_image')" />
-                    </label>
+                    <div class="mt-4 grid gap-4">
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Heading</span>
+                            <input type="text" name="payment_links_heading" value="{{ old('payment_links_heading', $content->payment_links_heading) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('payment_links_heading')" />
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Subtext</span>
+                            <input type="text" name="payment_links_subtext" value="{{ old('payment_links_subtext', $content->payment_links_subtext) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('payment_links_subtext')" />
+                        </label>
+                        <label class="flex flex-col gap-2 text-sm">
+                            <span class="font-medium text-slate-300">Image</span>
+                            @if ($content->payment_links_image_path)
+                                <img src="{{ \Illuminate\Support\Facades\Storage::url($content->payment_links_image_path) }}" alt="Current payment links image" class="h-32 w-full max-w-sm rounded-lg object-cover">
+                            @endif
+                            <input type="file" name="payment_links_image" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-white">
+                            <span class="text-xs text-slate-500">Leave blank to keep the current image. Capped at 2MB.</span>
+                            <x-input-error :messages="$errors->get('payment_links_image')" />
+                        </label>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                    <h3 class="text-lg font-semibold text-white">"One dashboard for every balance" section</h3>
+                    <div class="mt-4 grid gap-4">
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Heading</span>
+                            <input type="text" name="balances_heading" value="{{ old('balances_heading', $content->balances_heading) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('balances_heading')" />
+                        </label>
+                        <label class="flex flex-col gap-1 text-sm">
+                            <span class="font-medium text-slate-300">Subtext</span>
+                            <input type="text" name="balances_subtext" value="{{ old('balances_subtext', $content->balances_subtext) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                            <x-input-error :messages="$errors->get('balances_subtext')" />
+                        </label>
+                    </div>
                 </div>
 
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10" x-data="{ items: @js(old('how_it_works_steps', $content->how_it_works_steps ?? [])) }">

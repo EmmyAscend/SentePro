@@ -44,7 +44,8 @@
             </div>
         @endif
     </div>
-    <div class="mx-auto mt-10 max-w-6xl border-t border-white/10 px-4 pt-6 text-xs text-slate-500 sm:px-6 lg:px-8">
-        Powered by <a href="https://razertechnology.com" target="_blank" rel="noopener noreferrer" class="font-medium text-slate-400 hover:text-white">RAZERTECH</a> &middot; &copy; {{ date('Y') }} SentePro. All rights reserved.
+    <div class="mx-auto mt-10 flex max-w-6xl flex-col border-t border-white/10 px-4 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:gap-1 sm:px-6 lg:px-8">
+        <span>Powered by <a href="https://razertechnology.com" target="_blank" rel="noopener noreferrer" class="font-medium text-slate-400 hover:text-white">RAZERTECH</a> &middot;</span>
+        <span>&copy; {{ date('Y') }} SentePro. All rights reserved.</span>
     </div>
 </footer>

@@ -20,10 +20,12 @@ class LandingPageContentManagementTest extends TestCase
             'hero_headline' => 'Updated headline',
             'hero_subtext' => 'Updated subtext',
             'hero_cta_text' => 'Start free onboarding',
-            'features' => array_fill(0, 4, ['title' => 'Feature title', 'description' => 'Feature description', 'icon' => 'link']),
+            'features_heading' => 'Updated features heading',
+            'features_subtext' => 'Updated features subtext',
+            'features' => array_fill(0, 4, ['title' => 'Feature title', 'description' => 'Feature description']),
             'requirements_heading' => 'Updated requirements heading',
             'requirements_subtext' => 'Updated requirements subtext',
-            'requirements' => array_fill(0, 3, ['title' => 'Requirement title', 'description' => 'Requirement description', 'icon' => 'shield', 'type' => 'business']),
+            'requirements' => array_fill(0, 3, ['title' => 'Requirement title', 'description' => 'Requirement description', 'type' => 'business']),
             'faq_heading' => 'Frequently Asked Questions',
             'faq_subtext' => 'Updated FAQ subtext',
             'faqs' => array_fill(0, 5, ['question' => 'A question?', 'answer' => 'An answer.']),
@@ -31,6 +33,10 @@ class LandingPageContentManagementTest extends TestCase
             'cta_banner_subtext' => 'Updated banner subtext',
             'gateways_heading' => 'Updated gateways heading',
             'gateways_subtext' => 'Updated gateways subtext',
+            'balances_heading' => 'Updated balances heading',
+            'balances_subtext' => 'Updated balances subtext',
+            'payment_links_heading' => 'Updated payment links heading',
+            'payment_links_subtext' => 'Updated payment links subtext',
             'contact_location' => 'Kampala, Uganda',
             'contact_phone' => '+256700000000',
             'footer_tagline' => 'Updated footer tagline',
@@ -140,8 +146,8 @@ class LandingPageContentManagementTest extends TestCase
         $superAdmin = User::factory()->superAdmin()->create();
 
         $payload = array_merge($this->validPayload(), [
-            'features' => array_fill(0, 6, ['title' => 'Extra feature', 'description' => 'Extra description', 'icon' => 'link']),
-            'requirements' => array_fill(0, 5, ['title' => 'Extra requirement', 'description' => 'Extra description', 'icon' => 'shield']),
+            'features' => array_fill(0, 6, ['title' => 'Extra feature', 'description' => 'Extra description']),
+            'requirements' => array_fill(0, 5, ['title' => 'Extra requirement', 'description' => 'Extra description']),
             'faqs' => array_fill(0, 7, ['question' => 'Extra question?', 'answer' => 'Extra answer.']),
             'payment_logos' => array_fill(0, 6, ['label' => 'Extra Network']),
         ]);
@@ -162,33 +168,6 @@ class LandingPageContentManagementTest extends TestCase
         $payload = array_merge($this->validPayload(), ['features' => []]);
 
         $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertSessionHasErrors('features');
-    }
-
-    public function test_super_admin_can_choose_icons_for_requirements_and_features(): void
-    {
-        $superAdmin = User::factory()->superAdmin()->create();
-
-        $payload = array_merge($this->validPayload(), [
-            'requirements' => [['title' => 'Custom requirement', 'description' => 'Custom description', 'icon' => 'wallet']],
-            'features' => [['title' => 'Custom feature', 'description' => 'Custom description', 'icon' => 'chart']],
-        ]);
-
-        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
-
-        $content = LandingPageContent::current();
-        $this->assertSame('wallet', $content->requirements[0]['icon']);
-        $this->assertSame('chart', $content->features[0]['icon']);
-    }
-
-    public function test_an_invalid_icon_is_rejected(): void
-    {
-        $superAdmin = User::factory()->superAdmin()->create();
-
-        $payload = array_merge($this->validPayload(), [
-            'requirements' => [['title' => 'Custom requirement', 'description' => 'Custom description', 'icon' => 'not-a-real-icon']],
-        ]);
-
-        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertSessionHasErrors('requirements.0.icon');
     }
 
     public function test_super_admin_can_update_the_contact_section(): void
@@ -356,7 +335,7 @@ class LandingPageContentManagementTest extends TestCase
 
         $payload = array_merge($this->validPayload(), [
             'requirements_heading' => 'A brand new requirements heading',
-            'requirements' => [['title' => 'Freelancers', 'description' => 'Solo operators.', 'icon' => 'users', 'type' => 'individual']],
+            'requirements' => [['title' => 'Freelancers', 'description' => 'Solo operators.', 'type' => 'individual']],
         ]);
 
         $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
@@ -375,7 +354,7 @@ class LandingPageContentManagementTest extends TestCase
         Storage::fake('public');
         $superAdmin = User::factory()->superAdmin()->create();
 
-        $requirements = [['title' => 'Freelancers', 'description' => 'Solo operators.', 'icon' => 'users', 'type' => 'individual', 'image' => UploadedFile::fake()->image('individual.png')]];
+        $requirements = [['title' => 'Freelancers', 'description' => 'Solo operators.', 'type' => 'individual', 'image' => UploadedFile::fake()->image('individual.png')]];
 
         $payload = array_merge($this->validPayload(), ['requirements' => $requirements]);
 
@@ -426,5 +405,71 @@ class LandingPageContentManagementTest extends TestCase
 
         $home = $this->get('/');
         $home->assertSee('FAQ - a brand new heading');
+    }
+
+    public function test_super_admin_can_update_the_features_heading(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'features_heading' => 'A brand new features heading',
+            'features_subtext' => 'A brand new features subtext',
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame('A brand new features heading', $content->features_heading);
+        $this->assertSame('A brand new features subtext', $content->features_subtext);
+
+        $home = $this->get('/');
+        $home->assertSee('A brand new features heading');
+    }
+
+    public function test_super_admin_can_update_the_balances_heading(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'balances_heading' => 'A brand new balances heading',
+            'balances_subtext' => 'A brand new balances subtext',
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame('A brand new balances heading', $content->balances_heading);
+        $this->assertSame('A brand new balances subtext', $content->balances_subtext);
+
+        $home = $this->get('/');
+        $home->assertSee('A brand new balances heading');
+    }
+
+    public function test_super_admin_can_update_the_payment_links_heading(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'payment_links_heading' => 'A brand new payment links heading',
+            'payment_links_subtext' => 'A brand new payment links subtext',
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame('A brand new payment links heading', $content->payment_links_heading);
+        $this->assertSame('A brand new payment links subtext', $content->payment_links_subtext);
+
+        $home = $this->get('/');
+        $home->assertSee('A brand new payment links heading');
+    }
+
+    public function test_icon_fields_are_no_longer_accepted_or_required(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $this->validPayload())
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
     }
 }
