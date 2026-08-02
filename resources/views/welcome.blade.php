@@ -15,7 +15,7 @@
                     <x-brand-mark class="text-2xl" />
                     <nav class="hidden gap-6 text-sm text-slate-300 md:flex">
                         <a href="#features" class="hover:text-white">Features</a>
-                        <a href="#gateways" class="hover:text-white">Gateways</a>
+                        <a href="#gateways" class="hover:text-white">Supported Payments</a>
                         <a href="#faq" class="hover:text-white">FAQ</a>
                         <a href="/login" class="hover:text-white">Login</a>
                     </nav>
@@ -27,7 +27,7 @@
             <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
                 <section class="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:py-10">
                     <div>
-                        <p class="mb-4 inline-flex border border-lime-400/40 bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">{{ $content->hero_badge_text }}</p>
+                        <p class="mb-4 inline-flex bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">{{ $content->hero_badge_text }}</p>
                         <h1 class="max-w-2xl text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">{{ $content->hero_headline }}</h1>
                         <p class="mt-5 max-w-2xl text-lg text-slate-300">{{ $content->hero_subtext }}</p>
                         <div class="mt-8 flex flex-wrap gap-3">
@@ -36,33 +36,8 @@
                         </div>
                     </div>
 
-                    <div class="rounded-3xl border border-white/10 bg-white/5 p-2 shadow-2xl shadow-slate-950/40">
-                        <div class="flex items-center gap-1.5 rounded-t-2xl bg-slate-900 px-4 py-3">
-                            <span class="h-2.5 w-2.5 rounded-full bg-rose-400/70"></span>
-                            <span class="h-2.5 w-2.5 rounded-full bg-amber-400/70"></span>
-                            <span class="h-2.5 w-2.5 rounded-full bg-lime-400/70"></span>
-                            <span class="ml-3 truncate rounded-md bg-slate-800 px-2 py-0.5 text-xs text-slate-400">app.sentepro.io/dashboard</span>
-                        </div>
-                        <div class="rounded-b-2xl bg-slate-900 p-4">
-                            <div class="grid gap-3 sm:grid-cols-2">
-                                <div class="rounded-2xl bg-slate-800/60 p-4">
-                                    <div class="text-sm text-slate-400">{{ $content->stat_1_label }}</div>
-                                    <div class="mt-2 text-3xl font-bold text-white">{{ $content->stat_1_value }}</div>
-                                </div>
-                                <div class="rounded-2xl bg-slate-800/60 p-4">
-                                    <div class="text-sm text-slate-400">{{ $content->stat_2_label }}</div>
-                                    <div class="mt-2 text-3xl font-bold text-white">{{ $content->stat_2_value }}</div>
-                                </div>
-                                <div class="rounded-2xl bg-slate-800/60 p-4 sm:col-span-2">
-                                    <div class="text-sm text-slate-400">Platform snapshot</div>
-                                    <ul class="mt-3 space-y-2 text-sm text-slate-200">
-                                        <li>• Verified onboarding workflow</li>
-                                        <li>• Multi-tenant staff administration</li>
-                                        <li>• Queued settlement and payment orchestration</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 shadow-2xl shadow-slate-950/40">
+                        <x-illustration-shop-payment class="aspect-[4/3] w-full" />
                     </div>
                 </section>
             </div>
@@ -152,7 +127,7 @@
             <section class="bg-slate-900 py-20">
                 <div class="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
                     <div class="order-2 lg:order-1">
-                        <p class="inline-flex border border-lime-400/40 bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
+                        <p class="inline-flex bg-lime-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
                         <h2 class="mt-4 text-3xl font-bold text-white">Share a link or QR code, get paid instantly</h2>
                         <p class="mt-3 text-slate-300">Every payment link comes with a scannable QR code and a copyable checkout URL — no integration work required to start collecting.</p>
                         <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5">Get started</a>
@@ -173,17 +148,8 @@
             <div class="mx-auto max-w-6xl space-y-20 px-4 py-20 sm:px-6 lg:px-8">
                 {{-- How it works --}}
                 <section id="how-it-works" class="grid gap-10 lg:grid-cols-2 lg:items-center">
-                    <div class="rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10">
-                        <p class="text-sm font-semibold text-white">Create your SentePro account</p>
-                        <div class="mt-4 space-y-3">
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-500">First name</div>
-                                <div class="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-500">Last name</div>
-                            </div>
-                            <div class="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-500">Business name</div>
-                            <div class="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-slate-500">Email address</div>
-                            <div class="rounded-xl bg-lime-400 px-3 py-2 text-center text-sm font-semibold text-slate-950">Register</div>
-                        </div>
+                    <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900">
+                        <x-illustration-register class="aspect-[4/3] w-full" />
                     </div>
                     <div>
                         <h2 class="text-3xl font-bold">It's simple to start using SentePro</h2>
@@ -225,9 +191,7 @@
                 <section id="gateways">
                     <h2 class="text-3xl font-bold">Supported payment ecosystem</h2>
                     <p class="mt-2 text-slate-300">Pesapal for cards, Yo Payments for mobile money.</p>
-                    <div class="mt-6 rounded-2xl border border-white/10 bg-white/5 p-6">
-                        <x-payment-method-logos />
-                    </div>
+                    <x-payment-method-logos class="mt-8" />
                 </section>
 
                 {{-- FAQ --}}
@@ -274,7 +238,7 @@
                         <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Product</p>
                         <ul class="mt-4 space-y-2 text-sm text-slate-300">
                             <li><a href="#features" class="hover:text-white">Features</a></li>
-                            <li><a href="#gateways" class="hover:text-white">Gateways</a></li>
+                            <li><a href="#gateways" class="hover:text-white">Supported Payments</a></li>
                             <li><a href="#faq" class="hover:text-white">FAQ</a></li>
                         </ul>
                     </div>
