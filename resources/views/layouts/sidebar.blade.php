@@ -65,6 +65,7 @@ if (auth()->user()->isSuperAdmin()) {
             ['route' => 'admin.gateway-monitoring', 'pattern' => 'admin.gateway-monitoring', 'label' => 'Gateway Monitoring', 'icon' => 'server'],
             ['route' => 'admin.audit-logs', 'pattern' => 'admin.audit-logs', 'label' => 'Audit Logs', 'icon' => 'shield'],
             ['route' => 'admin.landing-page.edit', 'pattern' => 'admin.landing-page.*', 'label' => 'Landing Page', 'icon' => 'link'],
+            ['route' => 'admin.legal-pages', 'pattern' => 'admin.legal-pages*', 'label' => 'Legal Pages', 'icon' => 'clipboard'],
         ],
     ];
 }

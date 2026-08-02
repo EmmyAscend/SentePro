@@ -229,7 +229,7 @@
 
             {{-- Footer --}}
             <footer class="border-t border-white/10 py-12">
-                <div class="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr] lg:px-8">
+                <div class="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr_1fr] lg:px-8">
                     <div>
                         <x-brand-mark class="text-2xl" />
                         <p class="mt-3 max-w-xs text-sm text-slate-400">Payment collection infrastructure for East African businesses.</p>
@@ -247,6 +247,14 @@
                         <ul class="mt-4 space-y-2 text-sm text-slate-300">
                             <li><a href="/login" class="hover:text-white">Login</a></li>
                             <li><a href="{{ route('business.register') }}" class="hover:text-white">Register your business</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Legal</p>
+                        <ul class="mt-4 space-y-2 text-sm text-slate-300">
+                            <li><a href="{{ route('legal.show', 'privacy-policy') }}" class="hover:text-white">Privacy Policy</a></li>
+                            <li><a href="{{ route('legal.show', 'terms-and-conditions') }}" class="hover:text-white">Terms and Conditions</a></li>
+                            <li><a href="{{ route('legal.show', 'refund-policy') }}" class="hover:text-white">Refund Policy</a></li>
                         </ul>
                     </div>
                 </div>

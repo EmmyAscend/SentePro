@@ -16,6 +16,7 @@ use App\Http\Controllers\GatewayMonitoringController;
 use App\Http\Controllers\GatewayProviderController;
 use App\Http\Controllers\KnowledgeBaseController;
 use App\Http\Controllers\LandingPageContentController;
+use App\Http\Controllers\LegalPageController;
 use App\Http\Controllers\PaymentLinkController;
 use App\Http\Controllers\PaymentTransactionController;
 use App\Http\Controllers\ProfileController;
@@ -35,6 +36,7 @@ use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\Webhooks\PesapalWebhookController;
 use App\Http\Controllers\Webhooks\YoPaymentsWebhookController;
 use App\Models\LandingPageContent;
+use App\Models\LegalPage;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -42,6 +44,10 @@ Route::get('/', function () {
         'content' => LandingPageContent::current(),
     ]);
 });
+
+Route::get('/legal/{slug}', [LegalPageController::class, 'show'])
+    ->whereIn('slug', LegalPage::SLUGS)
+    ->name('legal.show');
 
 Route::get('/pay/{paymentLink}', [PublicCheckoutController::class, 'show'])
     ->name('checkout.show');
@@ -153,6 +159,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
     Route::get('/admin/landing-page', [LandingPageContentController::class, 'edit'])->name('admin.landing-page.edit');
     Route::put('/admin/landing-page', [LandingPageContentController::class, 'update'])->name('admin.landing-page.update');
+    Route::get('/admin/legal-pages', [LegalPageController::class, 'index'])->name('admin.legal-pages');
+    Route::put('/admin/legal-pages/{legalPage}', [LegalPageController::class, 'update'])->name('admin.legal-pages.update');
 });
 
 Route::middleware('auth')->group(function () {
