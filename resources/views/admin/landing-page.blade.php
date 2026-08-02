@@ -12,9 +12,64 @@
                 <p class="mb-4 rounded-xl bg-emerald-500/15 px-4 py-3 text-sm font-medium text-emerald-300">{{ session('status') }}</p>
             @endif
 
-            <form method="POST" action="{{ route('admin.landing-page.update') }}" class="space-y-6">
+            <form method="POST" action="{{ route('admin.landing-page.update') }}" class="space-y-6" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                    <h3 class="text-lg font-semibold text-white">Images</h3>
+                    <p class="mt-1 text-sm text-slate-400">Leave a field blank to keep the current image. Each image is capped at 2MB.</p>
+                    <div class="mt-4 grid gap-6 md:grid-cols-3">
+                        <label class="flex flex-col gap-2 text-sm">
+                            <span class="font-medium text-slate-300">Hero image</span>
+                            @if ($content->hero_image_path)
+                                <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="Current hero image" class="h-24 w-full rounded-lg object-cover">
+                            @endif
+                            <input type="file" name="hero_image" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-white">
+                            <x-input-error :messages="$errors->get('hero_image')" />
+                        </label>
+                        <label class="flex flex-col gap-2 text-sm">
+                            <span class="font-medium text-slate-300">"It's simple to start" image</span>
+                            @if ($content->how_it_works_image_path)
+                                <img src="{{ \Illuminate\Support\Facades\Storage::url($content->how_it_works_image_path) }}" alt="Current how-it-works image" class="h-24 w-full rounded-lg object-cover">
+                            @endif
+                            <input type="file" name="how_it_works_image" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-white">
+                            <x-input-error :messages="$errors->get('how_it_works_image')" />
+                        </label>
+                        <label class="flex flex-col gap-2 text-sm">
+                            <span class="font-medium text-slate-300">"Payment links &amp; QR codes" image</span>
+                            @if ($content->payment_links_image_path)
+                                <img src="{{ \Illuminate\Support\Facades\Storage::url($content->payment_links_image_path) }}" alt="Current payment links image" class="h-24 w-full rounded-lg object-cover">
+                            @endif
+                            <input type="file" name="payment_links_image" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-white">
+                            <x-input-error :messages="$errors->get('payment_links_image')" />
+                        </label>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                    <h3 class="text-lg font-semibold text-white">Payment method logos (4)</h3>
+                    <p class="mt-1 text-sm text-slate-400">Leave the image blank to keep a styled text placeholder for that logo.</p>
+                    <div class="mt-4 grid gap-4 md:grid-cols-2">
+                        @for ($i = 0; $i < 4; $i++)
+                            @php $logo = old('payment_logos.'.$i, $content->payment_logos[$i] ?? ['label' => '', 'image_path' => null]); @endphp
+                            <div class="rounded-xl bg-slate-800/60 p-4 space-y-3">
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Label {{ $i + 1 }}</span>
+                                    <input type="text" name="payment_logos[{{ $i }}][label]" value="{{ $logo['label'] }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                </label>
+                                <label class="flex flex-col gap-2 text-sm">
+                                    <span class="font-medium text-slate-300">Logo image {{ $i + 1 }}</span>
+                                    @if (! empty($logo['image_path']))
+                                        <img src="{{ \Illuminate\Support\Facades\Storage::url($logo['image_path']) }}" alt="{{ $logo['label'] }}" class="h-10 w-auto max-w-[8rem] rounded bg-white object-contain p-1">
+                                    @endif
+                                    <input type="file" name="payment_logos[{{ $i }}][image]" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-950 file:px-3 file:py-2 file:text-white">
+                                </label>
+                            </div>
+                        @endfor
+                        <x-input-error :messages="$errors->get('payment_logos')" />
+                    </div>
+                </div>
 
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
                     <h3 class="text-lg font-semibold text-white">Hero</h3>

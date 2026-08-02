@@ -13,7 +13,11 @@
             </div>
 
             <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 shadow-2xl shadow-slate-950/40">
-                <x-illustration-shop-payment class="aspect-[4/3] w-full" />
+                @if ($content->hero_image_path)
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="A shopkeeper collecting a payment" class="aspect-[4/3] w-full object-cover">
+                @else
+                    <x-illustration-shop-payment class="aspect-[4/3] w-full" />
+                @endif
             </div>
         </section>
     </div>
@@ -21,7 +25,7 @@
     {{-- Trust strip --}}
     <section class="border-y border-white/10 bg-white/[0.02] py-6">
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <x-payment-method-logos />
+            <x-payment-method-logos :logos="$content->payment_logos" />
         </div>
     </section>
 
@@ -109,14 +113,20 @@
                 <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5">Get started</a>
             </div>
             <div class="order-1 flex justify-center lg:order-2">
-                <div class="rounded-3xl bg-slate-800/60 p-6 ring-1 ring-white/10">
-                    <div class="mx-auto grid h-40 w-40 grid-cols-5 gap-1 rounded-2xl bg-white p-3">
-                        @for ($i = 0; $i < 25; $i++)
-                            <span class="{{ in_array($i, [0, 1, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 23, 24, 12, 7, 17, 2, 22]) ? 'bg-slate-950' : 'bg-white' }} rounded-[2px]"></span>
-                        @endfor
+                @if ($content->payment_links_image_path)
+                    <div class="overflow-hidden rounded-3xl ring-1 ring-white/10">
+                        <img src="{{ \Illuminate\Support\Facades\Storage::url($content->payment_links_image_path) }}" alt="Payment links and QR codes" class="aspect-square w-64 object-cover">
                     </div>
-                    <p class="mt-4 text-center text-sm text-slate-400">app.sentepro.io/pay/…</p>
-                </div>
+                @else
+                    <div class="rounded-3xl bg-slate-800/60 p-6 ring-1 ring-white/10">
+                        <div class="mx-auto grid h-40 w-40 grid-cols-5 gap-1 rounded-2xl bg-white p-3">
+                            @for ($i = 0; $i < 25; $i++)
+                                <span class="{{ in_array($i, [0, 1, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 23, 24, 12, 7, 17, 2, 22]) ? 'bg-slate-950' : 'bg-white' }} rounded-[2px]"></span>
+                            @endfor
+                        </div>
+                        <p class="mt-4 text-center text-sm text-slate-400">app.sentepro.io/pay/…</p>
+                    </div>
+                @endif
             </div>
         </div>
     </section>
@@ -125,7 +135,11 @@
         {{-- How it works --}}
         <section id="how-it-works" class="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900">
-                <x-illustration-register class="aspect-[4/3] w-full" />
+                @if ($content->how_it_works_image_path)
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->how_it_works_image_path) }}" alt="Completing the SentePro signup form" class="aspect-[4/3] w-full object-cover">
+                @else
+                    <x-illustration-register class="aspect-[4/3] w-full" />
+                @endif
             </div>
             <div>
                 <h2 class="text-3xl font-bold">It's simple to start using SentePro</h2>
@@ -167,7 +181,7 @@
         <section id="gateways">
             <h2 class="text-3xl font-bold">Supported payment ecosystem</h2>
             <p class="mt-2 text-slate-300">Pesapal for cards, Yo Payments for mobile money.</p>
-            <x-payment-method-logos align="start" class="mt-8" />
+            <x-payment-method-logos align="start" :logos="$content->payment_logos" class="mt-8" />
         </section>
 
         {{-- FAQ --}}

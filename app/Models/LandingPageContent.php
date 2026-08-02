@@ -18,11 +18,16 @@ class LandingPageContent extends Model
         'faqs',
         'cta_banner_heading',
         'cta_banner_subtext',
+        'hero_image_path',
+        'how_it_works_image_path',
+        'payment_links_image_path',
+        'payment_logos',
     ];
 
     protected $casts = [
         'features' => 'array',
         'faqs' => 'array',
+        'payment_logos' => 'array',
     ];
 
     /**
@@ -54,6 +59,12 @@ class LandingPageContent extends Model
             ],
             'cta_banner_heading' => 'Get started for $0. No setup fees.',
             'cta_banner_subtext' => 'Register your business today and start collecting payments as soon as you\'re verified.',
+            'payment_logos' => [
+                ['label' => 'Visa', 'image_path' => null],
+                ['label' => 'Mastercard', 'image_path' => null],
+                ['label' => 'MTN', 'image_path' => null],
+                ['label' => 'Airtel', 'image_path' => null],
+            ],
         ]);
     }
 }

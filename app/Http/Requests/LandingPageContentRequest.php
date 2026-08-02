@@ -30,6 +30,12 @@ class LandingPageContentRequest extends FormRequest
             'faqs.*.answer' => ['required', 'string', 'max:1000'],
             'cta_banner_heading' => ['required', 'string', 'max:255'],
             'cta_banner_subtext' => ['required', 'string', 'max:500'],
+            'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'how_it_works_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'payment_links_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'payment_logos' => ['required', 'array', 'size:4'],
+            'payment_logos.*.label' => ['required', 'string', 'max:255'],
+            'payment_logos.*.image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
         ];
     }
 }
