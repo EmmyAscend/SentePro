@@ -136,7 +136,7 @@
                     <div class="rounded-3xl bg-slate-800/60 p-6 ring-1 ring-white/10">
                         <div class="mx-auto grid h-40 w-40 grid-cols-5 gap-1 rounded-2xl bg-white p-3">
                             @for ($i = 0; $i < 25; $i++)
-                                <span class="{{ in_array($i, [0, 1, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 23, 24, 12, 7, 17, 2, 22]) ? 'bg-slate-950' : 'bg-white' }} rounded-[2px]"></span>
+                                <span class="{{ in_array($i, [0, 1, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 23, 24, 12, 7, 17, 2, 22]) ? 'bg-slate-950' : 'bg-white' }}"></span>
                             @endfor
                         </div>
                         <p class="mt-4 text-center text-sm text-slate-400">app.sentepro.io/pay/…</p>

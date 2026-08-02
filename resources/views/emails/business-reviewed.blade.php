@@ -5,7 +5,7 @@
     <title>Business review update</title>
 </head>
 <body style="font-family: sans-serif; background:#f8fafc; padding: 24px; color:#0f172a;">
-    <div style="max-width: 480px; margin: 0 auto; background:#ffffff; border-radius: 16px; padding: 32px; border: 1px solid #e2e8f0;">
+    <div style="max-width: 480px; margin: 0 auto; background:#ffffff; border-radius: 0; padding: 32px; border: 1px solid #e2e8f0;">
         <p style="text-transform: uppercase; letter-spacing: 0.2em; font-size: 12px; color:#059669; margin: 0 0 8px;">SentePro</p>
         <h1 style="font-size: 20px; margin: 0 0 16px;">{{ $business->business_name }}</h1>
 
