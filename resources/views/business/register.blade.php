@@ -1,23 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Registration | SentePro</title>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=pacifico:400&display=swap" rel="stylesheet" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-slate-950 text-white">
-    <div class="min-h-screen px-4 py-10 sm:px-6 lg:px-8">
+<x-public-layout title="Business Registration | SentePro">
+    <div class="px-4 py-10 sm:px-6 lg:px-8">
         <div class="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-slate-950/40 sm:p-8">
-            <div class="mb-8 flex items-center justify-between gap-4">
-                <a href="/">
-                    <x-brand-mark class="text-2xl" />
-                </a>
-                <a href="/" class="rounded-full border border-white/15 px-4 py-2 text-sm font-semibold hover:bg-white/5">Back to home</a>
-            </div>
-
             <div class="mb-8">
                 <p class="text-sm uppercase tracking-[0.25em] text-lime-300">Business onboarding</p>
                 <h1 class="mt-2 text-3xl font-bold">Business Registration</h1>
@@ -108,5 +91,4 @@
             </form>
         </div>
     </div>
-</body>
-</html>
+</x-public-layout>
