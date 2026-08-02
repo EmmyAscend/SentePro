@@ -46,69 +46,87 @@
                     </div>
                 </div>
 
-                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
-                    <h3 class="text-lg font-semibold text-white">Payment method logos (4)</h3>
-                    <p class="mt-1 text-sm text-slate-400">Leave the image blank to keep a styled text placeholder for that logo.</p>
+                {{-- Payment method logos: dynamic, add as many as needed --}}
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10" x-data="{ items: @js(old('payment_logos', $content->payment_logos ?? [])) }">
+                    <div class="flex items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">Payment method logos</h3>
+                            <p class="mt-1 text-sm text-slate-400">Leave an image blank to keep a styled text placeholder for that logo.</p>
+                        </div>
+                        <button type="button" @click="items.push({ label: '', image_path: null })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add logo</button>
+                    </div>
                     <div class="mt-4 grid gap-4 md:grid-cols-2">
-                        @for ($i = 0; $i < 4; $i++)
-                            @php $logo = old('payment_logos.'.$i, $content->payment_logos[$i] ?? ['label' => '', 'image_path' => null]); @endphp
+                        <template x-for="(item, index) in items" :key="index">
                             <div class="rounded-xl bg-slate-800/60 p-4 space-y-3">
-                                <label class="flex flex-col gap-1 text-sm">
-                                    <span class="font-medium text-slate-300">Label {{ $i + 1 }}</span>
-                                    <input type="text" name="payment_logos[{{ $i }}][label]" value="{{ $logo['label'] }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
-                                </label>
+                                <div class="flex items-start justify-between gap-3">
+                                    <label class="flex flex-1 flex-col gap-1 text-sm">
+                                        <span class="font-medium text-slate-300">Label</span>
+                                        <input type="text" :name="`payment_logos[${index}][label]`" x-model="item.label" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                    </label>
+                                    <button type="button" @click="items.splice(index, 1)" x-show="items.length > 1" class="mt-5 shrink-0 rounded-full border border-rose-400/30 px-3 py-1.5 text-xs font-semibold text-rose-300 hover:bg-rose-500/10">Remove</button>
+                                </div>
                                 <label class="flex flex-col gap-2 text-sm">
-                                    <span class="font-medium text-slate-300">Logo image {{ $i + 1 }}</span>
-                                    @if (! empty($logo['image_path']))
-                                        <img src="{{ \Illuminate\Support\Facades\Storage::url($logo['image_path']) }}" alt="{{ $logo['label'] }}" class="h-10 w-auto max-w-[8rem] rounded bg-white object-contain p-1">
-                                    @endif
-                                    <input type="file" name="payment_logos[{{ $i }}][image]" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-950 file:px-3 file:py-2 file:text-white">
+                                    <span class="font-medium text-slate-300">Logo image</span>
+                                    <template x-if="item.image_path">
+                                        <img :src="'/storage/' + item.image_path" :alt="item.label" class="h-10 w-auto max-w-[8rem] bg-white object-contain p-1">
+                                    </template>
+                                    <input type="file" :name="`payment_logos[${index}][image]`" accept="image/*" class="text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-950 file:px-3 file:py-2 file:text-white">
                                 </label>
                             </div>
-                        @endfor
-                        <x-input-error :messages="$errors->get('payment_logos')" />
+                        </template>
                     </div>
+                    <x-input-error :messages="$errors->get('payment_logos')" class="mt-2" />
                 </div>
 
-                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
-                    <h3 class="text-lg font-semibold text-white">Requirements (3)</h3>
-                    <p class="mt-1 text-sm text-slate-400">Who can use SentePro — shown as NGOs / Businesses / Individuals on the homepage.</p>
-                    <div class="mt-4 space-y-4">
-                        @for ($i = 0; $i < 3; $i++)
-                            @php $requirement = old('requirements.'.$i, $content->requirements[$i] ?? ['title' => '', 'description' => '']); @endphp
-                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_2fr]">
-                                <label class="flex flex-col gap-1 text-sm">
-                                    <span class="font-medium text-slate-300">Title {{ $i + 1 }}</span>
-                                    <input type="text" name="requirements[{{ $i }}][title]" value="{{ $requirement['title'] }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
-                                </label>
-                                <label class="flex flex-col gap-1 text-sm">
-                                    <span class="font-medium text-slate-300">Description {{ $i + 1 }}</span>
-                                    <input type="text" name="requirements[{{ $i }}][description]" value="{{ $requirement['description'] }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
-                                </label>
-                            </div>
-                        @endfor
-                        <x-input-error :messages="$errors->get('requirements')" />
+                {{-- Requirements: dynamic, add as many as needed --}}
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10" x-data="{ items: @js(old('requirements', $content->requirements ?? [])) }">
+                    <div class="flex items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white">Requirements</h3>
+                            <p class="mt-1 text-sm text-slate-400">Who can use SentePro — shown on the homepage.</p>
+                        </div>
+                        <button type="button" @click="items.push({ title: '', description: '' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add requirement</button>
                     </div>
+                    <div class="mt-4 space-y-4">
+                        <template x-for="(item, index) in items" :key="index">
+                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_2fr_auto] md:items-end">
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Title</span>
+                                    <input type="text" :name="`requirements[${index}][title]`" x-model="item.title" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                </label>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Description</span>
+                                    <input type="text" :name="`requirements[${index}][description]`" x-model="item.description" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                </label>
+                                <button type="button" @click="items.splice(index, 1)" x-show="items.length > 1" class="shrink-0 rounded-full border border-rose-400/30 px-3 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-500/10">Remove</button>
+                            </div>
+                        </template>
+                    </div>
+                    <x-input-error :messages="$errors->get('requirements')" class="mt-2" />
                 </div>
 
-                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
-                    <h3 class="text-lg font-semibold text-white">Features (4)</h3>
-                    <div class="mt-4 space-y-4">
-                        @for ($i = 0; $i < 4; $i++)
-                            @php $feature = old('features.'.$i, $content->features[$i] ?? ['title' => '', 'description' => '']); @endphp
-                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_2fr]">
-                                <label class="flex flex-col gap-1 text-sm">
-                                    <span class="font-medium text-slate-300">Title {{ $i + 1 }}</span>
-                                    <input type="text" name="features[{{ $i }}][title]" value="{{ $feature['title'] }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
-                                </label>
-                                <label class="flex flex-col gap-1 text-sm">
-                                    <span class="font-medium text-slate-300">Description {{ $i + 1 }}</span>
-                                    <input type="text" name="features[{{ $i }}][description]" value="{{ $feature['description'] }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
-                                </label>
-                            </div>
-                        @endfor
-                        <x-input-error :messages="$errors->get('features')" />
+                {{-- Features: dynamic, add as many as needed --}}
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10" x-data="{ items: @js(old('features', $content->features ?? [])) }">
+                    <div class="flex items-center justify-between gap-4">
+                        <h3 class="text-lg font-semibold text-white">Features</h3>
+                        <button type="button" @click="items.push({ title: '', description: '' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add feature</button>
                     </div>
+                    <div class="mt-4 space-y-4">
+                        <template x-for="(item, index) in items" :key="index">
+                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_2fr_auto] md:items-end">
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Title</span>
+                                    <input type="text" :name="`features[${index}][title]`" x-model="item.title" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                </label>
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Description</span>
+                                    <input type="text" :name="`features[${index}][description]`" x-model="item.description" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                </label>
+                                <button type="button" @click="items.splice(index, 1)" x-show="items.length > 1" class="shrink-0 rounded-full border border-rose-400/30 px-3 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-500/10">Remove</button>
+                            </div>
+                        </template>
+                    </div>
+                    <x-input-error :messages="$errors->get('features')" class="mt-2" />
                 </div>
 
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
@@ -137,24 +155,30 @@
                     </label>
                 </div>
 
-                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
-                    <h3 class="text-lg font-semibold text-white">FAQ (5)</h3>
+                {{-- FAQ: dynamic, add as many as needed --}}
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10" x-data="{ items: @js(old('faqs', $content->faqs ?? [])) }">
+                    <div class="flex items-center justify-between gap-4">
+                        <h3 class="text-lg font-semibold text-white">FAQ</h3>
+                        <button type="button" @click="items.push({ question: '', answer: '' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add question</button>
+                    </div>
                     <div class="mt-4 space-y-4">
-                        @for ($i = 0; $i < 5; $i++)
-                            @php $faq = old('faqs.'.$i, $content->faqs[$i] ?? ['question' => '', 'answer' => '']); @endphp
+                        <template x-for="(item, index) in items" :key="index">
                             <div class="rounded-xl bg-slate-800/60 p-4 space-y-3">
+                                <div class="flex items-start justify-between gap-3">
+                                    <label class="flex flex-1 flex-col gap-1 text-sm">
+                                        <span class="font-medium text-slate-300">Question</span>
+                                        <input type="text" :name="`faqs[${index}][question]`" x-model="item.question" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                    </label>
+                                    <button type="button" @click="items.splice(index, 1)" x-show="items.length > 1" class="mt-5 shrink-0 rounded-full border border-rose-400/30 px-3 py-1.5 text-xs font-semibold text-rose-300 hover:bg-rose-500/10">Remove</button>
+                                </div>
                                 <label class="flex flex-col gap-1 text-sm">
-                                    <span class="font-medium text-slate-300">Question {{ $i + 1 }}</span>
-                                    <input type="text" name="faqs[{{ $i }}][question]" value="{{ $faq['question'] }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
-                                </label>
-                                <label class="flex flex-col gap-1 text-sm">
-                                    <span class="font-medium text-slate-300">Answer {{ $i + 1 }}</span>
-                                    <textarea name="faqs[{{ $i }}][answer]" rows="2" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>{{ $faq['answer'] }}</textarea>
+                                    <span class="font-medium text-slate-300">Answer</span>
+                                    <textarea :name="`faqs[${index}][answer]`" x-model="item.answer" rows="2" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required></textarea>
                                 </label>
                             </div>
-                        @endfor
-                        <x-input-error :messages="$errors->get('faqs')" />
+                        </template>
                     </div>
+                    <x-input-error :messages="$errors->get('faqs')" class="mt-2" />
                 </div>
 
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">

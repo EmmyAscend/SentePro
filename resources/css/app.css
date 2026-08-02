@@ -14,13 +14,3 @@ body {
 ::selection {
     background: rgba(52, 211, 153, 0.35);
 }
-
-/* Belt-and-suspenders for the "no rounded corners" rule: @tailwindcss/forms
-   applies its own default border-radius to form controls in its base layer,
-   independent of the rounded-* classes zeroed out in tailwind.config.js. */
-input,
-select,
-textarea,
-button {
-    border-radius: 0;
-}

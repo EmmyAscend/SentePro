@@ -15,19 +15,21 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
                 pacifico: ['Pacifico', 'cursive'],
             },
-            // No rounded corners anywhere in the app — every rounded-* utility
-            // (buttons, inputs, cards, badges, pills, avatars) collapses to a
-            // sharp square edge instead of removing the classes from ~65 views.
+            // Every rounded-* utility (buttons, inputs, cards, badges, pills,
+            // avatars) is scaled to 10% of Tailwind's stock radius — a subtle
+            // softening rather than the fully square edges used previously.
+            // "full" stays functionally circular (999px still reads as a full
+            // pill/circle at UI sizes) rather than scaling down with the rest.
             borderRadius: {
                 none: '0px',
-                sm: '0px',
-                DEFAULT: '0px',
-                md: '0px',
-                lg: '0px',
-                xl: '0px',
-                '2xl': '0px',
-                '3xl': '0px',
-                full: '0px',
+                sm: '0.0125rem',
+                DEFAULT: '0.025rem',
+                md: '0.0375rem',
+                lg: '0.05rem',
+                xl: '0.075rem',
+                '2xl': '0.1rem',
+                '3xl': '0.15rem',
+                full: '999px',
             },
         },
     },

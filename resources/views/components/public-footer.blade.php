@@ -6,7 +6,7 @@
         </div>
         <div>
             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Product</p>
-            <ul class="mt-4 space-y-2 text-sm text-slate-300">
+            <ul class="mt-4 space-y-2 text-sm uppercase tracking-wide text-slate-300">
                 <li><a href="/#requirements" class="hover:text-white">Requirements</a></li>
                 <li><a href="/#features" class="hover:text-white">Features</a></li>
                 <li><a href="/#gateways" class="hover:text-white">Supported Payments</a></li>
@@ -15,14 +15,14 @@
         </div>
         <div>
             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Company</p>
-            <ul class="mt-4 space-y-2 text-sm text-slate-300">
+            <ul class="mt-4 space-y-2 text-sm uppercase tracking-wide text-slate-300">
                 <li><a href="/login" class="hover:text-white">Login</a></li>
                 <li><a href="{{ route('business.register') }}" class="hover:text-white">Register your business</a></li>
             </ul>
         </div>
         <div>
             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Legal</p>
-            <ul class="mt-4 space-y-2 text-sm text-slate-300">
+            <ul class="mt-4 space-y-2 text-sm uppercase tracking-wide text-slate-300">
                 <li><a href="{{ route('legal.show', 'privacy-policy') }}" class="hover:text-white">Privacy Policy</a></li>
                 <li><a href="{{ route('legal.show', 'terms-and-conditions') }}" class="hover:text-white">Terms and Conditions</a></li>
                 <li><a href="{{ route('legal.show', 'refund-policy') }}" class="hover:text-white">Refund Policy</a></li>

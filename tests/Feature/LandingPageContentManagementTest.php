@@ -122,6 +122,35 @@ class LandingPageContentManagementTest extends TestCase
         Storage::disk('public')->assertExists($newPath);
     }
 
+    public function test_super_admin_can_add_more_items_than_the_original_default_count(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'features' => array_fill(0, 6, ['title' => 'Extra feature', 'description' => 'Extra description']),
+            'requirements' => array_fill(0, 5, ['title' => 'Extra requirement', 'description' => 'Extra description']),
+            'faqs' => array_fill(0, 7, ['question' => 'Extra question?', 'answer' => 'Extra answer.']),
+            'payment_logos' => array_fill(0, 6, ['label' => 'Extra Network']),
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertCount(6, $content->features);
+        $this->assertCount(5, $content->requirements);
+        $this->assertCount(7, $content->faqs);
+        $this->assertCount(6, $content->payment_logos);
+    }
+
+    public function test_submitting_an_empty_array_is_rejected(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), ['features' => []]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertSessionHasErrors('features');
+    }
+
     public function test_super_admin_can_upload_a_payment_logo_image(): void
     {
         Storage::fake('public');

@@ -7,8 +7,8 @@
                 <h1 class="max-w-2xl text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">{{ $content->hero_headline }}</h1>
                 <p class="mt-5 max-w-2xl text-lg text-slate-300">{{ $content->hero_subtext }}</p>
                 <div class="mt-8 flex flex-wrap gap-3">
-                    <a href="{{ route('business.register') }}" class="rounded-xl bg-lime-400 px-5 py-3 font-semibold text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300">Register your business</a>
-                    <a href="/login" class="rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5">Log in to dashboard</a>
+                    <a href="{{ route('business.register') }}" class="flex-1 rounded-xl bg-lime-400 px-5 py-3 text-center font-semibold text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300">Register your business</a>
+                    <a href="/login" class="flex-1 rounded-xl border border-white/15 px-5 py-3 text-center font-semibold text-white hover:border-white/30 hover:bg-white/5">Log in to dashboard</a>
                 </div>
             </div>
 
