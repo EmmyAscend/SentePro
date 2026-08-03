@@ -17,7 +17,7 @@ class LandingPageContent extends Model
         '' => 'None',
         BusinessType::Individual->value => 'Individual',
         BusinessType::Business->value => 'Business',
-        BusinessType::Ngo->value => 'Non-Profit Organisation',
+        BusinessType::Ngo->value => 'NGO',
     ];
 
     /**

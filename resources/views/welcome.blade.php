@@ -22,12 +22,12 @@
         </div>
     </section>
 
-    <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+    <div class="mx-auto mt-[1cm] max-w-6xl px-4 sm:px-6 lg:px-8">
         <x-payment-method-logos :logos="$content->payment_logos" />
     </div>
 
     {{-- Requirements: who can use SentePro, each as its own alternating full-bleed image/text section --}}
-    <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8" id="requirements">
+    <div class="mx-auto mt-[1cm] max-w-6xl px-4 pb-10 sm:px-6 lg:px-8" id="requirements">
         <div class="max-w-2xl">
             <h2 class="font-bold" style="font-size: {{ $content->headingSize('requirements') }}">{{ $content->requirements_heading }}</h2>
             <p class="mt-2 text-slate-300">{{ $content->requirements_subtext }}</p>
@@ -61,7 +61,7 @@
         @endforeach
     </div>
 
-    <div class="mx-auto max-w-6xl space-y-20 px-4 py-20 sm:px-6 lg:px-8">
+    <div class="mx-auto mt-[1cm] max-w-6xl space-y-[1cm] px-4 sm:px-6 lg:px-8">
         {{-- Features --}}
         <section id="features">
             <div class="mb-8 max-w-2xl">
@@ -109,7 +109,7 @@
     </div>
 
     {{-- Payment links & QR spotlight --}}
-    <section class="lg:grid lg:min-h-[30rem] lg:grid-cols-2 lg:items-stretch">
+    <section class="mt-[1cm] lg:grid lg:min-h-[30rem] lg:grid-cols-2 lg:items-stretch">
         <div class="order-2 bg-slate-900 px-4 py-16 sm:px-6 lg:order-1 lg:flex lg:flex-col lg:justify-center lg:px-16 lg:py-0">
             <p class="inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
             <h2 class="mt-4 text-[length:var(--sh-mobile)] font-bold text-white lg:text-[length:var(--sh-desktop)]" style="--sh-mobile: {{ $content->headingSize('payment_links') }}; --sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $content->payment_links_heading }}</h2>
@@ -135,7 +135,7 @@
     </section>
 
     {{-- How it works --}}
-    <section id="how-it-works" class="lg:grid lg:min-h-[30rem] lg:grid-cols-2 lg:items-stretch">
+    <section id="how-it-works" class="mt-[1cm] lg:grid lg:min-h-[30rem] lg:grid-cols-2 lg:items-stretch">
         <div class="px-4 pt-20 sm:px-6 lg:flex lg:h-full lg:items-center lg:justify-center lg:px-0 lg:pt-0">
             <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0">
                 @if ($content->how_it_works_image_path)
@@ -162,7 +162,7 @@
         </div>
     </section>
 
-    <div class="mx-auto max-w-6xl space-y-20 px-4 py-20 sm:px-6 lg:px-8">
+    <div class="mx-auto mt-[1cm] max-w-6xl space-y-[1cm] px-4 sm:px-6 lg:px-8">
         {{-- Gateways --}}
         <section id="gateways">
             <h2 class="font-bold" style="font-size: {{ $content->headingSize('gateways') }}">{{ $content->gateways_heading }}</h2>
@@ -194,7 +194,7 @@
     </div>
 
     {{-- CTA banner --}}
-    <section class="relative overflow-hidden bg-slate-900 py-20">
+    <section class="relative mt-[1cm] overflow-hidden bg-slate-900 py-20">
         <span class="pointer-events-none absolute -right-6 -top-10 select-none text-[10rem] font-black leading-none text-lime-400/10 sm:text-[14rem]">$0</span>
         <div class="relative mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8">
             <h2 class="font-bold text-white" style="font-size: {{ $content->headingSize('cta') }}">{{ $content->cta_banner_heading }}</h2>

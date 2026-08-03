@@ -155,4 +155,48 @@ class LandingPageTest extends TestCase
         $response->assertSee('--sh-desktop: 48px', false);
         $response->assertSee('--sd-desktop: 20px', false);
     }
+
+    public function test_sections_are_separated_by_one_centimeter_of_space(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $content = $response->getContent();
+
+        // One boundary per top-level section (payment logos, requirements,
+        // features/balances group, payment links, how it works,
+        // gateways/faq group, cta banner).
+        $this->assertSame(7, substr_count($content, 'mt-[1cm]'));
+        // Features→balances and gateways→faq, inside their shared wrappers.
+        $this->assertSame(2, substr_count($content, 'space-y-[1cm]'));
+    }
+
+    public function test_supported_payment_logos_are_reduced_on_desktop(): void
+    {
+        $content = LandingPageContent::current();
+        $logos = $content->payment_logos;
+        $logos[0]['image_path'] = 'landing-page/fake-visa-logo.jpg';
+        $content->update(['payment_logos' => $logos]);
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+        // Placeholder text logos (MTN, Airtel).
+        $response->assertSee('lg:text-6xl', false);
+        // Uploaded image logo (Visa, forced above).
+        $response->assertSee('lg:h-20 lg:max-w-[20rem]', false);
+        // Mastercard's two-circle mark and its label.
+        $response->assertSee('lg:h-20 lg:w-28', false);
+        $response->assertSee('lg:h-20 lg:w-20', false);
+        $response->assertSee('lg:text-4xl', false);
+    }
+
+    public function test_ngo_register_button_uses_a_short_label(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('Register as NGO');
+        $response->assertDontSee('Register as Non-Profit Organisation');
+    }
 }
