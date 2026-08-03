@@ -20,12 +20,12 @@
                     <span class="absolute left-0 h-16 w-16 rounded-full sm:h-28 sm:w-28 lg:h-20 lg:w-20" style="background:#EB001B"></span>
                     <span class="absolute right-0 h-16 w-16 rounded-full opacity-80 sm:h-28 sm:w-28 lg:h-20 lg:w-20" style="background:#F79E1B"></span>
                 </span>
-                <span class="text-3xl font-bold text-slate-900 sm:text-5xl lg:text-4xl">Mastercard</span>
+                <span class="text-3xl font-bold text-white sm:text-5xl lg:text-4xl">Mastercard</span>
             </span>
         @elseif (isset($placeholders[$logo['label']]))
             <span class="{{ $placeholders[$logo['label']]['class'] }}" style="{{ $placeholders[$logo['label']]['style'] }}" title="{{ $logo['label'] }}">{{ $logo['label'] }}</span>
         @else
-            <span class="text-3xl font-bold text-slate-900 sm:text-5xl lg:text-4xl" title="{{ $logo['label'] }}">{{ $logo['label'] }}</span>
+            <span class="text-3xl font-bold text-white sm:text-5xl lg:text-4xl" title="{{ $logo['label'] }}">{{ $logo['label'] }}</span>
         @endif
     @empty
         {{-- No logos configured yet — nothing to render. --}}

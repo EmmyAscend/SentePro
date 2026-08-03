@@ -1,6 +1,6 @@
 @php $content = \App\Models\LandingPageContent::current(); @endphp
 
-<footer class="rounded-t-[2rem] bg-slate-900 py-12 text-white">
+<footer class="border-t border-white/10 py-12">
     <div class="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1fr] lg:gap-10 lg:px-8">
         <div class="col-span-2 lg:col-span-1">
             <x-brand-mark class="text-2xl" />
@@ -47,8 +47,5 @@
     <div class="mx-auto mt-10 flex max-w-6xl flex-col border-t border-white/10 px-4 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:gap-1 sm:px-6 lg:px-8">
         <span>&copy; {{ date('Y') }} SentePro. All rights reserved.</span>
         <span>Powered by <a href="https://razertechnology.com" target="_blank" rel="noopener noreferrer" class="font-medium text-slate-400 hover:text-white">RAZERTECH</a></span>
-    </div>
-    <div class="mt-10 overflow-hidden px-4 sm:px-6 lg:px-8">
-        <p class="font-pacifico text-center text-[18vw] leading-none text-lime-400 sm:text-[12vw] lg:text-[8rem]">SentePro</p>
     </div>
 </footer>
