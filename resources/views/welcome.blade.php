@@ -1,51 +1,58 @@
 <x-public-layout title="SentePro | Collect Payments. Settle Faster. Grow Your Business.">
     {{-- Hero --}}
-    <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
-        <section class="grid items-center gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:py-10">
-            <div>
-                <p class="mb-4 inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">{{ $content->hero_badge_text }}</p>
-                <h1 class="max-w-2xl font-black tracking-tight text-white" style="font-size: {{ $content->headingSize('hero') }}">{{ $content->hero_headline }}</h1>
-                <p class="mt-5 max-w-2xl text-lg text-slate-300">{{ $content->hero_subtext }}</p>
-                <div class="mt-8 flex flex-wrap gap-2 sm:gap-3">
-                    <a href="{{ route('business.register') }}" class="flex-1 whitespace-nowrap rounded-xl bg-lime-400 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">{{ $content->hero_cta_text }}</a>
-                    <a href="/login" class="flex-1 whitespace-nowrap rounded-xl border border-white/15 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-white hover:border-white/30 hover:bg-white/5 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">Log in to dashboard</a>
-                </div>
+    <section class="lg:grid lg:min-h-[32rem] lg:grid-cols-2 lg:items-stretch">
+        <div class="px-4 py-12 sm:px-6 lg:flex lg:flex-col lg:justify-center lg:px-16 lg:py-16">
+            <p class="mb-4 inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">{{ $content->hero_badge_text }}</p>
+            <h1 class="max-w-2xl font-black tracking-tight text-white" style="font-size: {{ $content->headingSize('hero') }}">{{ $content->hero_headline }}</h1>
+            <p class="mt-5 max-w-2xl text-lg text-slate-300">{{ $content->hero_subtext }}</p>
+            <div class="mt-8 flex flex-wrap gap-2 sm:gap-3">
+                <a href="{{ route('business.register') }}" class="flex-1 whitespace-nowrap rounded-xl bg-lime-400 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">{{ $content->hero_cta_text }}</a>
+                <a href="/login" class="flex-1 whitespace-nowrap rounded-xl border border-white/15 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-white hover:border-white/30 hover:bg-white/5 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">Log in to dashboard</a>
             </div>
+        </div>
 
-            <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 shadow-2xl shadow-slate-950/40">
+        <div class="mt-8 px-4 sm:px-6 lg:mt-0 lg:px-0">
+            <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 shadow-2xl shadow-slate-950/40 lg:h-full lg:rounded-none lg:border-0 lg:shadow-none">
                 @if ($content->hero_image_path)
-                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="A shopkeeper collecting a payment" class="aspect-[4/3] w-full object-cover">
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="A shopkeeper collecting a payment" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full">
                 @else
-                    <x-illustration-shop-payment class="aspect-[4/3] w-full" />
+                    <x-illustration-shop-payment class="aspect-[4/3] w-full lg:aspect-auto lg:h-full" />
                 @endif
             </div>
-        </section>
+        </div>
+    </section>
 
-        <x-payment-method-logos :logos="$content->payment_logos" class="mt-14" />
+    <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+        <x-payment-method-logos :logos="$content->payment_logos" />
     </div>
 
-    {{-- Requirements: who can use SentePro, each as its own alternating image/text section --}}
-    <div class="mx-auto max-w-6xl space-y-16 px-4 py-16 sm:px-6 lg:px-8" id="requirements">
+    {{-- Requirements: who can use SentePro, each as its own alternating full-bleed image/text section --}}
+    <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8" id="requirements">
         <div class="max-w-2xl">
             <h2 class="font-bold" style="font-size: {{ $content->headingSize('requirements') }}">{{ $content->requirements_heading }}</h2>
             <p class="mt-2 text-slate-300">{{ $content->requirements_subtext }}</p>
         </div>
+    </div>
+    <div class="space-y-10 lg:space-y-0">
         @foreach (($content->requirements ?? []) as $requirement)
             @php
                 $typeLabel = \App\Models\LandingPageContent::REQUIREMENT_TYPE_OPTIONS[$requirement['type'] ?? ''] ?? '';
                 $registerUrl = route('business.register', ($requirement['type'] ?? '') ? ['type' => $requirement['type']] : []);
+                $imageFirst = $loop->iteration % 2 !== 0;
             @endphp
-            <section class="grid gap-10 lg:grid-cols-2 lg:items-center">
-                <div class="{{ $loop->iteration % 2 === 0 ? 'lg:order-2' : 'lg:order-1' }} overflow-hidden rounded-3xl border border-white/10 bg-slate-900">
-                    @if (! empty($requirement['image_path']))
-                        <img src="{{ \Illuminate\Support\Facades\Storage::url($requirement['image_path']) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-cover">
-                    @elseif ($content->hero_image_path)
-                        <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-cover">
-                    @else
-                        <x-illustration-shop-payment class="aspect-[4/3] w-full" />
-                    @endif
+            <section class="lg:grid lg:min-h-[30rem] lg:grid-cols-2 lg:items-stretch">
+                <div class="{{ $imageFirst ? 'lg:order-1' : 'lg:order-2' }} px-4 sm:px-6 lg:px-0">
+                    <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 lg:h-full lg:rounded-none lg:border-0">
+                        @if (! empty($requirement['image_path']))
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($requirement['image_path']) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full">
+                        @elseif ($content->hero_image_path)
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full">
+                        @else
+                            <x-illustration-shop-payment class="aspect-[4/3] w-full lg:aspect-auto lg:h-full" />
+                        @endif
+                    </div>
                 </div>
-                <div class="{{ $loop->iteration % 2 === 0 ? 'lg:order-1' : 'lg:order-2' }}">
+                <div class="{{ $imageFirst ? 'lg:order-2' : 'lg:order-1' }} mt-6 px-4 sm:px-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:bg-slate-900 lg:px-16">
                     <h3 class="font-semibold text-white">{{ $requirement['title'] }}</h3>
                     <p class="mt-1 text-slate-400">{{ $requirement['description'] }}</p>
                     <a href="{{ $registerUrl }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-lime-300">{{ $typeLabel ? 'Register as '.$typeLabel : 'Register now' }}</a>
@@ -102,20 +109,20 @@
     </div>
 
     {{-- Payment links & QR spotlight --}}
-    <section class="bg-slate-900 py-20">
-        <div class="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
-            <div class="order-2 lg:order-1">
-                <p class="inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
-                <h2 class="mt-4 font-bold text-white" style="font-size: {{ $content->headingSize('payment_links') }}">{{ $content->payment_links_heading }}</h2>
-                <p class="mt-3 text-slate-300">{{ $content->payment_links_subtext }}</p>
-                <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5">Get started</a>
-            </div>
-            <div class="order-1 flex justify-center lg:order-2">
-                @if ($content->payment_links_image_path)
-                    <div class="overflow-hidden rounded-3xl ring-1 ring-white/10">
-                        <img src="{{ \Illuminate\Support\Facades\Storage::url($content->payment_links_image_path) }}" alt="Payment links and QR codes" class="aspect-square w-64 object-cover">
-                    </div>
-                @else
+    <section class="lg:grid lg:min-h-[30rem] lg:grid-cols-2 lg:items-stretch">
+        <div class="order-2 bg-slate-900 px-4 py-16 sm:px-6 lg:order-1 lg:flex lg:flex-col lg:justify-center lg:px-16 lg:py-0">
+            <p class="inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
+            <h2 class="mt-4 font-bold text-white" style="font-size: {{ $content->headingSize('payment_links') }}">{{ $content->payment_links_heading }}</h2>
+            <p class="mt-3 text-slate-300">{{ $content->payment_links_subtext }}</p>
+            <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5">Get started</a>
+        </div>
+        <div class="order-1 bg-slate-900 px-4 py-10 sm:px-6 lg:order-2 lg:px-0 lg:py-0">
+            @if ($content->payment_links_image_path)
+                <div class="overflow-hidden rounded-3xl ring-1 ring-white/10 lg:h-full lg:rounded-none lg:ring-0">
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->payment_links_image_path) }}" alt="Payment links and QR codes" class="aspect-square w-full object-cover lg:aspect-auto lg:h-full">
+                </div>
+            @else
+                <div class="flex justify-center lg:h-full lg:items-center lg:bg-slate-800/40">
                     <div class="rounded-3xl bg-slate-800/60 p-6 ring-1 ring-white/10">
                         <div class="mx-auto grid h-40 w-40 grid-cols-5 gap-1 rounded-2xl bg-white p-3">
                             @for ($i = 0; $i < 25; $i++)
@@ -124,38 +131,40 @@
                         </div>
                         <p class="mt-4 text-center text-sm text-slate-400">app.sentepro.io/pay/…</p>
                     </div>
+                </div>
+            @endif
+        </div>
+    </section>
+
+    {{-- How it works --}}
+    <section id="how-it-works" class="lg:grid lg:min-h-[30rem] lg:grid-cols-2 lg:items-stretch">
+        <div class="px-4 pt-20 sm:px-6 lg:px-0 lg:pt-0">
+            <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 lg:h-full lg:rounded-none lg:border-0">
+                @if ($content->how_it_works_image_path)
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->how_it_works_image_path) }}" alt="Completing the SentePro signup form" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full">
+                @else
+                    <x-illustration-register class="aspect-[4/3] w-full lg:aspect-auto lg:h-full" />
                 @endif
             </div>
+        </div>
+        <div class="mt-6 px-4 py-10 sm:px-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:bg-slate-900 lg:px-16 lg:py-0">
+            <h2 class="font-bold" style="font-size: {{ $content->headingSize('how_it_works') }}">{{ $content->how_it_works_heading }}</h2>
+            <ol class="mt-6 space-y-5">
+                @foreach (($content->how_it_works_steps ?? []) as $i => $step)
+                    <li class="flex gap-4">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">{{ $i + 1 }}</span>
+                        <div>
+                            <p class="font-semibold text-white">{{ $step['title'] }}</p>
+                            <p class="text-sm text-slate-400">{{ $step['description'] }}</p>
+                        </div>
+                    </li>
+                @endforeach
+            </ol>
+            <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-3 font-semibold text-slate-950 hover:bg-lime-300">{{ $content->how_it_works_cta_text }}</a>
         </div>
     </section>
 
     <div class="mx-auto max-w-6xl space-y-20 px-4 py-20 sm:px-6 lg:px-8">
-        {{-- How it works --}}
-        <section id="how-it-works" class="grid gap-10 lg:grid-cols-2 lg:items-center">
-            <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900">
-                @if ($content->how_it_works_image_path)
-                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->how_it_works_image_path) }}" alt="Completing the SentePro signup form" class="aspect-[4/3] w-full object-cover">
-                @else
-                    <x-illustration-register class="aspect-[4/3] w-full" />
-                @endif
-            </div>
-            <div>
-                <h2 class="font-bold" style="font-size: {{ $content->headingSize('how_it_works') }}">{{ $content->how_it_works_heading }}</h2>
-                <ol class="mt-6 space-y-5">
-                    @foreach (($content->how_it_works_steps ?? []) as $i => $step)
-                        <li class="flex gap-4">
-                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">{{ $i + 1 }}</span>
-                            <div>
-                                <p class="font-semibold text-white">{{ $step['title'] }}</p>
-                                <p class="text-sm text-slate-400">{{ $step['description'] }}</p>
-                            </div>
-                        </li>
-                    @endforeach
-                </ol>
-                <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-3 font-semibold text-slate-950 hover:bg-lime-300">{{ $content->how_it_works_cta_text }}</a>
-            </div>
-        </section>
-
         {{-- Gateways --}}
         <section id="gateways">
             <h2 class="font-bold" style="font-size: {{ $content->headingSize('gateways') }}">{{ $content->gateways_heading }}</h2>
