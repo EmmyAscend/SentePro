@@ -138,13 +138,35 @@ class LandingPageTest extends TestCase
         $response->assertDontSee('aspect-square w-full object-cover', false);
     }
 
-    public function test_hero_requirements_and_how_it_works_images_are_reduced_on_desktop(): void
+    public function test_hero_and_how_it_works_images_are_reduced_on_desktop(): void
     {
         $response = $this->get('/');
 
         $response->assertOk();
-        // Hero + 3 requirement sections + how-it-works = 5 image boxes shrunk to 3/4 size.
-        $response->assertSee('lg:h-3/4 lg:w-3/4', false);
+        // Hero + how-it-works = 2 image boxes shrunk to 3/4 size. Requirements
+        // images are exempt — see test_requirements_images_are_shown_in_full.
+        $this->assertSame(2, substr_count($response->getContent(), 'lg:h-3/4 lg:w-3/4'));
+    }
+
+    public function test_requirements_images_are_shown_in_full(): void
+    {
+        $content = LandingPageContent::current();
+        $requirements = $content->requirements;
+        $requirements[0]['image_path'] = 'landing-page/fake-individual.jpg';
+        $content->update(['requirements' => $requirements]);
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $html = $response->getContent();
+
+        // Full-size box (not the 3/4-shrunk box Hero/how-it-works use) so
+        // the image isn't shrunk down, and object-contain (not
+        // object-cover) so nothing is cropped out of view.
+        $this->assertSame(3, substr_count($html, 'lg:h-full lg:w-full lg:rounded-none lg:border-0'));
+        // Hero + how-it-works still use the 3/4-shrunk box; Requirements no longer does.
+        $this->assertSame(2, substr_count($html, 'lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0'));
+        $response->assertSee('aspect-[4/3] w-full object-contain lg:aspect-auto lg:h-full lg:w-full', false);
     }
 
     public function test_section_text_sizes_default_to_a_larger_desktop_size(): void
