@@ -116,7 +116,13 @@ class LandingPageTest extends TestCase
         $response = $this->get('/');
 
         $response->assertOk();
-        $response->assertSee('rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10', false);
+        $html = $response->getContent();
+
+        // 4 feature cards cycling through 3 pastel tones.
+        $this->assertStringContainsString('rounded-[2rem] p-6 shadow-sm ring-1 ring-slate-900/5', $html);
+        foreach (['bg-orange-50', 'bg-violet-50', 'bg-lime-50'] as $tone) {
+            $this->assertStringContainsString($tone, $html);
+        }
     }
 
     public function test_footer_wraps_powered_by_and_copyright_onto_separate_lines_on_mobile(): void
@@ -163,9 +169,10 @@ class LandingPageTest extends TestCase
         // Full-size box (not the 3/4-shrunk box Hero/how-it-works use) so
         // the image isn't shrunk down, and object-contain (not
         // object-cover) so nothing is cropped out of view.
-        $this->assertSame(3, substr_count($html, 'lg:h-full lg:w-full lg:rounded-none lg:border-0'));
+        $this->assertSame(3, substr_count($html, 'rounded-[2rem] border border-slate-800 bg-slate-900 lg:h-full lg:w-full'));
         // Hero + how-it-works still use the 3/4-shrunk box; Requirements no longer does.
-        $this->assertSame(2, substr_count($html, 'lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0'));
+        $this->assertSame(1, substr_count($html, 'shadow-xl shadow-slate-900/10 lg:h-3/4 lg:w-3/4'));
+        $this->assertSame(1, substr_count($html, 'rounded-[2rem] border border-slate-800 bg-slate-900 lg:h-3/4 lg:w-3/4'));
         $response->assertSee('aspect-[4/3] w-full object-contain lg:aspect-auto lg:h-full lg:w-full', false);
     }
 
@@ -255,5 +262,49 @@ class LandingPageTest extends TestCase
         $response->assertOk();
         $response->assertSee('Register as NGO');
         $response->assertDontSee('Register as Non-Profit Organisation');
+    }
+
+    public function test_the_page_uses_a_light_theme_with_a_dark_nav_no_longer_present(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $html = $response->getContent();
+
+        $this->assertStringContainsString('bg-white text-slate-900', $html);
+        $this->assertStringContainsString('bg-white/90', $html);
+        $this->assertStringNotContainsString('bg-slate-950/80', $html);
+    }
+
+    public function test_the_footer_has_its_own_explicit_dark_background(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('rounded-t-[2rem] bg-slate-900 py-12 text-white', false);
+    }
+
+    public function test_ctas_are_pill_shaped(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $this->assertGreaterThan(0, substr_count($response->getContent(), 'rounded-full bg-lime-400'));
+    }
+
+    public function test_the_dark_panels_are_contained_cards_not_full_bleed(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $html = $response->getContent();
+
+        // Payment-links spotlight, how-it-works, and the CTA banner each now
+        // sit inside a max-w-6xl gutter with rounded corners, rather than
+        // bleeding edge-to-edge across the full viewport width. (The payment
+        // logos strip shares this exact wrapper class too — 4 total.)
+        $this->assertSame(4, substr_count($html, 'mx-auto mt-[1cm] max-w-6xl px-4 sm:px-6 lg:px-8'));
+        $this->assertStringContainsString('overflow-hidden rounded-[2rem] lg:grid lg:min-h-[30rem]', $html);
+        $this->assertStringContainsString('relative overflow-hidden rounded-[2rem] bg-slate-900 py-20', $html);
     }
 }

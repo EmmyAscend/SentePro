@@ -9,7 +9,7 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600|pacifico:400&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-slate-950 text-white">
+    <body class="bg-white text-slate-900">
         <div class="flex min-h-screen flex-col">
             <x-public-nav />
             <main class="flex-1">

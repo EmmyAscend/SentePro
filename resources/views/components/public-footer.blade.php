@@ -1,6 +1,6 @@
 @php $content = \App\Models\LandingPageContent::current(); @endphp
 
-<footer class="border-t border-white/10 py-12">
+<footer class="rounded-t-[2rem] bg-slate-900 py-12 text-white">
     <div class="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1fr] lg:gap-10 lg:px-8">
         <div class="col-span-2 lg:col-span-1">
             <x-brand-mark class="text-2xl" />
