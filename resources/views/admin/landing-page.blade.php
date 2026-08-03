@@ -67,6 +67,23 @@
                         @endforeach
                     </div>
                     <x-array-errors field="heading_sizes" class="mt-2" />
+
+                    <div class="mt-6 border-t border-white/10 pt-6">
+                        <p class="text-sm font-medium text-slate-200">Image/text sections (Hero, Requirements, How it works, Payment links) — desktop only</p>
+                        <p class="mt-1 text-sm text-slate-400">Exact pixel size for the heading and description text in these full-width sections, at desktop screen widths. Mobile is unaffected.</p>
+                        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                            <label class="flex flex-col gap-1 text-sm">
+                                <span class="font-medium text-slate-300">Heading size (px)</span>
+                                <input type="number" name="section_heading_size_px" value="{{ old('section_heading_size_px', $content->section_heading_size_px) }}" min="12" max="120" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                <x-input-error :messages="$errors->get('section_heading_size_px')" />
+                            </label>
+                            <label class="flex flex-col gap-1 text-sm">
+                                <span class="font-medium text-slate-300">Description size (px)</span>
+                                <input type="number" name="section_description_size_px" value="{{ old('section_description_size_px', $content->section_description_size_px) }}" min="10" max="60" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
+                                <x-input-error :messages="$errors->get('section_description_size_px')" />
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Payment method logos: dynamic, add as many as needed --}}

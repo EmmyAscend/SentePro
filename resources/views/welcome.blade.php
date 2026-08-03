@@ -3,20 +3,20 @@
     <section class="lg:grid lg:min-h-[32rem] lg:grid-cols-2 lg:items-stretch">
         <div class="px-4 py-12 sm:px-6 lg:flex lg:flex-col lg:justify-center lg:px-16 lg:py-16">
             <p class="mb-4 inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">{{ $content->hero_badge_text }}</p>
-            <h1 class="max-w-2xl font-black tracking-tight text-white" style="font-size: {{ $content->headingSize('hero') }}">{{ $content->hero_headline }}</h1>
-            <p class="mt-5 max-w-2xl text-lg text-slate-300">{{ $content->hero_subtext }}</p>
+            <h1 class="max-w-2xl text-[length:var(--sh-mobile)] font-black tracking-tight text-white lg:text-[length:var(--sh-desktop)]" style="--sh-mobile: {{ $content->headingSize('hero') }}; --sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $content->hero_headline }}</h1>
+            <p class="mt-5 max-w-2xl text-lg text-slate-300 lg:text-[length:var(--sd-desktop)]" style="--sd-desktop: {{ $content->section_description_size_px }}px;">{{ $content->hero_subtext }}</p>
             <div class="mt-8 flex flex-wrap gap-2 sm:gap-3">
                 <a href="{{ route('business.register') }}" class="flex-1 whitespace-nowrap rounded-xl bg-lime-400 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">{{ $content->hero_cta_text }}</a>
                 <a href="/login" class="flex-1 whitespace-nowrap rounded-xl border border-white/15 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-white hover:border-white/30 hover:bg-white/5 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">Log in to dashboard</a>
             </div>
         </div>
 
-        <div class="mt-8 px-4 sm:px-6 lg:mt-0 lg:px-0">
-            <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 shadow-2xl shadow-slate-950/40 lg:h-full lg:rounded-none lg:border-0 lg:shadow-none">
+        <div class="mt-8 px-4 sm:px-6 lg:mt-0 lg:flex lg:h-full lg:items-center lg:justify-center lg:px-0">
+            <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 shadow-2xl shadow-slate-950/40 lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0 lg:shadow-none">
                 @if ($content->hero_image_path)
-                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="A shopkeeper collecting a payment" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full">
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="A shopkeeper collecting a payment" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full lg:w-full">
                 @else
-                    <x-illustration-shop-payment class="aspect-[4/3] w-full lg:aspect-auto lg:h-full" />
+                    <x-illustration-shop-payment class="aspect-[4/3] w-full lg:aspect-auto lg:h-full lg:w-full" />
                 @endif
             </div>
         </div>
@@ -41,20 +41,20 @@
                 $imageFirst = $loop->iteration % 2 !== 0;
             @endphp
             <section class="lg:grid lg:min-h-[30rem] lg:grid-cols-2 lg:items-stretch">
-                <div class="{{ $imageFirst ? 'lg:order-1' : 'lg:order-2' }} px-4 sm:px-6 lg:px-0">
-                    <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 lg:h-full lg:rounded-none lg:border-0">
+                <div class="{{ $imageFirst ? 'lg:order-1' : 'lg:order-2' }} px-4 sm:px-6 lg:flex lg:h-full lg:items-center lg:justify-center lg:px-0">
+                    <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0">
                         @if (! empty($requirement['image_path']))
-                            <img src="{{ \Illuminate\Support\Facades\Storage::url($requirement['image_path']) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full">
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($requirement['image_path']) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full lg:w-full">
                         @elseif ($content->hero_image_path)
-                            <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full">
+                            <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full lg:w-full">
                         @else
-                            <x-illustration-shop-payment class="aspect-[4/3] w-full lg:aspect-auto lg:h-full" />
+                            <x-illustration-shop-payment class="aspect-[4/3] w-full lg:aspect-auto lg:h-full lg:w-full" />
                         @endif
                     </div>
                 </div>
                 <div class="{{ $imageFirst ? 'lg:order-2' : 'lg:order-1' }} mt-6 px-4 sm:px-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:bg-slate-900 lg:px-16">
-                    <h3 class="font-semibold text-white">{{ $requirement['title'] }}</h3>
-                    <p class="mt-1 text-slate-400">{{ $requirement['description'] }}</p>
+                    <h3 class="font-semibold text-white lg:text-[length:var(--sh-desktop)]" style="--sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $requirement['title'] }}</h3>
+                    <p class="mt-1 text-slate-400 lg:text-[length:var(--sd-desktop)]" style="--sd-desktop: {{ $content->section_description_size_px }}px;">{{ $requirement['description'] }}</p>
                     <a href="{{ $registerUrl }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-lime-300">{{ $typeLabel ? 'Register as '.$typeLabel : 'Register now' }}</a>
                 </div>
             </section>
@@ -112,25 +112,23 @@
     <section class="lg:grid lg:min-h-[30rem] lg:grid-cols-2 lg:items-stretch">
         <div class="order-2 bg-slate-900 px-4 py-16 sm:px-6 lg:order-1 lg:flex lg:flex-col lg:justify-center lg:px-16 lg:py-0">
             <p class="inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
-            <h2 class="mt-4 font-bold text-white" style="font-size: {{ $content->headingSize('payment_links') }}">{{ $content->payment_links_heading }}</h2>
-            <p class="mt-3 text-slate-300">{{ $content->payment_links_subtext }}</p>
+            <h2 class="mt-4 text-[length:var(--sh-mobile)] font-bold text-white lg:text-[length:var(--sh-desktop)]" style="--sh-mobile: {{ $content->headingSize('payment_links') }}; --sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $content->payment_links_heading }}</h2>
+            <p class="mt-3 text-slate-300 lg:text-[length:var(--sd-desktop)]" style="--sd-desktop: {{ $content->section_description_size_px }}px;">{{ $content->payment_links_subtext }}</p>
             <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5">Get started</a>
         </div>
-        <div class="order-1 bg-slate-900 px-4 py-10 sm:px-6 lg:order-2 lg:px-0 lg:py-0">
+        <div class="order-1 flex justify-center bg-slate-900 px-4 py-10 sm:px-6 lg:order-2 lg:h-full lg:items-center lg:px-0 lg:py-0">
             @if ($content->payment_links_image_path)
-                <div class="overflow-hidden rounded-3xl ring-1 ring-white/10 lg:h-full lg:rounded-none lg:ring-0">
-                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->payment_links_image_path) }}" alt="Payment links and QR codes" class="aspect-square w-full object-cover lg:aspect-auto lg:h-full">
+                <div class="overflow-hidden rounded-3xl ring-1 ring-white/10">
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->payment_links_image_path) }}" alt="Payment links and QR codes" class="aspect-square w-64 object-cover">
                 </div>
             @else
-                <div class="flex justify-center lg:h-full lg:items-center lg:bg-slate-800/40">
-                    <div class="rounded-3xl bg-slate-800/60 p-6 ring-1 ring-white/10">
-                        <div class="mx-auto grid h-40 w-40 grid-cols-5 gap-1 rounded-2xl bg-white p-3">
-                            @for ($i = 0; $i < 25; $i++)
-                                <span class="{{ in_array($i, [0, 1, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 23, 24, 12, 7, 17, 2, 22]) ? 'bg-slate-950' : 'bg-white' }}"></span>
-                            @endfor
-                        </div>
-                        <p class="mt-4 text-center text-sm text-slate-400">app.sentepro.io/pay/…</p>
+                <div class="rounded-3xl bg-slate-800/60 p-6 ring-1 ring-white/10">
+                    <div class="mx-auto grid h-40 w-40 grid-cols-5 gap-1 rounded-2xl bg-white p-3">
+                        @for ($i = 0; $i < 25; $i++)
+                            <span class="{{ in_array($i, [0, 1, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 23, 24, 12, 7, 17, 2, 22]) ? 'bg-slate-950' : 'bg-white' }}"></span>
+                        @endfor
                     </div>
+                    <p class="mt-4 text-center text-sm text-slate-400">app.sentepro.io/pay/…</p>
                 </div>
             @endif
         </div>
@@ -138,17 +136,17 @@
 
     {{-- How it works --}}
     <section id="how-it-works" class="lg:grid lg:min-h-[30rem] lg:grid-cols-2 lg:items-stretch">
-        <div class="px-4 pt-20 sm:px-6 lg:px-0 lg:pt-0">
-            <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 lg:h-full lg:rounded-none lg:border-0">
+        <div class="px-4 pt-20 sm:px-6 lg:flex lg:h-full lg:items-center lg:justify-center lg:px-0 lg:pt-0">
+            <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0">
                 @if ($content->how_it_works_image_path)
-                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->how_it_works_image_path) }}" alt="Completing the SentePro signup form" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full">
+                    <img src="{{ \Illuminate\Support\Facades\Storage::url($content->how_it_works_image_path) }}" alt="Completing the SentePro signup form" class="aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-full lg:w-full">
                 @else
-                    <x-illustration-register class="aspect-[4/3] w-full lg:aspect-auto lg:h-full" />
+                    <x-illustration-register class="aspect-[4/3] w-full lg:aspect-auto lg:h-full lg:w-full" />
                 @endif
             </div>
         </div>
         <div class="mt-6 px-4 py-10 sm:px-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:bg-slate-900 lg:px-16 lg:py-0">
-            <h2 class="font-bold" style="font-size: {{ $content->headingSize('how_it_works') }}">{{ $content->how_it_works_heading }}</h2>
+            <h2 class="text-[length:var(--sh-mobile)] font-bold lg:text-[length:var(--sh-desktop)]" style="--sh-mobile: {{ $content->headingSize('how_it_works') }}; --sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $content->how_it_works_heading }}</h2>
             <ol class="mt-6 space-y-5">
                 @foreach (($content->how_it_works_steps ?? []) as $i => $step)
                     <li class="flex gap-4">

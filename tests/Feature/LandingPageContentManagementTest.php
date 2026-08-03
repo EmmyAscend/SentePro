@@ -50,6 +50,8 @@ class LandingPageContentManagementTest extends TestCase
             'how_it_works_heading' => 'Updated how it works heading',
             'how_it_works_steps' => array_fill(0, 4, ['title' => 'Step title', 'description' => 'Step description']),
             'how_it_works_cta_text' => 'Get started now',
+            'section_heading_size_px' => 48,
+            'section_description_size_px' => 20,
             'payment_logos' => array_fill(0, 4, ['label' => 'Visa']),
         ];
     }
@@ -514,5 +516,38 @@ class LandingPageContentManagementTest extends TestCase
         $preselected = $this->get('/business/register?type=individual');
         $preselected->assertSee('Solo Freelancer Registration');
         $preselected->assertSee('Solo Freelancer onboarding');
+    }
+
+    public function test_super_admin_can_set_the_desktop_section_text_sizes_in_px(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'section_heading_size_px' => 60,
+            'section_description_size_px' => 24,
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame(60, $content->section_heading_size_px);
+        $this->assertSame(24, $content->section_description_size_px);
+
+        $home = $this->get('/');
+        $home->assertSee('--sh-desktop: 60px', false);
+        $home->assertSee('--sd-desktop: 24px', false);
+    }
+
+    public function test_section_text_size_px_must_stay_within_bounds(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'section_heading_size_px' => 5,
+            'section_description_size_px' => 200,
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)
+            ->assertSessionHasErrors(['section_heading_size_px', 'section_description_size_px']);
     }
 }

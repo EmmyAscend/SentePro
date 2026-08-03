@@ -58,6 +58,8 @@ class LandingPageContentRequest extends FormRequest
             'footer_tagline' => ['required', 'string', 'max:255'],
             'heading_sizes' => ['nullable', 'array'],
             'heading_sizes.*' => ['nullable', 'string', Rule::in(array_keys(LandingPageContent::HEADING_SIZES))],
+            'section_heading_size_px' => ['required', 'integer', 'min:12', 'max:120'],
+            'section_description_size_px' => ['required', 'integer', 'min:10', 'max:60'],
             'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'how_it_works_heading' => ['required', 'string', 'max:255'],
             'how_it_works_steps' => ['required', 'array', 'min:1', 'max:20'],

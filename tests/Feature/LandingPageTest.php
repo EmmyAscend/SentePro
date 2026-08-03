@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\LandingPageContent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -124,5 +125,34 @@ class LandingPageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('mx-auto mt-10 flex max-w-6xl flex-col border-t border-white/10 px-4 pt-6 text-xs text-slate-500 sm:flex-row', false);
+    }
+
+    public function test_payment_links_spotlight_image_keeps_its_original_small_size(): void
+    {
+        LandingPageContent::current()->update(['payment_links_image_path' => 'landing-page/fake-payment-links.jpg']);
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('aspect-square w-64 object-cover', false);
+        $response->assertDontSee('aspect-square w-full object-cover', false);
+    }
+
+    public function test_hero_requirements_and_how_it_works_images_are_reduced_on_desktop(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        // Hero + 3 requirement sections + how-it-works = 5 image boxes shrunk to 3/4 size.
+        $response->assertSee('lg:h-3/4 lg:w-3/4', false);
+    }
+
+    public function test_section_text_sizes_default_to_a_larger_desktop_size(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('--sh-desktop: 48px', false);
+        $response->assertSee('--sd-desktop: 20px', false);
     }
 }
