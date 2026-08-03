@@ -167,8 +167,43 @@ class LandingPageTest extends TestCase
         // features/balances group, payment links, how it works,
         // gateways/faq group, cta banner).
         $this->assertSame(7, substr_count($content, 'mt-[1cm]'));
-        // Features→balances and gateways→faq, inside their shared wrappers.
-        $this->assertSame(2, substr_count($content, 'space-y-[1cm]'));
+        // Between each alternating requirement section, features→balances,
+        // and gateways→faq, inside their shared wrappers.
+        $this->assertSame(3, substr_count($content, 'space-y-[1cm]'));
+    }
+
+    public function test_requirements_payment_links_and_how_it_works_buttons_do_not_stretch_full_width_on_desktop(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+
+        // Each button sits inside a `lg:flex lg:flex-col` column, which
+        // stretches children to full width by default; lg:self-start opts
+        // the button back out to its natural (short) width. 3 requirement
+        // register buttons + payment-links "Get started" + how-it-works CTA.
+        $this->assertSame(5, substr_count($response->getContent(), 'lg:self-start'));
+    }
+
+    public function test_requirements_sections_are_more_compact(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('lg:min-h-[20rem]', false);
+    }
+
+    public function test_hero_adjacent_payment_logos_are_left_aligned_on_desktop(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $content = $response->getContent();
+        $heroLogosSection = substr($content, 0, strpos($content, 'Who can use SentePro?'));
+
+        // Still centered on mobile/tablet, left-aligned from lg: up.
+        $this->assertStringContainsString('justify-center', $heroLogosSection);
+        $this->assertStringContainsString('lg:justify-start', $heroLogosSection);
     }
 
     public function test_supported_payment_logos_are_reduced_on_desktop(): void

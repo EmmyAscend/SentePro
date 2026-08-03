@@ -1,6 +1,7 @@
-@props(['align' => 'center', 'logos' => []])
+@props(['align' => 'center', 'desktopAlign' => null, 'logos' => []])
 @php
     $justify = $align === 'start' ? 'justify-start' : 'justify-center';
+    $desktopJustify = ($desktopAlign ?? $align) === 'start' ? 'lg:justify-start' : 'lg:justify-center';
 
     $placeholders = [
         'Visa' => ['class' => 'text-5xl sm:text-8xl lg:text-6xl font-black italic tracking-tight', 'style' => 'color:#1A1F71'],
@@ -9,7 +10,7 @@
         'Airtel' => ['class' => 'text-5xl sm:text-8xl lg:text-6xl font-black tracking-wide', 'style' => 'color:#ED1C24'],
     ];
 @endphp
-<div {{ $attributes->merge(['class' => "grid grid-cols-[repeat(3,max-content)] items-center $justify gap-x-[10px] gap-y-[10px] sm:flex sm:flex-wrap sm:items-center sm:$justify sm:gap-x-2 sm:gap-y-2"]) }}>
+<div {{ $attributes->merge(['class' => "grid grid-cols-[repeat(3,max-content)] items-center $justify gap-x-[10px] gap-y-[10px] sm:flex sm:flex-wrap sm:items-center sm:$justify sm:gap-x-2 sm:gap-y-2 $desktopJustify"]) }}>
     @forelse ($logos as $logo)
         @if (! empty($logo['image_path']))
             <img src="{{ \Illuminate\Support\Facades\Storage::url($logo['image_path']) }}" alt="{{ $logo['label'] }}" class="h-16 w-auto max-w-[12rem] object-contain sm:h-32 sm:max-w-[32rem] lg:h-20 lg:max-w-[20rem]" title="{{ $logo['label'] }}">

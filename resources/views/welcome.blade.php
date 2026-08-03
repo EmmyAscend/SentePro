@@ -23,7 +23,7 @@
     </section>
 
     <div class="mx-auto mt-[1cm] max-w-6xl px-4 sm:px-6 lg:px-8">
-        <x-payment-method-logos :logos="$content->payment_logos" />
+        <x-payment-method-logos :logos="$content->payment_logos" desktop-align="start" />
     </div>
 
     {{-- Requirements: who can use SentePro, each as its own alternating full-bleed image/text section --}}
@@ -33,14 +33,14 @@
             <p class="mt-2 text-slate-300">{{ $content->requirements_subtext }}</p>
         </div>
     </div>
-    <div class="space-y-10 lg:space-y-0">
+    <div class="space-y-[1cm]">
         @foreach (($content->requirements ?? []) as $requirement)
             @php
                 $typeLabel = \App\Models\LandingPageContent::REQUIREMENT_TYPE_OPTIONS[$requirement['type'] ?? ''] ?? '';
                 $registerUrl = route('business.register', ($requirement['type'] ?? '') ? ['type' => $requirement['type']] : []);
                 $imageFirst = $loop->iteration % 2 !== 0;
             @endphp
-            <section class="lg:grid lg:min-h-[30rem] lg:grid-cols-2 lg:items-stretch">
+            <section class="lg:grid lg:min-h-[20rem] lg:grid-cols-2 lg:items-stretch">
                 <div class="{{ $imageFirst ? 'lg:order-1' : 'lg:order-2' }} px-4 sm:px-6 lg:flex lg:h-full lg:items-center lg:justify-center lg:px-0">
                     <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0">
                         @if (! empty($requirement['image_path']))
@@ -55,7 +55,7 @@
                 <div class="{{ $imageFirst ? 'lg:order-2' : 'lg:order-1' }} mt-6 px-4 sm:px-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:bg-slate-900 lg:px-16">
                     <h3 class="font-semibold text-white lg:text-[length:var(--sh-desktop)]" style="--sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $requirement['title'] }}</h3>
                     <p class="mt-1 text-slate-400 lg:text-[length:var(--sd-desktop)]" style="--sd-desktop: {{ $content->section_description_size_px }}px;">{{ $requirement['description'] }}</p>
-                    <a href="{{ $registerUrl }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-lime-300">{{ $typeLabel ? 'Register as '.$typeLabel : 'Register now' }}</a>
+                    <a href="{{ $registerUrl }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-lime-300 lg:self-start">{{ $typeLabel ? 'Register as '.$typeLabel : 'Register now' }}</a>
                 </div>
             </section>
         @endforeach
@@ -114,7 +114,7 @@
             <p class="inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
             <h2 class="mt-4 text-[length:var(--sh-mobile)] font-bold text-white lg:text-[length:var(--sh-desktop)]" style="--sh-mobile: {{ $content->headingSize('payment_links') }}; --sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $content->payment_links_heading }}</h2>
             <p class="mt-3 text-slate-300 lg:text-[length:var(--sd-desktop)]" style="--sd-desktop: {{ $content->section_description_size_px }}px;">{{ $content->payment_links_subtext }}</p>
-            <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5">Get started</a>
+            <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5 lg:self-start">Get started</a>
         </div>
         <div class="order-1 flex justify-center bg-slate-900 px-4 py-10 sm:px-6 lg:order-2 lg:h-full lg:items-center lg:px-0 lg:py-0">
             @if ($content->payment_links_image_path)
@@ -158,7 +158,7 @@
                     </li>
                 @endforeach
             </ol>
-            <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-3 font-semibold text-slate-950 hover:bg-lime-300">{{ $content->how_it_works_cta_text }}</a>
+            <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-3 font-semibold text-slate-950 hover:bg-lime-300 lg:self-start">{{ $content->how_it_works_cta_text }}</a>
         </div>
     </section>
 
