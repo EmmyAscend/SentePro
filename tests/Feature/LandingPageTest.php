@@ -138,17 +138,17 @@ class LandingPageTest extends TestCase
         $response->assertDontSee('aspect-square w-full object-cover', false);
     }
 
-    public function test_hero_and_how_it_works_images_are_reduced_on_desktop(): void
+    public function test_hero_how_it_works_and_requirements_images_are_reduced_on_desktop(): void
     {
         $response = $this->get('/');
 
         $response->assertOk();
-        // Hero + how-it-works = 2 image boxes shrunk to 3/4 size. Requirements
-        // images are exempt — see test_requirements_images_are_shown_in_full.
-        $this->assertSame(2, substr_count($response->getContent(), 'lg:h-3/4 lg:w-3/4'));
+        // Hero + how-it-works + 3 requirement sections = 5 image boxes
+        // shrunk to 3/4 size.
+        $this->assertSame(5, substr_count($response->getContent(), 'lg:h-3/4 lg:w-3/4'));
     }
 
-    public function test_requirements_images_are_shown_in_full(): void
+    public function test_requirements_images_are_not_cropped_despite_being_shrunk(): void
     {
         $content = LandingPageContent::current();
         $requirements = $content->requirements;
@@ -160,12 +160,10 @@ class LandingPageTest extends TestCase
         $response->assertOk();
         $html = $response->getContent();
 
-        // Full-size box (not the 3/4-shrunk box Hero/how-it-works use) so
-        // the image isn't shrunk down, and object-contain (not
-        // object-cover) so nothing is cropped out of view.
-        $this->assertSame(3, substr_count($html, 'lg:h-full lg:w-full lg:rounded-none lg:border-0'));
-        // Hero + how-it-works still use the 3/4-shrunk box; Requirements no longer does.
-        $this->assertSame(2, substr_count($html, 'lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0'));
+        // Shrunk to the same 3/4-size box Hero/how-it-works use (Hero + how-it-works + 3 requirements = 5)...
+        $this->assertSame(5, substr_count($html, 'lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0'));
+        // ...but still object-contain (not object-cover), so the smaller box
+        // still shows the whole image rather than cropping into it.
         $response->assertSee('aspect-[4/3] w-full object-contain lg:aspect-auto lg:h-full lg:w-full', false);
     }
 
@@ -212,7 +210,7 @@ class LandingPageTest extends TestCase
         $response = $this->get('/');
 
         $response->assertOk();
-        $response->assertSee('lg:min-h-[20rem]', false);
+        $response->assertSee('lg:min-h-[15rem]', false);
     }
 
     public function test_hero_adjacent_payment_logos_are_left_aligned_on_desktop(): void
@@ -255,5 +253,17 @@ class LandingPageTest extends TestCase
         $response->assertOk();
         $response->assertSee('Register as NGO');
         $response->assertDontSee('Register as Non-Profit Organisation');
+    }
+
+    public function test_footer_logo_is_double_the_size_of_the_nav_logo(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+
+        // text-5xl (3rem) is exactly double text-2xl (1.5rem). Only the
+        // footer's logo grew — the nav's own logo is untouched.
+        $response->assertSee('font-pacifico text-lime-400 text-2xl"', false);
+        $response->assertSee('font-pacifico text-lime-400 text-5xl"', false);
     }
 }

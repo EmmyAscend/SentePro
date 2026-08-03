@@ -3,7 +3,7 @@
 <footer class="border-t border-white/10 py-12">
     <div class="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1fr] lg:gap-10 lg:px-8">
         <div class="col-span-2 lg:col-span-1">
-            <x-brand-mark class="text-2xl" />
+            <x-brand-mark class="text-5xl" />
             <p class="mt-3 max-w-xs text-xs text-slate-400">{{ $content->footer_tagline }}</p>
         </div>
         <div>

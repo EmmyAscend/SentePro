@@ -40,9 +40,9 @@
                 $registerUrl = route('business.register', ($requirement['type'] ?? '') ? ['type' => $requirement['type']] : []);
                 $imageFirst = $loop->iteration % 2 !== 0;
             @endphp
-            <section class="lg:grid lg:min-h-[20rem] lg:grid-cols-2 lg:items-stretch">
+            <section class="lg:grid lg:min-h-[15rem] lg:grid-cols-2 lg:items-stretch">
                 <div class="{{ $imageFirst ? 'lg:order-1' : 'lg:order-2' }} px-4 sm:px-6 lg:flex lg:h-full lg:items-center lg:justify-center lg:px-0">
-                    <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 lg:h-full lg:w-full lg:rounded-none lg:border-0">
+                    <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0">
                         @if (! empty($requirement['image_path']))
                             <img src="{{ \Illuminate\Support\Facades\Storage::url($requirement['image_path']) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-contain lg:aspect-auto lg:h-full lg:w-full">
                         @elseif ($content->hero_image_path)
