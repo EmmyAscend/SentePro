@@ -6,10 +6,10 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>{{ $title }}</title>
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600|pacifico:400&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=archivo-black:400|figtree:400,500,600|pacifico:400&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-white text-slate-900">
+    <body class="bg-stone-50 text-slate-900">
         <div class="flex min-h-screen flex-col">
             <x-public-nav />
             <main class="flex-1">

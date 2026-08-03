@@ -111,18 +111,17 @@ class LandingPageTest extends TestCase
         $response->assertDontSee('h-10 w-10 items-center justify-center rounded-full bg-lime-400/10', false);
     }
 
-    public function test_features_render_as_cards(): void
+    public function test_features_render_as_a_hover_highlighted_services_list(): void
     {
         $response = $this->get('/');
 
         $response->assertOk();
         $html = $response->getContent();
 
-        // 4 feature cards cycling through 3 pastel tones.
-        $this->assertStringContainsString('rounded-[2rem] p-6 shadow-sm ring-1 ring-slate-900/5', $html);
-        foreach (['bg-orange-50', 'bg-violet-50', 'bg-lime-50'] as $tone) {
-            $this->assertStringContainsString($tone, $html);
-        }
+        // 4 feature rows, Alpine-driven active-row highlight, no card grid.
+        $this->assertSame(4, substr_count($html, 'border-b border-slate-200 px-4 py-5'));
+        $this->assertStringContainsString('@mouseenter="active =', $html);
+        $this->assertStringNotContainsString('rounded-3xl bg-slate-900 p-6', $html);
     }
 
     public function test_footer_wraps_powered_by_and_copyright_onto_separate_lines_on_mobile(): void
@@ -144,14 +143,14 @@ class LandingPageTest extends TestCase
         $response->assertDontSee('aspect-square w-full object-cover', false);
     }
 
-    public function test_hero_and_how_it_works_images_are_reduced_on_desktop(): void
+    public function test_how_it_works_image_is_reduced_on_desktop(): void
     {
         $response = $this->get('/');
 
         $response->assertOk();
-        // Hero + how-it-works = 2 image boxes shrunk to 3/4 size. Requirements
-        // images are exempt — see test_requirements_images_are_shown_in_full.
-        $this->assertSame(2, substr_count($response->getContent(), 'lg:h-3/4 lg:w-3/4'));
+        // Hero is now a full-bleed background image with no box to shrink;
+        // only how-it-works still uses the 3/4-shrunk box treatment.
+        $this->assertSame(1, substr_count($response->getContent(), 'lg:h-3/4 lg:w-3/4'));
     }
 
     public function test_requirements_images_are_shown_in_full(): void
@@ -166,14 +165,15 @@ class LandingPageTest extends TestCase
         $response->assertOk();
         $html = $response->getContent();
 
-        // Full-size box (not the 3/4-shrunk box Hero/how-it-works use) so
-        // the image isn't shrunk down, and object-contain (not
-        // object-cover) so nothing is cropped out of view.
-        $this->assertSame(3, substr_count($html, 'rounded-[2rem] border border-slate-800 bg-slate-900 lg:h-full lg:w-full'));
-        // Hero + how-it-works still use the 3/4-shrunk box; Requirements no longer does.
-        $this->assertSame(1, substr_count($html, 'shadow-xl shadow-slate-900/10 lg:h-3/4 lg:w-3/4'));
-        $this->assertSame(1, substr_count($html, 'rounded-[2rem] border border-slate-800 bg-slate-900 lg:h-3/4 lg:w-3/4'));
-        $response->assertSee('aspect-[4/3] w-full object-contain lg:aspect-auto lg:h-full lg:w-full', false);
+        // Plain, unshrunk box (not the 3/4-shrunk box how-it-works uses),
+        // rendered once per requirement regardless of whether it ends up
+        // showing a real photo or the illustration fallback. Matched with
+        // the closing quote so how-it-works' longer class list (which
+        // shares this same prefix, plus lg:h-3/4 lg:w-3/4) isn't counted.
+        $this->assertSame(3, substr_count($html, 'overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-900"'));
+        // object-contain (not object-cover) on the one item that has a real
+        // photo, so nothing is cropped out of view.
+        $response->assertSee('alt="Individuals" class="aspect-[4/3] w-full object-contain"', false);
     }
 
     public function test_section_text_sizes_default_to_a_larger_desktop_size(): void
@@ -185,41 +185,18 @@ class LandingPageTest extends TestCase
         $response->assertSee('--sd-desktop: 20px', false);
     }
 
-    public function test_sections_are_separated_by_one_centimeter_of_space(): void
-    {
-        $response = $this->get('/');
-
-        $response->assertOk();
-        $content = $response->getContent();
-
-        // One boundary per top-level section (payment logos, requirements,
-        // features/balances group, payment links, how it works,
-        // gateways/faq group, cta banner).
-        $this->assertSame(7, substr_count($content, 'mt-[1cm]'));
-        // Between each alternating requirement section, features→balances,
-        // and gateways→faq, inside their shared wrappers.
-        $this->assertSame(3, substr_count($content, 'space-y-[1cm]'));
-    }
-
-    public function test_requirements_payment_links_and_how_it_works_buttons_do_not_stretch_full_width_on_desktop(): void
+    public function test_hero_payment_links_and_how_it_works_buttons_do_not_stretch_full_width(): void
     {
         $response = $this->get('/');
 
         $response->assertOk();
 
-        // Each button sits inside a `lg:flex lg:flex-col` column, which
-        // stretches children to full width by default; lg:self-start opts
-        // the button back out to its natural (short) width. 3 requirement
-        // register buttons + payment-links "Get started" + how-it-works CTA.
-        $this->assertSame(5, substr_count($response->getContent(), 'lg:self-start'));
-    }
-
-    public function test_requirements_sections_are_more_compact(): void
-    {
-        $response = $this->get('/');
-
-        $response->assertOk();
-        $response->assertSee('lg:min-h-[20rem]', false);
+        // Hero's badge/CTA column and the payment-links/how-it-works text
+        // columns are all `flex flex-col` containers, which stretch children
+        // to full width by default; w-fit opts the button back out to its
+        // natural (short) width. Hero CTA + Features "Join us today" +
+        // payment-links "Get started" + how-it-works CTA.
+        $this->assertSame(4, substr_count($response->getContent(), 'inline-flex w-fit'));
     }
 
     public function test_hero_adjacent_payment_logos_are_left_aligned_on_desktop(): void
@@ -271,7 +248,7 @@ class LandingPageTest extends TestCase
         $response->assertOk();
         $html = $response->getContent();
 
-        $this->assertStringContainsString('bg-white text-slate-900', $html);
+        $this->assertStringContainsString('bg-stone-50 text-slate-900', $html);
         $this->assertStringContainsString('bg-white/90', $html);
         $this->assertStringNotContainsString('bg-slate-950/80', $html);
     }
@@ -292,19 +269,53 @@ class LandingPageTest extends TestCase
         $this->assertGreaterThan(0, substr_count($response->getContent(), 'rounded-full bg-lime-400'));
     }
 
-    public function test_the_dark_panels_are_contained_cards_not_full_bleed(): void
+    public function test_the_dark_panels_and_cta_banner_span_the_full_width(): void
     {
         $response = $this->get('/');
 
         $response->assertOk();
         $html = $response->getContent();
 
-        // Payment-links spotlight, how-it-works, and the CTA banner each now
-        // sit inside a max-w-6xl gutter with rounded corners, rather than
-        // bleeding edge-to-edge across the full viewport width. (The payment
-        // logos strip shares this exact wrapper class too — 4 total.)
-        $this->assertSame(4, substr_count($html, 'mx-auto mt-[1cm] max-w-6xl px-4 sm:px-6 lg:px-8'));
-        $this->assertStringContainsString('overflow-hidden rounded-[2rem] lg:grid lg:min-h-[30rem]', $html);
-        $this->assertStringContainsString('relative overflow-hidden rounded-[2rem] bg-slate-900 py-20', $html);
+        // Matches the SportVibe reference's own rhythm: full-width section
+        // backgrounds with individual floating cards inside, not Fynlo's
+        // "everything is an inset rounded card with page gutters" pattern.
+        $this->assertStringContainsString('bg-slate-900 lg:grid lg:min-h-[28rem] lg:grid-cols-2 lg:items-stretch', $html);
+        $this->assertStringNotContainsString('mx-auto mt-[1cm] max-w-6xl', $html);
+        $this->assertStringNotContainsString('overflow-hidden rounded-[2rem] lg:grid', $html);
+    }
+
+    public function test_no_fabricated_stats_or_team_photos_appear(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+
+        // The proven-results panel and about-section stat pill must use real,
+        // already-existing CMS copy, never an invented percentage/count, and
+        // there's no staff/coach data anywhere in this app to show a team row.
+        $response->assertDontSee('100K+');
+        $response->assertDontSee('30%');
+        $response->assertDontSee('+40%');
+        $response->assertDontSee('5:1');
+        $response->assertDontSee('MEET OUR EXPERT TEAM', false);
+        $response->assertSee('Request a settlement the moment funds are available');
+        $response->assertSee('font-display text-3xl text-slate-900">/2</p>', false);
+        $response->assertSee('Gateways supported');
+    }
+
+    public function test_headings_use_the_new_display_font(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $this->assertGreaterThan(5, substr_count($response->getContent(), 'font-display'));
+    }
+
+    public function test_hero_badge_reuses_real_hero_badge_text_not_a_fake_stat(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee('/East Africa payment infrastructure', false);
     }
 }

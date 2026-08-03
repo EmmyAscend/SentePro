@@ -48,4 +48,7 @@
         <span>&copy; {{ date('Y') }} SentePro. All rights reserved.</span>
         <span>Powered by <a href="https://razertechnology.com" target="_blank" rel="noopener noreferrer" class="font-medium text-slate-400 hover:text-white">RAZERTECH</a></span>
     </div>
+    <div class="mt-10 overflow-hidden px-4 sm:px-6 lg:px-8">
+        <p class="font-pacifico text-center text-[18vw] leading-none text-lime-400 sm:text-[12vw] lg:text-[8rem]">SentePro</p>
+    </div>
 </footer>

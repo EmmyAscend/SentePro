@@ -14,6 +14,7 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
                 pacifico: ['Pacifico', 'cursive'],
+                display: ['"Archivo Black"', ...defaultTheme.fontFamily.sans],
             },
             // Every rounded-* utility (buttons, inputs, cards, badges, pills,
             // avatars) is scaled to 10% of Tailwind's stock radius — a subtle
