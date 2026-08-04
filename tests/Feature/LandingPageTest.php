@@ -190,8 +190,10 @@ class LandingPageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('--sh-desktop: 48px', false);
-        // Doubled from 20px after the user's "descriptions should double" request.
-        $response->assertSee('--sd-desktop: 40px', false);
+        // Corrected to 24px (a 50% heading:description ratio) after the
+        // earlier literal-double (40px) read as barely distinguishable
+        // from the 48px heading and wrapped excessively.
+        $response->assertSee('--sd-desktop: 24px', false);
     }
 
     public function test_sections_are_separated_by_one_centimeter_of_space(): void
@@ -331,21 +333,45 @@ class LandingPageTest extends TestCase
         $this->assertSame(3, substr_count($response->getContent(), 'text-[32px] font-semibold text-white'));
     }
 
-    public function test_desktop_description_text_is_doubled(): void
+    public function test_desktop_description_text_uses_a_modest_consistent_scale(): void
     {
         $response = $this->get('/');
 
         $response->assertOk();
         $html = $response->getContent();
 
-        // Plain (~16px) description paragraphs doubled to 32px: requirements
-        // subtext, features subtext, balances subtext, gateways subtext, faq
-        // subtext, cta subtext = 6.
-        $this->assertSame(6, substr_count($html, 'lg:text-[32px]'));
-        // text-sm (14px) description-tier text doubled to 28px: feature card
-        // description x4, balances bullet list, faq answer x5, how-it-works
-        // step description x4 = 14.
-        $this->assertSame(14, substr_count($html, 'lg:text-[28px]'));
+        // The first attempt at "double the descriptions" (arbitrary
+        // lg:text-[32px]/[28px] values, and the shared admin field going to
+        // 40px against a 48px heading) produced barely-there heading
+        // contrast, excessive wrapping, and — for Feature cards and
+        // how-it-works steps, whose titles had no desktop override at all —
+        // descriptions literally rendering bigger than their own titles.
+        // Replaced with Tailwind's semantic scale (which pairs a sensible
+        // line-height automatically, unlike bare arbitrary values) at more
+        // modest, consistent sizes: lg:text-xl (20px) for plain-paragraph
+        // subtext under a section heading, lg:text-base/lg:text-lg for
+        // smaller supporting text.
+        // 6 section subtext paragraphs (requirements/features/balances/
+        // gateways/faq/cta) + 8 feature-card and how-it-works titles (see
+        // the hierarchy test below) also use lg:text-xl = 14 total.
+        $this->assertSame(14, substr_count($html, 'lg:text-xl'));
+        $this->assertStringNotContainsString('lg:text-[32px]', $html);
+        $this->assertStringNotContainsString('lg:text-[28px]', $html);
+    }
+
+    public function test_feature_card_and_how_it_works_titles_stay_bigger_than_their_own_description(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $html = $response->getContent();
+
+        // Both titles previously had no desktop size override at all, while
+        // their sibling description got bumped — an inverted hierarchy the
+        // user flagged directly ("headings smaller than descriptions").
+        // 4 feature cards + 4 how-it-works steps = 8 of each.
+        $this->assertSame(8, substr_count($html, 'font-semibold text-white lg:text-xl'));
+        $this->assertSame(8, substr_count($html, 'text-sm text-slate-400 lg:text-base'));
     }
 
     public function test_desktop_buttons_are_a_quarter_larger(): void

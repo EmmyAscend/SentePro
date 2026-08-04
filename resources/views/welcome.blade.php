@@ -30,7 +30,7 @@
     <div class="mx-auto mt-[1cm] max-w-6xl px-4 pb-10 sm:px-6 lg:px-8" id="requirements">
         <div class="max-w-2xl">
             <h2 class="font-bold" style="font-size: {{ $content->headingSize('requirements') }}">{{ $content->requirements_heading }}</h2>
-            <p class="mt-2 text-slate-300 lg:text-[32px]">{{ $content->requirements_subtext }}</p>
+            <p class="mt-2 text-slate-300 lg:text-xl">{{ $content->requirements_subtext }}</p>
         </div>
     </div>
     <div class="space-y-[1cm]">
@@ -70,13 +70,13 @@
         <section id="features">
             <div class="mb-8 max-w-2xl">
                 <h2 class="font-bold" style="font-size: {{ $content->headingSize('features') }}">{{ $content->features_heading }}</h2>
-                <p class="mt-2 text-slate-300 lg:text-[32px]">{{ $content->features_subtext }}</p>
+                <p class="mt-2 text-slate-300 lg:text-xl">{{ $content->features_subtext }}</p>
             </div>
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($content->features as $feature)
                     <div class="rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10">
-                        <h3 class="font-semibold text-white">{{ $feature['title'] }}</h3>
-                        <p class="mt-1 text-sm text-slate-400 lg:text-[28px]">{{ $feature['description'] }}</p>
+                        <h3 class="font-semibold text-white lg:text-xl">{{ $feature['title'] }}</h3>
+                        <p class="mt-1 text-sm text-slate-400 lg:text-base">{{ $feature['description'] }}</p>
                     </div>
                 @endforeach
             </div>
@@ -86,8 +86,8 @@
         <section class="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
                 <h2 class="font-bold" style="font-size: {{ $content->headingSize('balances') }}">{{ $content->balances_heading }}</h2>
-                <p class="mt-3 text-slate-300 lg:text-[32px]">{{ $content->balances_subtext }}</p>
-                <ul class="mt-5 space-y-2 text-sm text-slate-300 lg:text-[28px]">
+                <p class="mt-3 text-slate-300 lg:text-xl">{{ $content->balances_subtext }}</p>
+                <ul class="mt-5 space-y-2 text-sm text-slate-300 lg:text-lg">
                     <li>• Request a settlement the moment funds are available</li>
                     <li>• Fees are calculated and locked in upfront</li>
                     <li>• Full transaction and settlement history, exportable to CSV</li>
@@ -156,8 +156,8 @@
                     <li class="flex gap-4">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">{{ $i + 1 }}</span>
                         <div>
-                            <p class="font-semibold text-white">{{ $step['title'] }}</p>
-                            <p class="text-sm text-slate-400 lg:text-[28px]">{{ $step['description'] }}</p>
+                            <p class="font-semibold text-white lg:text-xl">{{ $step['title'] }}</p>
+                            <p class="text-sm text-slate-400 lg:text-base">{{ $step['description'] }}</p>
                         </div>
                     </li>
                 @endforeach
@@ -170,7 +170,7 @@
         {{-- Gateways --}}
         <section id="gateways">
             <h2 class="font-bold" style="font-size: {{ $content->headingSize('gateways') }}">{{ $content->gateways_heading }}</h2>
-            <p class="mt-2 text-slate-300 lg:text-[32px]">{{ $content->gateways_subtext }}</p>
+            <p class="mt-2 text-slate-300 lg:text-xl">{{ $content->gateways_subtext }}</p>
             <x-payment-method-logos align="start" :logos="$content->payment_logos" class="mt-8" />
         </section>
 
@@ -178,7 +178,7 @@
         <section id="faq" class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
                 <h2 class="font-bold" style="font-size: {{ $content->headingSize('faq') }}">{{ $content->faq_heading }}</h2>
-                <p class="mt-3 text-slate-300 lg:text-[32px]">{{ $content->faq_subtext }}</p>
+                <p class="mt-3 text-slate-300 lg:text-xl">{{ $content->faq_subtext }}</p>
                 <a href="/login" class="mt-4 inline-flex text-sm font-semibold text-lime-300 hover:text-lime-200">Have another question? Log in and open a support ticket →</a>
             </div>
             <div x-data="{ open: 0 }" class="space-y-3">
@@ -190,7 +190,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                             </svg>
                         </button>
-                        <div x-show="open === {{ $i }}" x-transition class="px-5 pb-4 text-sm text-slate-300 lg:text-[28px]">{{ $faq['answer'] }}</div>
+                        <div x-show="open === {{ $i }}" x-transition class="px-5 pb-4 text-sm text-slate-300 lg:text-lg">{{ $faq['answer'] }}</div>
                     </div>
                 @endforeach
             </div>
@@ -202,7 +202,7 @@
         <span class="pointer-events-none absolute -right-6 -top-10 select-none text-[10rem] font-black leading-none text-lime-400/10 sm:text-[14rem]">$0</span>
         <div class="relative mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8">
             <h2 class="font-bold text-white" style="font-size: {{ $content->headingSize('cta') }}">{{ $content->cta_banner_heading }}</h2>
-            <p class="max-w-xl text-slate-300 lg:text-[32px]">{{ $content->cta_banner_subtext }}</p>
+            <p class="max-w-xl text-slate-300 lg:text-xl">{{ $content->cta_banner_subtext }}</p>
             <a href="{{ route('business.register') }}" class="rounded-xl bg-lime-400 px-6 py-3 font-semibold text-slate-950 hover:bg-lime-300 lg:text-[20px]">Register now</a>
         </div>
     </section>
