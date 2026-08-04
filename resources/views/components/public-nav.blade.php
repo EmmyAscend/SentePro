@@ -3,7 +3,7 @@
         <a href="/">
             <x-brand-mark class="text-2xl" />
         </a>
-        <nav class="hidden gap-6 text-xs uppercase tracking-wide text-slate-300 md:flex">
+        <nav class="hidden gap-6 text-xs uppercase tracking-wide text-slate-300 md:flex lg:text-[15px]">
             <a href="/#requirements" class="hover:text-white">Requirements</a>
             <a href="/#features" class="hover:text-white">Features</a>
             <a href="/#gateways" class="hover:text-white">Supported Payments</a>

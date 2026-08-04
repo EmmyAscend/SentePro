@@ -182,7 +182,7 @@ class LandingPageContent extends Model
             'footer_tagline' => 'Payment collection infrastructure for East African businesses.',
             'heading_sizes' => array_map(fn (array $heading) => $heading['default'], self::HEADING_KEYS),
             'section_heading_size_px' => 48,
-            'section_description_size_px' => 20,
+            'section_description_size_px' => 40,
             'payment_logos' => [
                 ['label' => 'Visa', 'image_path' => null],
                 ['label' => 'Mastercard', 'image_path' => null],

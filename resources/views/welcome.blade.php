@@ -6,8 +6,8 @@
             <h1 class="max-w-2xl text-[length:var(--sh-mobile)] font-black tracking-tight text-white lg:text-[length:var(--sh-desktop)]" style="--sh-mobile: {{ $content->headingSize('hero') }}; --sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $content->hero_headline }}</h1>
             <p class="mt-5 max-w-2xl text-lg text-slate-300 lg:text-[length:var(--sd-desktop)]" style="--sd-desktop: {{ $content->section_description_size_px }}px;">{{ $content->hero_subtext }}</p>
             <div class="mt-8 flex flex-wrap gap-2 sm:gap-3">
-                <a href="{{ route('business.register') }}" class="flex-1 whitespace-nowrap rounded-xl bg-lime-400 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">{{ $content->hero_cta_text }}</a>
-                <a href="/login" class="flex-1 whitespace-nowrap rounded-xl border border-white/15 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-white hover:border-white/30 hover:bg-white/5 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal">Log in to dashboard</a>
+                <a href="{{ route('business.register') }}" class="flex-1 whitespace-nowrap rounded-xl bg-lime-400 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal lg:text-[20px]">{{ $content->hero_cta_text }}</a>
+                <a href="/login" class="flex-1 whitespace-nowrap rounded-xl border border-white/15 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-white hover:border-white/30 hover:bg-white/5 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal lg:text-[20px]">Log in to dashboard</a>
             </div>
         </div>
 
@@ -30,7 +30,7 @@
     <div class="mx-auto mt-[1cm] max-w-6xl px-4 pb-10 sm:px-6 lg:px-8" id="requirements">
         <div class="max-w-2xl">
             <h2 class="font-bold" style="font-size: {{ $content->headingSize('requirements') }}">{{ $content->requirements_heading }}</h2>
-            <p class="mt-2 text-slate-300">{{ $content->requirements_subtext }}</p>
+            <p class="mt-2 text-slate-300 lg:text-[32px]">{{ $content->requirements_subtext }}</p>
         </div>
     </div>
     <div class="space-y-[1cm]">
@@ -56,10 +56,10 @@
                         </div>
                     @endif
                 </div>
-                <div class="{{ $imageFirst ? 'lg:order-2' : 'lg:order-1' }} bg-slate-900 mt-6 px-4 sm:px-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:px-16">
-                    <h3 class="font-semibold text-white lg:text-[length:var(--sh-desktop)]" style="--sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $requirement['title'] }}</h3>
+                <div class="{{ $imageFirst ? 'lg:order-2' : 'lg:order-1' }} bg-slate-900 px-4 py-8 sm:px-6 lg:flex lg:flex-col lg:justify-center lg:px-16 lg:py-0">
+                    <h3 class="text-[32px] font-semibold text-white lg:text-[length:var(--sh-desktop)]" style="--sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $requirement['title'] }}</h3>
                     <p class="mt-1 text-slate-400 lg:text-[length:var(--sd-desktop)]" style="--sd-desktop: {{ $content->section_description_size_px }}px;">{{ $requirement['description'] }}</p>
-                    <a href="{{ $registerUrl }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-lime-300 lg:self-start">{{ $typeLabel ? 'Register as '.$typeLabel : 'Register now' }}</a>
+                    <a href="{{ $registerUrl }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-lime-300 lg:self-start lg:text-[17.5px]">{{ $typeLabel ? 'Register as '.$typeLabel : 'Register now' }}</a>
                 </div>
             </section>
         @endforeach
@@ -70,13 +70,13 @@
         <section id="features">
             <div class="mb-8 max-w-2xl">
                 <h2 class="font-bold" style="font-size: {{ $content->headingSize('features') }}">{{ $content->features_heading }}</h2>
-                <p class="mt-2 text-slate-300">{{ $content->features_subtext }}</p>
+                <p class="mt-2 text-slate-300 lg:text-[32px]">{{ $content->features_subtext }}</p>
             </div>
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($content->features as $feature)
                     <div class="rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10">
                         <h3 class="font-semibold text-white">{{ $feature['title'] }}</h3>
-                        <p class="mt-1 text-sm text-slate-400">{{ $feature['description'] }}</p>
+                        <p class="mt-1 text-sm text-slate-400 lg:text-[28px]">{{ $feature['description'] }}</p>
                     </div>
                 @endforeach
             </div>
@@ -86,8 +86,8 @@
         <section class="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
                 <h2 class="font-bold" style="font-size: {{ $content->headingSize('balances') }}">{{ $content->balances_heading }}</h2>
-                <p class="mt-3 text-slate-300">{{ $content->balances_subtext }}</p>
-                <ul class="mt-5 space-y-2 text-sm text-slate-300">
+                <p class="mt-3 text-slate-300 lg:text-[32px]">{{ $content->balances_subtext }}</p>
+                <ul class="mt-5 space-y-2 text-sm text-slate-300 lg:text-[28px]">
                     <li>• Request a settlement the moment funds are available</li>
                     <li>• Fees are calculated and locked in upfront</li>
                     <li>• Full transaction and settlement history, exportable to CSV</li>
@@ -118,7 +118,7 @@
             <p class="inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-lime-300">Payment links &amp; QR codes</p>
             <h2 class="mt-4 text-[length:var(--sh-mobile)] font-bold text-white lg:text-[length:var(--sh-desktop)]" style="--sh-mobile: {{ $content->headingSize('payment_links') }}; --sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $content->payment_links_heading }}</h2>
             <p class="mt-3 text-slate-300 lg:text-[length:var(--sd-desktop)]" style="--sd-desktop: {{ $content->section_description_size_px }}px;">{{ $content->payment_links_subtext }}</p>
-            <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5 lg:self-start">Get started</a>
+            <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl border border-white/15 px-5 py-3 font-semibold text-white hover:border-white/30 hover:bg-white/5 lg:self-start lg:text-[20px]">Get started</a>
         </div>
         <div class="order-1 flex justify-center bg-slate-900 px-4 py-10 sm:px-6 lg:order-2 lg:h-full lg:items-center lg:px-0 lg:py-0">
             @if ($content->payment_links_image_path)
@@ -157,12 +157,12 @@
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-lime-400/10 text-sm font-semibold text-lime-300">{{ $i + 1 }}</span>
                         <div>
                             <p class="font-semibold text-white">{{ $step['title'] }}</p>
-                            <p class="text-sm text-slate-400">{{ $step['description'] }}</p>
+                            <p class="text-sm text-slate-400 lg:text-[28px]">{{ $step['description'] }}</p>
                         </div>
                     </li>
                 @endforeach
             </ol>
-            <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-3 font-semibold text-slate-950 hover:bg-lime-300 lg:self-start">{{ $content->how_it_works_cta_text }}</a>
+            <a href="{{ route('business.register') }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-3 font-semibold text-slate-950 hover:bg-lime-300 lg:self-start lg:text-[20px]">{{ $content->how_it_works_cta_text }}</a>
         </div>
     </section>
 
@@ -170,7 +170,7 @@
         {{-- Gateways --}}
         <section id="gateways">
             <h2 class="font-bold" style="font-size: {{ $content->headingSize('gateways') }}">{{ $content->gateways_heading }}</h2>
-            <p class="mt-2 text-slate-300">{{ $content->gateways_subtext }}</p>
+            <p class="mt-2 text-slate-300 lg:text-[32px]">{{ $content->gateways_subtext }}</p>
             <x-payment-method-logos align="start" :logos="$content->payment_logos" class="mt-8" />
         </section>
 
@@ -178,7 +178,7 @@
         <section id="faq" class="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
                 <h2 class="font-bold" style="font-size: {{ $content->headingSize('faq') }}">{{ $content->faq_heading }}</h2>
-                <p class="mt-3 text-slate-300">{{ $content->faq_subtext }}</p>
+                <p class="mt-3 text-slate-300 lg:text-[32px]">{{ $content->faq_subtext }}</p>
                 <a href="/login" class="mt-4 inline-flex text-sm font-semibold text-lime-300 hover:text-lime-200">Have another question? Log in and open a support ticket →</a>
             </div>
             <div x-data="{ open: 0 }" class="space-y-3">
@@ -190,7 +190,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                             </svg>
                         </button>
-                        <div x-show="open === {{ $i }}" x-transition class="px-5 pb-4 text-sm text-slate-300">{{ $faq['answer'] }}</div>
+                        <div x-show="open === {{ $i }}" x-transition class="px-5 pb-4 text-sm text-slate-300 lg:text-[28px]">{{ $faq['answer'] }}</div>
                     </div>
                 @endforeach
             </div>
@@ -202,8 +202,8 @@
         <span class="pointer-events-none absolute -right-6 -top-10 select-none text-[10rem] font-black leading-none text-lime-400/10 sm:text-[14rem]">$0</span>
         <div class="relative mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8">
             <h2 class="font-bold text-white" style="font-size: {{ $content->headingSize('cta') }}">{{ $content->cta_banner_heading }}</h2>
-            <p class="max-w-xl text-slate-300">{{ $content->cta_banner_subtext }}</p>
-            <a href="{{ route('business.register') }}" class="rounded-xl bg-lime-400 px-6 py-3 font-semibold text-slate-950 hover:bg-lime-300">Register now</a>
+            <p class="max-w-xl text-slate-300 lg:text-[32px]">{{ $content->cta_banner_subtext }}</p>
+            <a href="{{ route('business.register') }}" class="rounded-xl bg-lime-400 px-6 py-3 font-semibold text-slate-950 hover:bg-lime-300 lg:text-[20px]">Register now</a>
         </div>
     </section>
 </x-public-layout>

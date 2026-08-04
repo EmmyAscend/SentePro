@@ -178,7 +178,10 @@ class LandingPageTest extends TestCase
         // uses on both of its own columns, so image and text read as one
         // continuous panel instead of two separate cards.
         $this->assertSame(3, substr_count($response->getContent(), 'bg-slate-900 px-4 py-10 sm:px-6 lg:flex lg:h-full lg:items-center lg:justify-center lg:px-0 lg:py-0'));
-        $this->assertSame(3, substr_count($response->getContent(), 'bg-slate-900 mt-6 px-4 sm:px-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:px-16'));
+        // No more mt-6/lg:mt-0 margin — that was the visible seam between
+        // the image and text blocks on mobile the user flagged. Now it's
+        // plain vertical padding (matching the image column) instead.
+        $this->assertSame(3, substr_count($response->getContent(), 'bg-slate-900 px-4 py-8 sm:px-6 lg:flex lg:flex-col lg:justify-center lg:px-16 lg:py-0'));
     }
 
     public function test_section_text_sizes_default_to_a_larger_desktop_size(): void
@@ -187,7 +190,8 @@ class LandingPageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('--sh-desktop: 48px', false);
-        $response->assertSee('--sd-desktop: 20px', false);
+        // Doubled from 20px after the user's "descriptions should double" request.
+        $response->assertSee('--sd-desktop: 40px', false);
     }
 
     public function test_sections_are_separated_by_one_centimeter_of_space(): void
@@ -316,5 +320,54 @@ class LandingPageTest extends TestCase
         // The brand-mark's own font-pacifico class is unaffected.
         $response->assertSee('font-pacifico text-lime-400 text-2xl"', false);
         $response->assertSee('font-pacifico text-lime-400 text-5xl"', false);
+    }
+
+    public function test_requirements_title_is_doubled_on_mobile(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        // ~16px inherited base doubled to an explicit 32px, one per item.
+        $this->assertSame(3, substr_count($response->getContent(), 'text-[32px] font-semibold text-white'));
+    }
+
+    public function test_desktop_description_text_is_doubled(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $html = $response->getContent();
+
+        // Plain (~16px) description paragraphs doubled to 32px: requirements
+        // subtext, features subtext, balances subtext, gateways subtext, faq
+        // subtext, cta subtext = 6.
+        $this->assertSame(6, substr_count($html, 'lg:text-[32px]'));
+        // text-sm (14px) description-tier text doubled to 28px: feature card
+        // description x4, balances bullet list, faq answer x5, how-it-works
+        // step description x4 = 14.
+        $this->assertSame(14, substr_count($html, 'lg:text-[28px]'));
+    }
+
+    public function test_desktop_buttons_are_a_quarter_larger(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $html = $response->getContent();
+
+        // 16px * 1.25 = 20px: hero primary + secondary, payment-links "Get
+        // started", how-it-works CTA, cta banner "Register now" = 5.
+        $this->assertSame(5, substr_count($html, 'lg:text-[20px]'));
+        // 14px * 1.25 = 17.5px: the 3 per-requirement register buttons.
+        $this->assertSame(3, substr_count($html, 'lg:text-[17.5px]'));
+    }
+
+    public function test_desktop_nav_menu_items_are_a_quarter_larger(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        // 12px * 1.25 = 15px, on the desktop nav's own <nav> wrapper.
+        $response->assertSee('text-xs uppercase tracking-wide text-slate-300 md:flex lg:text-[15px]', false);
     }
 }
