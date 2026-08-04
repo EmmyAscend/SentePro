@@ -43,15 +43,15 @@
             <section class="lg:grid lg:min-h-[15rem] lg:grid-cols-2 lg:items-stretch">
                 <div class="{{ $imageFirst ? 'lg:order-1' : 'lg:order-2' }} bg-slate-900 px-4 py-10 sm:px-6 lg:flex lg:h-full lg:items-center lg:justify-center lg:px-0 lg:py-0">
                     @if (! empty($requirement['image_path']))
-                        <div class="overflow-hidden rounded-3xl ring-1 ring-white/10 lg:h-3/4 lg:w-3/4">
+                        <div class="overflow-hidden rounded-3xl lg:h-3/4 lg:w-3/4">
                             <img src="{{ \Illuminate\Support\Facades\Storage::url($requirement['image_path']) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-contain lg:aspect-auto lg:h-full lg:w-full">
                         </div>
                     @elseif ($content->hero_image_path)
-                        <div class="overflow-hidden rounded-3xl ring-1 ring-white/10 lg:h-3/4 lg:w-3/4">
+                        <div class="overflow-hidden rounded-3xl lg:h-3/4 lg:w-3/4">
                             <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-contain lg:aspect-auto lg:h-full lg:w-full">
                         </div>
                     @else
-                        <div class="overflow-hidden rounded-3xl ring-1 ring-white/10 lg:h-3/4 lg:w-3/4">
+                        <div class="overflow-hidden rounded-3xl lg:h-3/4 lg:w-3/4">
                             <x-illustration-shop-payment class="aspect-[4/3] w-full lg:aspect-auto lg:h-full lg:w-full" />
                         </div>
                     @endif

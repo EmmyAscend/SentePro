@@ -160,9 +160,8 @@ class LandingPageTest extends TestCase
         $response->assertOk();
         $html = $response->getContent();
 
-        // Shrunk to 3/4 size, ring-framed like the payment-links image
-        // (not the border+own-background box Hero/how-it-works still use).
-        $this->assertSame(3, substr_count($html, 'overflow-hidden rounded-3xl ring-1 ring-white/10 lg:h-3/4 lg:w-3/4'));
+        // Shrunk to 3/4 size, no border/ring frame around the image.
+        $this->assertSame(3, substr_count($html, 'overflow-hidden rounded-3xl lg:h-3/4 lg:w-3/4'));
         // Still object-contain (not object-cover), so the smaller box
         // still shows the whole image rather than cropping into it.
         $response->assertSee('aspect-[4/3] w-full object-contain lg:aspect-auto lg:h-full lg:w-full', false);
@@ -278,6 +277,43 @@ class LandingPageTest extends TestCase
 
         // text-5xl (3rem) is exactly double text-2xl (1.5rem). Only the
         // footer's logo grew — the nav's own logo is untouched.
+        $response->assertSee('font-pacifico text-lime-400 text-2xl"', false);
+        $response->assertSee('font-pacifico text-lime-400 text-5xl"', false);
+    }
+
+    public function test_requirements_images_have_no_border_or_ring(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertDontSee('ring-1 ring-white/10 lg:h-3/4 lg:w-3/4', false);
+        // Still present without the ring (3 requirement image frames).
+        $this->assertSame(3, substr_count($response->getContent(), 'overflow-hidden rounded-3xl lg:h-3/4 lg:w-3/4'));
+    }
+
+    public function test_footer_menu_items_are_a_quarter_larger(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $html = $response->getContent();
+
+        // text-xs (12px) * 1.25 = 15px exactly. 3 link columns by default
+        // (Product/Company/Legal; Contact only renders when configured).
+        $this->assertSame(3, substr_count($html, 'mt-4 space-y-2 text-[15px] text-slate-300'));
+        $this->assertStringNotContainsString('mt-4 space-y-2 text-xs text-slate-300', $html);
+    }
+
+    public function test_public_site_uses_dai_banna_sil_as_its_theme_font_without_touching_the_logo(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $html = $response->getContent();
+
+        $this->assertStringContainsString('dai-banna-sil', $html);
+        $this->assertStringContainsString('font-theme bg-slate-950 text-white', $html);
+        // The brand-mark's own font-pacifico class is unaffected.
         $response->assertSee('font-pacifico text-lime-400 text-2xl"', false);
         $response->assertSee('font-pacifico text-lime-400 text-5xl"', false);
     }

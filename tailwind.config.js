@@ -14,6 +14,11 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
                 pacifico: ['Pacifico', 'cursive'],
+                // The public marketing site's main body/heading font — kept
+                // as a distinct key (not an override of `sans`, which the
+                // authenticated dashboard also relies on via its own
+                // `font-sans` class) so this only touches the public site.
+                theme: ['"Dai Banna SIL"', ...defaultTheme.fontFamily.sans],
             },
             // Every rounded-* utility (buttons, inputs, cards, badges, pills,
             // avatars) is scaled to 10% of Tailwind's stock radius — a subtle
