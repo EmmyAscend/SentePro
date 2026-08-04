@@ -41,18 +41,22 @@
                 $imageFirst = $loop->iteration % 2 !== 0;
             @endphp
             <section class="lg:grid lg:min-h-[15rem] lg:grid-cols-2 lg:items-stretch">
-                <div class="{{ $imageFirst ? 'lg:order-1' : 'lg:order-2' }} px-4 sm:px-6 lg:flex lg:h-full lg:items-center lg:justify-center lg:px-0">
-                    <div class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900 lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0">
-                        @if (! empty($requirement['image_path']))
+                <div class="{{ $imageFirst ? 'lg:order-1' : 'lg:order-2' }} bg-slate-900 px-4 py-10 sm:px-6 lg:flex lg:h-full lg:items-center lg:justify-center lg:px-0 lg:py-0">
+                    @if (! empty($requirement['image_path']))
+                        <div class="overflow-hidden rounded-3xl ring-1 ring-white/10 lg:h-3/4 lg:w-3/4">
                             <img src="{{ \Illuminate\Support\Facades\Storage::url($requirement['image_path']) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-contain lg:aspect-auto lg:h-full lg:w-full">
-                        @elseif ($content->hero_image_path)
+                        </div>
+                    @elseif ($content->hero_image_path)
+                        <div class="overflow-hidden rounded-3xl ring-1 ring-white/10 lg:h-3/4 lg:w-3/4">
                             <img src="{{ \Illuminate\Support\Facades\Storage::url($content->hero_image_path) }}" alt="{{ $requirement['title'] }}" class="aspect-[4/3] w-full object-contain lg:aspect-auto lg:h-full lg:w-full">
-                        @else
+                        </div>
+                    @else
+                        <div class="overflow-hidden rounded-3xl ring-1 ring-white/10 lg:h-3/4 lg:w-3/4">
                             <x-illustration-shop-payment class="aspect-[4/3] w-full lg:aspect-auto lg:h-full lg:w-full" />
-                        @endif
-                    </div>
+                        </div>
+                    @endif
                 </div>
-                <div class="{{ $imageFirst ? 'lg:order-2' : 'lg:order-1' }} mt-6 px-4 sm:px-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:bg-slate-900 lg:px-16">
+                <div class="{{ $imageFirst ? 'lg:order-2' : 'lg:order-1' }} bg-slate-900 mt-6 px-4 sm:px-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:px-16">
                     <h3 class="font-semibold text-white lg:text-[length:var(--sh-desktop)]" style="--sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $requirement['title'] }}</h3>
                     <p class="mt-1 text-slate-400 lg:text-[length:var(--sd-desktop)]" style="--sd-desktop: {{ $content->section_description_size_px }}px;">{{ $requirement['description'] }}</p>
                     <a href="{{ $registerUrl }}" class="mt-6 inline-flex rounded-xl bg-lime-400 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-lime-300 lg:self-start">{{ $typeLabel ? 'Register as '.$typeLabel : 'Register now' }}</a>

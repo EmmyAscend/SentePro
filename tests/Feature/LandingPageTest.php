@@ -160,11 +160,26 @@ class LandingPageTest extends TestCase
         $response->assertOk();
         $html = $response->getContent();
 
-        // Shrunk to the same 3/4-size box Hero/how-it-works use (Hero + how-it-works + 3 requirements = 5)...
-        $this->assertSame(5, substr_count($html, 'lg:h-3/4 lg:w-3/4 lg:rounded-none lg:border-0'));
-        // ...but still object-contain (not object-cover), so the smaller box
+        // Shrunk to 3/4 size, ring-framed like the payment-links image
+        // (not the border+own-background box Hero/how-it-works still use).
+        $this->assertSame(3, substr_count($html, 'overflow-hidden rounded-3xl ring-1 ring-white/10 lg:h-3/4 lg:w-3/4'));
+        // Still object-contain (not object-cover), so the smaller box
         // still shows the whole image rather than cropping into it.
         $response->assertSee('aspect-[4/3] w-full object-contain lg:aspect-auto lg:h-full lg:w-full', false);
+    }
+
+    public function test_requirements_sections_share_one_background_like_payment_links_does(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+
+        // Both the image column and the text column carry the exact same
+        // unprefixed (not lg:-gated) bg-slate-900 the payment-links spotlight
+        // uses on both of its own columns, so image and text read as one
+        // continuous panel instead of two separate cards.
+        $this->assertSame(3, substr_count($response->getContent(), 'bg-slate-900 px-4 py-10 sm:px-6 lg:flex lg:h-full lg:items-center lg:justify-center lg:px-0 lg:py-0'));
+        $this->assertSame(3, substr_count($response->getContent(), 'bg-slate-900 mt-6 px-4 sm:px-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:px-16'));
     }
 
     public function test_section_text_sizes_default_to_a_larger_desktop_size(): void
