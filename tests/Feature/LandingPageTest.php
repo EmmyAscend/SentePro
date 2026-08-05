@@ -310,15 +310,18 @@ class LandingPageTest extends TestCase
         $this->assertStringNotContainsString('mt-4 space-y-2 text-xs text-slate-300', $html);
     }
 
-    public function test_public_site_uses_dai_banna_sil_as_its_theme_font_without_touching_the_logo(): void
+    public function test_public_site_uses_syne_as_its_font_without_touching_the_logo(): void
     {
         $response = $this->get('/');
 
         $response->assertOk();
         $html = $response->getContent();
 
-        $this->assertStringContainsString('dai-banna-sil', $html);
-        $this->assertStringContainsString('font-theme bg-slate-950 text-white', $html);
+        // Syne is now the single shared font for both the public site and
+        // the dashboard, applied via the same font-sans class both layouts
+        // already used (no more separate font-theme/Dai Banna SIL split).
+        $this->assertStringContainsString('syne', $html);
+        $this->assertStringContainsString('font-sans bg-slate-950 text-white', $html);
         // The brand-mark's own font-pacifico class is unaffected.
         $response->assertSee('font-pacifico text-lime-400 text-2xl"', false);
         $response->assertSee('font-pacifico text-lime-400 text-5xl"', false);

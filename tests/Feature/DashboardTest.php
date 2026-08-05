@@ -31,6 +31,21 @@ class DashboardTest extends TestCase
         $response->assertSee('SentePro Dashboard');
     }
 
+    public function test_dashboard_uses_the_same_syne_font_as_the_public_site(): void
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => now(),
+        ]);
+
+        $response = $this->actingAs($user)->get('/dashboard');
+
+        $response->assertOk();
+        $html = $response->getContent();
+
+        $this->assertStringContainsString('syne', $html);
+        $this->assertStringContainsString('font-sans antialiased bg-slate-950 text-white', $html);
+    }
+
     public function test_dashboard_shows_live_transaction_activity_for_the_users_own_business(): void
     {
         $business = Business::factory()->create([
