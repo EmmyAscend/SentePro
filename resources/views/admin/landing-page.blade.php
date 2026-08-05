@@ -69,8 +69,8 @@
                     <x-array-errors field="heading_sizes" class="mt-2" />
 
                     <div class="mt-6 border-t border-white/10 pt-6">
-                        <p class="text-sm font-medium text-slate-200">Image/text sections (Hero, Requirements, How it works, Payment links)</p>
-                        <p class="mt-1 text-sm text-slate-400">Exact pixel size for the heading and description text in these full-width sections. Heading size also controls the Hero headline at every screen width; everything else here applies at desktop screen widths only.</p>
+                        <p class="text-sm font-medium text-slate-200">Image/text sections — desktop only</p>
+                        <p class="mt-1 text-sm text-slate-400">Exact pixel size for the heading and description text in these full-width sections, at desktop screen widths. Mobile is unaffected. Heading size covers Requirements, How it works, and Payment links (the Hero headline uses the Heading sizes section above instead); Description size also covers the Hero subtext.</p>
                         <div class="mt-4 grid gap-4 sm:grid-cols-2">
                             <label class="flex flex-col gap-1 text-sm">
                                 <span class="font-medium text-slate-300">Heading size (px)</span>

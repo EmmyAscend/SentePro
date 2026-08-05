@@ -309,11 +309,11 @@ class LandingPageContentManagementTest extends TestCase
     {
         $superAdmin = User::factory()->superAdmin()->create();
 
-        $payload = array_merge($this->validPayload(), ['heading_sizes' => ['requirements' => 'sm']]);
+        $payload = array_merge($this->validPayload(), ['heading_sizes' => ['hero' => 'sm']]);
 
         $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
 
-        $this->assertSame('sm', LandingPageContent::current()->heading_sizes['requirements']);
+        $this->assertSame('sm', LandingPageContent::current()->heading_sizes['hero']);
         $this->get('/')->assertSee(LandingPageContent::HEADING_SIZES['sm'], false);
     }
 
@@ -321,9 +321,9 @@ class LandingPageContentManagementTest extends TestCase
     {
         $superAdmin = User::factory()->superAdmin()->create();
 
-        $payload = array_merge($this->validPayload(), ['heading_sizes' => ['requirements' => 'not-a-real-size']]);
+        $payload = array_merge($this->validPayload(), ['heading_sizes' => ['hero' => 'not-a-real-size']]);
 
-        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertSessionHasErrors('heading_sizes.requirements');
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertSessionHasErrors('heading_sizes.hero');
     }
 
     public function test_super_admin_can_update_the_hero_cta_text(): void
