@@ -330,7 +330,7 @@ class LandingPageTest extends TestCase
 
         $response->assertOk();
         // ~16px inherited base doubled to an explicit 32px, one per item.
-        $this->assertSame(3, substr_count($response->getContent(), 'text-[32px] font-semibold text-white'));
+        $this->assertSame(3, substr_count($response->getContent(), 'text-[32px] font-semibold leading-tight text-white'));
     }
 
     public function test_desktop_description_text_uses_a_modest_consistent_scale(): void
@@ -353,8 +353,10 @@ class LandingPageTest extends TestCase
         // smaller supporting text.
         // 6 section subtext paragraphs (requirements/features/balances/
         // gateways/faq/cta) + 8 feature-card and how-it-works titles (see
-        // the hierarchy test below) also use lg:text-xl = 14 total.
-        $this->assertSame(14, substr_count($html, 'lg:text-xl'));
+        // the hierarchy test below) + 5 footer elements (tagline, 3 default
+        // menu columns, copyright row — Contact only renders when
+        // configured) also use lg:text-xl = 19 total.
+        $this->assertSame(19, substr_count($html, 'lg:text-xl'));
         $this->assertStringNotContainsString('lg:text-[32px]', $html);
         $this->assertStringNotContainsString('lg:text-[28px]', $html);
     }
@@ -372,6 +374,41 @@ class LandingPageTest extends TestCase
         // 4 feature cards + 4 how-it-works steps = 8 of each.
         $this->assertSame(8, substr_count($html, 'font-semibold text-white lg:text-xl'));
         $this->assertSame(8, substr_count($html, 'text-sm text-slate-400 lg:text-base'));
+    }
+
+    public function test_footer_elements_match_the_description_text_size_on_desktop(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $html = $response->getContent();
+
+        // Tagline, the 3 default menu columns, and the copyright row all
+        // grow to lg:text-xl on desktop — matching the same size the CTA
+        // banner's own subtext already uses, per the "make them like the
+        // ticked paragraph" request. Mobile keeps its existing smaller size.
+        $response->assertSee('mt-3 max-w-xs text-xs text-slate-400 lg:text-xl', false);
+        $this->assertSame(3, substr_count($html, 'mt-4 space-y-2 text-[15px] text-slate-300 lg:text-xl'));
+        $response->assertSee('text-xs text-slate-500 sm:flex-row sm:items-center sm:gap-1 sm:px-6 lg:px-8 lg:text-xl', false);
+    }
+
+    public function test_headings_use_tight_line_height(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $html = $response->getContent();
+
+        // Headings driven by an arbitrary CSS-var font-size (--sh-mobile/
+        // --sh-desktop, or the headingSize() clamp() inline style) carry no
+        // paired line-height the way Tailwind's semantic text-* classes do,
+        // which left multi-line headings (e.g. the wrapped Hero headline)
+        // with visibly excessive gaps between lines. leading-tight fixes it
+        // on every such heading: Hero h1; the Requirements, Features,
+        // Balances, Gateways, FAQ, and CTA h2s; Payment-links and
+        // how-it-works h2; and Requirements' per-item h3 (x3 by default) —
+        // 9 single-render headings + 3 looped h3s = 12 total.
+        $this->assertSame(12, substr_count($html, 'leading-tight'));
     }
 
     public function test_desktop_buttons_are_a_quarter_larger(): void
