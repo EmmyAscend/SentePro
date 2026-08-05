@@ -3,7 +3,7 @@
     <section class="lg:grid lg:min-h-[32rem] lg:grid-cols-2 lg:items-stretch">
         <div class="px-4 py-12 sm:px-6 lg:flex lg:flex-col lg:justify-center lg:px-16 lg:py-16">
             <p class="mb-4 inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">{{ $content->hero_badge_text }}</p>
-            <h1 class="max-w-2xl text-[length:var(--sh-mobile)] font-black leading-tight tracking-tight text-white lg:text-[length:var(--sh-desktop)]" style="--sh-mobile: {{ $content->headingSize('hero') }}; --sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $content->hero_headline }}</h1>
+            <h1 class="max-w-2xl text-[length:var(--sh-mobile)] font-extrabold leading-tight tracking-tight text-white lg:text-[length:var(--sh-desktop)]" style="--sh-mobile: {{ $content->headingSize('hero') }}; --sh-desktop: {{ $content->section_heading_size_px }}px;">{{ $content->hero_headline }}</h1>
             <p class="mt-5 max-w-2xl text-lg text-slate-300 lg:text-[length:var(--sd-desktop)]" style="--sd-desktop: {{ $content->section_description_size_px }}px;">{{ $content->hero_subtext }}</p>
             <div class="mt-8 flex flex-wrap gap-2 sm:gap-3">
                 <a href="{{ route('business.register') }}" class="flex-1 whitespace-nowrap rounded-xl bg-lime-400 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal lg:text-[20px]">{{ $content->hero_cta_text }}</a>
@@ -199,7 +199,7 @@
 
     {{-- CTA banner --}}
     <section class="relative mt-[1cm] overflow-hidden bg-slate-900 py-20">
-        <span class="pointer-events-none absolute -right-6 -top-10 select-none text-[10rem] font-black leading-none text-lime-400/10 sm:text-[14rem]">$0</span>
+        <span class="pointer-events-none absolute -right-6 -top-10 select-none text-[10rem] font-extrabold leading-none text-lime-400/10 sm:text-[14rem]">$0</span>
         <div class="relative mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8">
             <h2 class="font-bold leading-tight text-white" style="font-size: {{ $content->headingSize('cta') }}">{{ $content->cta_banner_heading }}</h2>
             <p class="max-w-xl text-slate-300 lg:text-xl">{{ $content->cta_banner_subtext }}</p>

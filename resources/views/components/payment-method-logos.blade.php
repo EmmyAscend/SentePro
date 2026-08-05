@@ -4,10 +4,10 @@
     $desktopJustify = ($desktopAlign ?? $align) === 'start' ? 'lg:justify-start' : 'lg:justify-center';
 
     $placeholders = [
-        'Visa' => ['class' => 'text-5xl sm:text-8xl lg:text-6xl font-black italic tracking-tight', 'style' => 'color:#1A1F71'],
+        'Visa' => ['class' => 'text-5xl sm:text-8xl lg:text-6xl font-extrabold italic tracking-tight', 'style' => 'color:#1A1F71'],
         'Mastercard' => null,
-        'MTN' => ['class' => 'text-5xl sm:text-8xl lg:text-6xl font-black tracking-wide', 'style' => 'color:#FFCB05'],
-        'Airtel' => ['class' => 'text-5xl sm:text-8xl lg:text-6xl font-black tracking-wide', 'style' => 'color:#ED1C24'],
+        'MTN' => ['class' => 'text-5xl sm:text-8xl lg:text-6xl font-extrabold tracking-wide', 'style' => 'color:#FFCB05'],
+        'Airtel' => ['class' => 'text-5xl sm:text-8xl lg:text-6xl font-extrabold tracking-wide', 'style' => 'color:#ED1C24'],
     ];
 @endphp
 <div {{ $attributes->merge(['class' => "grid grid-cols-[repeat(3,max-content)] items-center $justify gap-x-[10px] gap-y-[10px] sm:flex sm:flex-wrap sm:items-center sm:$justify sm:gap-x-2 sm:gap-y-2 $desktopJustify"]) }}>
