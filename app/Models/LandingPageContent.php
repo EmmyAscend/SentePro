@@ -41,7 +41,6 @@ class LandingPageContent extends Model
      * an admin-facing label.
      */
     public const HEADING_KEYS = [
-        'hero' => ['label' => 'Hero headline', 'default' => 'xl'],
         'for_business' => ['label' => '"Run your payment operations" card', 'default' => 'sm'],
         'for_customers' => ['label' => '"A fast, familiar checkout" card', 'default' => 'sm'],
         'requirements' => ['label' => '"Who can use SentePro?"', 'default' => 'md'],
