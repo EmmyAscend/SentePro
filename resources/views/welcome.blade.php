@@ -3,7 +3,7 @@
     <section class="lg:grid lg:min-h-[32rem] lg:grid-cols-2 lg:items-stretch">
         <div class="px-4 py-12 sm:px-6 lg:flex lg:flex-col lg:justify-center lg:px-16 lg:py-16">
             <p class="mb-4 inline-flex px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-lime-300">{{ $content->hero_badge_text }}</p>
-            <h1 class="max-w-2xl font-extrabold leading-tight tracking-tight text-white" style="font-size: {{ $content->headingSize('hero') }}">{{ $content->hero_headline }}</h1>
+            <h1 class="max-w-2xl font-bold leading-tight text-white" style="font-size: {{ $content->headingSize('hero') }}">{{ $content->hero_headline }}</h1>
             <p class="mt-5 max-w-2xl text-lg text-slate-300 lg:text-[length:var(--sd-desktop)]" style="--sd-desktop: {{ $content->section_description_size_px }}px;">{{ $content->hero_subtext }}</p>
             <div class="mt-8 flex flex-wrap gap-2 sm:gap-3">
                 <a href="{{ route('business.register') }}" class="flex-1 whitespace-nowrap rounded-xl bg-lime-400 px-3 py-2.5 text-center text-[11px] font-semibold tracking-tight text-slate-950 shadow-lg shadow-lime-500/15 hover:bg-lime-300 sm:px-5 sm:py-3 sm:text-base sm:tracking-normal lg:text-[20px]">{{ $content->hero_cta_text }}</a>
@@ -88,25 +88,19 @@
                 <h2 class="font-bold leading-tight" style="font-size: {{ $content->headingSize('balances') }}">{{ $content->balances_heading }}</h2>
                 <p class="mt-3 text-slate-300 lg:text-xl">{{ $content->balances_subtext }}</p>
                 <ul class="mt-5 space-y-2 text-sm text-slate-300 lg:text-lg">
-                    <li>• Request a settlement the moment funds are available</li>
-                    <li>• Fees are calculated and locked in upfront</li>
-                    <li>• Full transaction and settlement history, exportable to CSV</li>
+                    @foreach ($content->balances_bullets ?? [] as $bullet)
+                        <li>• {{ $bullet }}</li>
+                    @endforeach
                 </ul>
             </div>
             <div class="rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10">
                 <div class="space-y-3">
-                    <div class="flex items-center justify-between rounded-xl bg-slate-800/60 px-4 py-3">
-                        <span class="text-sm text-slate-300">Available balance</span>
-                        <span class="text-sm font-semibold text-white">Ready to settle</span>
-                    </div>
-                    <div class="flex items-center justify-between rounded-xl bg-slate-800/60 px-4 py-3">
-                        <span class="text-sm text-slate-300">Pending balance</span>
-                        <span class="text-sm font-semibold text-white">Awaiting settlement</span>
-                    </div>
-                    <div class="flex items-center justify-between rounded-xl bg-slate-800/60 px-4 py-3">
-                        <span class="text-sm text-slate-300">Settlement balance</span>
-                        <span class="text-sm font-semibold text-white">Paid out</span>
-                    </div>
+                    @foreach ($content->balances_panel_rows ?? [] as $row)
+                        <div class="flex items-center justify-between rounded-xl bg-slate-800/60 px-4 py-3">
+                            <span class="text-sm text-slate-300">{{ $row['label'] }}</span>
+                            <span class="text-sm font-semibold text-white">{{ $row['value'] }}</span>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </section>

@@ -236,7 +236,7 @@
                     </div>
                 </div>
 
-                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10">
+                <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10" x-data="{ bullets: @js(old('balances_bullets', $content->balances_bullets ?? [])), panelRows: @js(old('balances_panel_rows', $content->balances_panel_rows ?? [])) }">
                     <h3 class="text-lg font-semibold text-white">"One dashboard for every balance" section</h3>
                     <div class="mt-4 grid gap-4">
                         <label class="flex flex-col gap-1 text-sm">
@@ -249,6 +249,45 @@
                             <input type="text" name="balances_subtext" value="{{ old('balances_subtext', $content->balances_subtext) }}" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>
                             <x-input-error :messages="$errors->get('balances_subtext')" />
                         </label>
+                    </div>
+
+                    <div class="mt-6 border-t border-white/10 pt-6">
+                        <div class="flex items-center justify-between gap-4">
+                            <p class="text-sm font-medium text-slate-200">Bullet points</p>
+                            <button type="button" @click="bullets.push('')" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add bullet</button>
+                        </div>
+                        <div class="mt-3 space-y-3">
+                            <template x-for="(bullet, index) in bullets" :key="index">
+                                <div class="flex items-center gap-3">
+                                    <input type="text" :name="`balances_bullets[${index}]`" x-model="bullets[index]" class="flex-1 rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                                    <button type="button" @click="bullets.splice(index, 1)" x-show="bullets.length > 1" class="shrink-0 rounded-full border border-rose-400/30 px-3 py-1.5 text-xs font-semibold text-rose-300 hover:bg-rose-500/10">Remove</button>
+                                </div>
+                            </template>
+                        </div>
+                        <x-array-errors field="balances_bullets" class="mt-2" />
+                    </div>
+
+                    <div class="mt-6 border-t border-white/10 pt-6">
+                        <div class="flex items-center justify-between gap-4">
+                            <p class="text-sm font-medium text-slate-200">Balance panel rows</p>
+                            <button type="button" @click="panelRows.push({ label: '', value: '' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add row</button>
+                        </div>
+                        <div class="mt-3 space-y-3">
+                            <template x-for="(row, index) in panelRows" :key="index">
+                                <div class="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+                                    <label class="flex flex-col gap-1 text-sm">
+                                        <span class="font-medium text-slate-300">Label</span>
+                                        <input type="text" :name="`balances_panel_rows[${index}][label]`" x-model="row.label" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                                    </label>
+                                    <label class="flex flex-col gap-1 text-sm">
+                                        <span class="font-medium text-slate-300">Value</span>
+                                        <input type="text" :name="`balances_panel_rows[${index}][value]`" x-model="row.value" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                                    </label>
+                                    <button type="button" @click="panelRows.splice(index, 1)" x-show="panelRows.length > 1" class="shrink-0 rounded-full border border-rose-400/30 px-3 py-2 text-xs font-semibold text-rose-300 hover:bg-rose-500/10">Remove</button>
+                                </div>
+                            </template>
+                        </div>
+                        <x-array-errors field="balances_panel_rows" class="mt-2" />
                     </div>
                 </div>
 

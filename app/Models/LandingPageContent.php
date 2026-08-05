@@ -74,6 +74,8 @@ class LandingPageContent extends Model
         'gateways_subtext',
         'balances_heading',
         'balances_subtext',
+        'balances_bullets',
+        'balances_panel_rows',
         'payment_links_heading',
         'payment_links_subtext',
         'register_prompt_heading',
@@ -105,6 +107,8 @@ class LandingPageContent extends Model
         'payment_logos' => 'array',
         'heading_sizes' => 'array',
         'how_it_works_steps' => 'array',
+        'balances_bullets' => 'array',
+        'balances_panel_rows' => 'array',
     ];
 
     /**
@@ -170,6 +174,16 @@ class LandingPageContent extends Model
             'gateways_subtext' => 'Pesapal for cards, Yo Payments for mobile money.',
             'balances_heading' => 'One dashboard for every balance',
             'balances_subtext' => 'See exactly where your money is — available to withdraw, reserved for settlement, or already paid out.',
+            'balances_bullets' => [
+                'Request a settlement the moment funds are available',
+                'Fees are calculated and locked in upfront',
+                'Full transaction and settlement history, exportable to CSV',
+            ],
+            'balances_panel_rows' => [
+                ['label' => 'Available balance', 'value' => 'Ready to settle'],
+                ['label' => 'Pending balance', 'value' => 'Awaiting settlement'],
+                ['label' => 'Settlement balance', 'value' => 'Paid out'],
+            ],
             'payment_links_heading' => 'Share a link or QR code, get paid instantly',
             'payment_links_subtext' => 'Every payment link comes with a scannable QR code and a copyable checkout URL — no integration work required to start collecting.',
             'register_prompt_heading' => 'What are you registering? Choose one below',

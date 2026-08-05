@@ -35,6 +35,8 @@ class LandingPageContentManagementTest extends TestCase
             'gateways_subtext' => 'Updated gateways subtext',
             'balances_heading' => 'Updated balances heading',
             'balances_subtext' => 'Updated balances subtext',
+            'balances_bullets' => ['Updated bullet one', 'Updated bullet two'],
+            'balances_panel_rows' => array_fill(0, 3, ['label' => 'Panel label', 'value' => 'Panel value']),
             'payment_links_heading' => 'Updated payment links heading',
             'payment_links_subtext' => 'Updated payment links subtext',
             'register_prompt_heading' => 'What are you registering? Choose one below',
@@ -452,6 +454,29 @@ class LandingPageContentManagementTest extends TestCase
 
         $home = $this->get('/');
         $home->assertSee('A brand new balances heading');
+    }
+
+    public function test_super_admin_can_update_the_balances_bullets_and_panel_rows(): void
+    {
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $payload = array_merge($this->validPayload(), [
+            'balances_bullets' => ['A brand new bullet point'],
+            'balances_panel_rows' => [
+                ['label' => 'Brand new label', 'value' => 'Brand new value'],
+            ],
+        ]);
+
+        $this->actingAs($superAdmin)->put('/admin/landing-page', $payload)->assertRedirect();
+
+        $content = LandingPageContent::current();
+        $this->assertSame(['A brand new bullet point'], $content->balances_bullets);
+        $this->assertSame([['label' => 'Brand new label', 'value' => 'Brand new value']], $content->balances_panel_rows);
+
+        $home = $this->get('/');
+        $home->assertSee('A brand new bullet point');
+        $home->assertSee('Brand new label');
+        $home->assertSee('Brand new value');
     }
 
     public function test_super_admin_can_update_the_payment_links_heading(): void
