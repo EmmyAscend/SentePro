@@ -9,25 +9,25 @@
         <div class="lg:px-8 lg:first:pl-0 lg:last:pr-0">
             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Product</p>
             <ul class="mt-4 space-y-2 text-[15px] text-slate-300 lg:text-lg">
-                <li><a href="/#requirements" class="hover:text-white">Requirements</a></li>
-                <li><a href="/#features" class="hover:text-white">Features</a></li>
-                <li><a href="/#gateways" class="hover:text-white">Supported Payments</a></li>
-                <li><a href="/#faq" class="hover:text-white">FAQ</a></li>
+                <li><a href="/#requirements" class="hover:text-lime-400">Requirements</a></li>
+                <li><a href="/#features" class="hover:text-lime-400">Features</a></li>
+                <li><a href="/#gateways" class="hover:text-lime-400">Supported Payments</a></li>
+                <li><a href="/#faq" class="hover:text-lime-400">FAQ</a></li>
             </ul>
         </div>
         <div class="lg:px-8 lg:first:pl-0 lg:last:pr-0">
             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Company</p>
             <ul class="mt-4 space-y-2 text-[15px] text-slate-300 lg:text-lg">
-                <li><a href="/login" class="hover:text-white">Login</a></li>
-                <li><a href="{{ route('business.register') }}" class="hover:text-white">Register your business</a></li>
+                <li><a href="/login" class="hover:text-lime-400">Login</a></li>
+                <li><a href="{{ route('business.register') }}" class="hover:text-lime-400">Register your business</a></li>
             </ul>
         </div>
         <div class="lg:px-8 lg:first:pl-0 lg:last:pr-0">
             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Legal</p>
             <ul class="mt-4 space-y-2 text-[15px] text-slate-300 lg:text-lg">
-                <li><a href="{{ route('legal.show', 'privacy-policy') }}" class="hover:text-white">Privacy Policy</a></li>
-                <li><a href="{{ route('legal.show', 'terms-and-conditions') }}" class="hover:text-white">Terms and Conditions</a></li>
-                <li><a href="{{ route('legal.show', 'refund-policy') }}" class="hover:text-white">Refund Policy</a></li>
+                <li><a href="{{ route('legal.show', 'privacy-policy') }}" class="hover:text-lime-400">Privacy Policy</a></li>
+                <li><a href="{{ route('legal.show', 'terms-and-conditions') }}" class="hover:text-lime-400">Terms and Conditions</a></li>
+                <li><a href="{{ route('legal.show', 'refund-policy') }}" class="hover:text-lime-400">Refund Policy</a></li>
             </ul>
         </div>
         @if ($content->contact_location || $content->contact_phone)
@@ -38,7 +38,7 @@
                         <li>{{ $content->contact_location }}</li>
                     @endif
                     @if ($content->contact_phone)
-                        <li><a href="tel:{{ preg_replace('/[^0-9+]/', '', $content->contact_phone) }}" class="hover:text-white">{{ $content->contact_phone }}</a></li>
+                        <li><a href="tel:{{ preg_replace('/[^0-9+]/', '', $content->contact_phone) }}" class="hover:text-lime-400">{{ $content->contact_phone }}</a></li>
                     @endif
                 </ul>
             </div>
@@ -46,6 +46,6 @@
     </div>
     <div class="mx-auto mt-10 flex max-w-6xl flex-col border-t border-white/10 px-4 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:gap-1 sm:px-6 lg:px-8 lg:text-lg">
         <span>&copy; {{ date('Y') }} SentePro. All rights reserved.</span>
-        <span>Powered by <a href="https://razertechnology.com" target="_blank" rel="noopener noreferrer" class="font-medium text-slate-400 hover:text-white">RAZERTECH</a></span>
+        <span>Powered by <a href="https://razertechnology.com" target="_blank" rel="noopener noreferrer" class="font-medium text-slate-400 hover:text-lime-400">RAZERTECH</a></span>
     </div>
 </footer>
