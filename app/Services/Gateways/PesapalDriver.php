@@ -5,6 +5,7 @@ namespace App\Services\Gateways;
 use App\Contracts\PaymentGatewayDriver;
 use App\Models\GatewayProvider;
 use App\Models\PaymentTransaction;
+use App\Support\PhoneNumber;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -86,7 +87,7 @@ class PesapalDriver implements PaymentGatewayDriver
                 'notification_id' => $ipnId,
                 'billing_address' => [
                     'email_address' => $transaction->customer_email,
-                    'phone_number' => $transaction->customer_phone,
+                    'phone_number' => $transaction->customer_phone ? PhoneNumber::normalizeUganda($transaction->customer_phone) : null,
                     'first_name' => $nameParts[0],
                     'last_name' => $nameParts[1],
                 ],

@@ -103,6 +103,54 @@ class YoPaymentsCheckoutTest extends TestCase
         $this->assertSame('healthy', $gatewayProvider->fresh()->last_health_status);
     }
 
+    /**
+     * The actual reported bug: a customer typing a local-format number
+     * (0712345678, exactly how most Ugandan customers naturally type their
+     * own number) produced no mobile money prompt at all. Yo Payments'
+     * Account field requires strict international format with no leading
+     * zero — sending the local format unnormalized meant the request never
+     * mapped to a real subscriber, which looks identical from the outside
+     * to "nothing happened." PhoneNumber::normalizeUganda() fixes this at
+     * the point YoPaymentsDriver builds the request; the stored
+     * customer_phone column is left exactly as the customer typed it.
+     */
+    public function test_a_locally_formatted_phone_number_is_normalized_before_reaching_yo_payments(): void
+    {
+        $business = Business::factory()->create(['status' => 'approved']);
+        $this->gatewayProvider();
+        $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id, 'amount' => 5000]);
+
+        Http::fake([
+            '*' => Http::response($this->xmlResponse([
+                'Status' => 'OK',
+                'StatusCode' => 0,
+                'TransactionStatus' => 'PENDING',
+                'TransactionReference' => 'yo-txn-ref-local',
+            ]), 200, ['Content-Type' => 'text/xml']),
+        ]);
+
+        $this->post('/pay/'.$paymentLink->id, [
+            'customer_name' => 'Jane Doe',
+            'customer_email' => 'jane@example.test',
+            'customer_phone' => '0712345678',
+            'currency' => 'UGX',
+            'payment_method' => 'mobile_money',
+        ])->assertRedirect('/pay/'.$paymentLink->id.'/status');
+
+        // The customer's own typed format is preserved for display/audit...
+        $this->assertDatabaseHas('payment_transactions', [
+            'payment_link_id' => $paymentLink->id,
+            'customer_phone' => '0712345678',
+        ]);
+
+        // ...but Yo Payments only ever sees the normalized international form.
+        Http::assertSent(function ($request) {
+            return str_contains($request->body(), '<Method>acdepositfunds</Method>')
+                && str_contains($request->body(), '<Account>256712345678</Account>')
+                && ! str_contains($request->body(), '<Account>0712345678</Account>');
+        });
+    }
+
     public function test_yo_payments_webhook_reconciles_status_and_credits_the_wallet_on_completion(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);

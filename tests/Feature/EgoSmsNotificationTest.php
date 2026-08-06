@@ -30,9 +30,12 @@ class EgoSmsNotificationTest extends TestCase
             'customer_phone' => '+256700111222',
         ]);
 
+        // PhoneNumber::normalizeUganda() strips the leading "+" before this
+        // reaches EgoSMS — same normalization applied at every external
+        // phone-number boundary, not just Yo Payments' Account field.
         Http::assertSent(function ($request) {
             return $request->url() === 'https://www.egosms.co/api/v1/json/'
-                && $request['msgdata'][0]['number'] === '+256700111222'
+                && $request['msgdata'][0]['number'] === '256700111222'
                 && $request['method'] === 'SendSms';
         });
     }
@@ -92,7 +95,7 @@ class EgoSmsNotificationTest extends TestCase
 
         Http::assertSent(function ($request) {
             return $request->url() === 'https://www.egosms.co/api/v1/json/'
-                && $request['msgdata'][0]['number'] === '+256700333444';
+                && $request['msgdata'][0]['number'] === '256700333444';
         });
     }
 

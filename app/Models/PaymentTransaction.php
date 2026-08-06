@@ -10,6 +10,7 @@ use App\Mail\PaymentReceivedMail;
 use App\Models\Concerns\BelongsToTenant;
 use App\Services\ReceiptService;
 use App\Services\TransactionFeeService;
+use App\Support\PhoneNumber;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -94,7 +95,7 @@ class PaymentTransaction extends Model
 
         if ($transaction->customer_phone) {
             SendSmsNotification::dispatch(
-                $transaction->customer_phone,
+                PhoneNumber::normalizeUganda($transaction->customer_phone),
                 "Hi, we've received your payment of {$transaction->currency} ".number_format((float) $transaction->amount, 2)." to {$transaction->business->business_name}. Ref: {$receipt->reference_number}.",
             );
         }

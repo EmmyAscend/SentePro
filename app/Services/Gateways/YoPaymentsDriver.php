@@ -5,6 +5,7 @@ namespace App\Services\Gateways;
 use App\Contracts\PaymentGatewayDriver;
 use App\Models\GatewayProvider;
 use App\Models\PaymentTransaction;
+use App\Support\PhoneNumber;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 use SimpleXMLElement;
@@ -74,7 +75,7 @@ class YoPaymentsDriver implements PaymentGatewayDriver
 
         $data = $this->send('acdepositfunds', [
             'Amount' => (float) $transaction->amount,
-            'Account' => $transaction->customer_phone,
+            'Account' => PhoneNumber::normalizeUganda($transaction->customer_phone),
             'Narrative' => mb_substr('Payment to '.$transaction->business->business_name, 0, 100),
             'ExternalReference' => $transaction->external_reference,
             'NonBlocking' => 'TRUE',

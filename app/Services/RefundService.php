@@ -12,6 +12,7 @@ use App\Models\GatewayProvider;
 use App\Models\PaymentTransaction;
 use App\Models\Refund;
 use App\Models\User;
+use App\Support\PhoneNumber;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
@@ -95,7 +96,7 @@ class RefundService
 
         if ($transaction->customer_phone) {
             SendSmsNotification::dispatch(
-                $transaction->customer_phone,
+                PhoneNumber::normalizeUganda($transaction->customer_phone),
                 "Hi, your payment of {$transaction->currency} ".number_format((float) $refund->amount, 2)." to {$transaction->business->business_name} has been refunded.",
             );
         }
