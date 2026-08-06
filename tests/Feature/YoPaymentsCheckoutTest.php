@@ -14,17 +14,14 @@ class YoPaymentsCheckoutTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function gatewayProvider(Business $business): GatewayProvider
+    private function gatewayProvider(): GatewayProvider
     {
         return GatewayProvider::create([
-            'business_id' => $business->id,
-            'name' => 'Yo Payments Mobile Money',
             'provider' => 'yo_payments',
             'status' => 'active',
             'environment' => 'sandbox',
-            'webhook_url' => 'https://example.test/webhooks/yo-payments/1/success',
+            'webhook_url' => 'https://example.test/webhooks/yo-payments/success',
             'credentials' => ['api_username' => 'test-user', 'api_password' => 'test-pass'],
-            'supported_countries' => 'UG',
             'supported_currencies' => 'UGX',
         ]);
     }
@@ -43,14 +40,14 @@ class YoPaymentsCheckoutTest extends TestCase
     public function test_checkout_requires_a_phone_number_for_mobile_money(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id, 'amount' => 5000]);
 
         $response = $this->post('/pay/'.$paymentLink->id, [
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
             'currency' => 'UGX',
-            'gateway_provider_id' => $gatewayProvider->id,
+            'payment_method' => 'mobile_money',
         ]);
 
         $response->assertSessionHasErrors('customer_phone');
@@ -60,7 +57,7 @@ class YoPaymentsCheckoutTest extends TestCase
     public function test_checkout_pushes_a_mobile_money_prompt_and_lands_on_the_status_page(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
+        $gatewayProvider = $this->gatewayProvider();
         $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id, 'amount' => 5000]);
 
         Http::fake([
@@ -77,7 +74,7 @@ class YoPaymentsCheckoutTest extends TestCase
             'customer_email' => 'jane@example.test',
             'customer_phone' => '256712345678',
             'currency' => 'UGX',
-            'gateway_provider_id' => $gatewayProvider->id,
+            'payment_method' => 'mobile_money',
         ]);
 
         // No hosted checkout page for mobile money — the prompt goes straight
@@ -109,7 +106,7 @@ class YoPaymentsCheckoutTest extends TestCase
     public function test_yo_payments_webhook_reconciles_status_and_credits_the_wallet_on_completion(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id, 'amount' => 5000]);
 
         $transaction = PaymentTransaction::create([
@@ -137,7 +134,7 @@ class YoPaymentsCheckoutTest extends TestCase
         // YoPaymentsWebhookController docblock), so this only ever finds the
         // transaction from the payload — the completed/failed determination
         // still comes from actransactioncheckstatus, not the payload itself.
-        $response = $this->post("/webhooks/yo-payments/{$gatewayProvider->id}/success", [
+        $response = $this->post('/webhooks/yo-payments/success', [
             'external_ref' => 'txn-ref-yo-1',
             'network_ref' => 'yo-txn-ref-123',
             'amount' => 5000,
@@ -154,7 +151,7 @@ class YoPaymentsCheckoutTest extends TestCase
     public function test_yo_payments_failure_callback_does_not_credit_the_wallet_when_status_check_says_failed(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id, 'amount' => 5000]);
 
         $transaction = PaymentTransaction::create([
@@ -177,7 +174,7 @@ class YoPaymentsCheckoutTest extends TestCase
             ]), 200, ['Content-Type' => 'text/xml']),
         ]);
 
-        $this->post("/webhooks/yo-payments/{$gatewayProvider->id}/failure", [
+        $this->post('/webhooks/yo-payments/failure', [
             'failed_transaction_reference' => 'txn-ref-yo-2',
         ])->assertOk();
 

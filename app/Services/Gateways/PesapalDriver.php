@@ -51,7 +51,7 @@ class PesapalDriver implements PaymentGatewayDriver
             ->withToken($token)
             ->acceptJson()
             ->post('/api/URLSetup/RegisterIPN', [
-                'url' => route('webhooks.pesapal.receive', $config),
+                'url' => route('webhooks.pesapal.receive'),
                 'ipn_notification_type' => 'POST',
             ])
             ->throw();

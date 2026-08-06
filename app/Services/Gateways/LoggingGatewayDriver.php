@@ -69,7 +69,6 @@ class LoggingGatewayDriver implements PaymentGatewayDriver
     private function record(GatewayProvider $config, string $method, bool $success, int $latencyMs, ?string $error): void
     {
         GatewayLog::create([
-            'business_id' => $config->business_id,
             'gateway_provider_id' => $config->id,
             'method' => $method,
             'success' => $success,

@@ -129,15 +129,12 @@ class TransactionFeeEngineTest extends TestCase
             'platform_fee_percent' => 1,
         ]);
 
-        $gatewayProvider = GatewayProvider::create([
-            'business_id' => $business->id,
-            'name' => 'Pesapal Cards',
+        GatewayProvider::create([
             'provider' => 'pesapal',
             'status' => 'active',
             'environment' => 'sandbox',
-            'webhook_url' => 'https://example.test/webhooks/pesapal/1',
+            'webhook_url' => 'https://example.test/webhooks/pesapal',
             'credentials' => ['consumer_key' => 'test', 'consumer_secret' => 'test'],
-            'supported_countries' => 'UG',
             'supported_currencies' => 'UGX',
         ]);
 
@@ -163,7 +160,7 @@ class TransactionFeeEngineTest extends TestCase
             ]),
         ]);
 
-        $this->post("/webhooks/pesapal/{$gatewayProvider->id}", [
+        $this->post('/webhooks/pesapal', [
             'OrderTrackingId' => 'tracking-fee-1',
             'OrderMerchantReference' => 'txn-fee-1',
         ])->assertOk();

@@ -61,13 +61,13 @@ Route::get('/pay/{paymentLink}/qr-code', [PublicCheckoutController::class, 'qrCo
 Route::post('/pay/{paymentLink}', [PublicCheckoutController::class, 'store'])
     ->name('checkout.store');
 
-Route::post('/webhooks/pesapal/{gatewayProvider}', [PesapalWebhookController::class, 'receive'])
+Route::post('/webhooks/pesapal', [PesapalWebhookController::class, 'receive'])
     ->name('webhooks.pesapal.receive');
 
-Route::post('/webhooks/yo-payments/{gatewayProvider}/success', [YoPaymentsWebhookController::class, 'success'])
+Route::post('/webhooks/yo-payments/success', [YoPaymentsWebhookController::class, 'success'])
     ->name('webhooks.yo-payments.success');
 
-Route::post('/webhooks/yo-payments/{gatewayProvider}/failure', [YoPaymentsWebhookController::class, 'failure'])
+Route::post('/webhooks/yo-payments/failure', [YoPaymentsWebhookController::class, 'failure'])
     ->name('webhooks.yo-payments.failure');
 
 // Registered before the {receipt} wildcard below — both are one-segment
@@ -112,9 +112,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/admin/staff', [StaffManagementController::class, 'store'])->name('admin.staff.store');
     Route::get('/payment-links', [PaymentLinkController::class, 'index'])->name('payment-links.index');
     Route::post('/payment-links', [PaymentLinkController::class, 'store'])->name('payment-links.store');
-    Route::get('/gateways', [GatewayProviderController::class, 'index'])->name('gateways.index');
-    Route::post('/gateways', [GatewayProviderController::class, 'store'])->name('gateways.store');
-    Route::post('/gateways/{gatewayProvider}/test', [GatewayProviderController::class, 'test'])->name('gateways.test');
+    Route::get('/admin/gateway-providers', [GatewayProviderController::class, 'index'])->name('admin.gateway-providers');
+    Route::put('/admin/gateway-providers/{gatewayProvider}', [GatewayProviderController::class, 'update'])->name('admin.gateway-providers.update');
+    Route::post('/admin/gateway-providers/{gatewayProvider}/test', [GatewayProviderController::class, 'test'])->name('admin.gateway-providers.test');
     Route::get('/admin/gateway-monitoring', [GatewayMonitoringController::class, 'index'])->name('admin.gateway-monitoring');
     Route::get('/transactions', [PaymentTransactionController::class, 'index'])->name('transactions.index');
     Route::post('/transactions', [PaymentTransactionController::class, 'store'])->name('transactions.store');

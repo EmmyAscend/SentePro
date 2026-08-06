@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Webhooks;
 
+use App\Enums\PaymentProvider;
 use App\Http\Controllers\Controller;
 use App\Models\GatewayProvider;
 use App\Models\PaymentTransaction;
@@ -16,16 +17,19 @@ class PesapalWebhookController extends Controller
     /**
      * Pesapal's IPN deliberately never carries the payment status — this
      * handler's only job is to look up the transaction and trigger a
-     * checkStatus() reconciliation; see PaymentWebhookService.
+     * checkStatus() reconciliation; see PaymentWebhookService. There is now
+     * exactly one platform-wide Pesapal GatewayProvider row, so no route
+     * parameter is needed to identify it.
      */
-    public function receive(Request $request, GatewayProvider $gatewayProvider): JsonResponse
+    public function receive(Request $request): JsonResponse
     {
+        $gatewayProvider = GatewayProvider::byProvider(PaymentProvider::Pesapal);
+
         $orderTrackingId = $request->input('OrderTrackingId');
         $merchantReference = $request->input('OrderMerchantReference');
         $notificationType = $request->input('OrderNotificationType', 'IPNCHANGE');
 
         $transaction = PaymentTransaction::query()
-            ->where('business_id', $gatewayProvider->business_id)
             ->where(function ($query) use ($orderTrackingId, $merchantReference) {
                 $query->where('provider_reference', $orderTrackingId)
                     ->orWhere('external_reference', $merchantReference);

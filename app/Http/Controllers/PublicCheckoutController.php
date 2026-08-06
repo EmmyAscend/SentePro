@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentProvider;
 use App\Models\GatewayProvider;
 use App\Models\PaymentLink;
 use App\Models\PaymentTransaction;
@@ -15,16 +16,25 @@ use Illuminate\View\View;
 
 class PublicCheckoutController extends Controller
 {
+    /**
+     * The only two payment methods a customer ever sees — never the
+     * provider name behind them. Card always routes to Pesapal, mobile
+     * money always routes to Yo Payments; this mapping is a fixed platform
+     * rule, not admin-configurable.
+     */
+    private const METHOD_PROVIDERS = [
+        'card' => PaymentProvider::Pesapal,
+        'mobile_money' => PaymentProvider::YoPayments,
+    ];
+
     public function __construct(private readonly PaymentInitiationService $paymentInitiationService) {}
 
     public function show(PaymentLink $paymentLink): View
     {
-        $gatewayProviders = GatewayProvider::query()
-            ->where('business_id', $paymentLink->business_id)
-            ->where('status', 'active')
-            ->get();
+        $cardProvider = GatewayProvider::byProvider(PaymentProvider::Pesapal);
+        $mobileMoneyProvider = GatewayProvider::byProvider(PaymentProvider::YoPayments);
 
-        return view('checkout.show', compact('paymentLink', 'gatewayProviders'));
+        return view('checkout.show', compact('paymentLink', 'cardProvider', 'mobileMoneyProvider'));
     }
 
     /**
@@ -63,12 +73,12 @@ class PublicCheckoutController extends Controller
             'customer_email' => ['required', 'email', 'max:255'],
             'customer_phone' => ['nullable', 'string', 'max:20'],
             'currency' => ['required', 'string', 'max:10'],
-            'gateway_provider_id' => ['required', 'exists:gateway_providers,id'],
+            'payment_method' => ['required', 'string', 'in:card,mobile_money'],
             'custom_fields' => ['nullable', 'array'],
             'custom_fields.*' => ['nullable', 'string', 'max:500'],
         ]);
 
-        $gatewayProvider = GatewayProvider::findOrFail($validated['gateway_provider_id']);
+        $gatewayProvider = GatewayProvider::byProvider(self::METHOD_PROVIDERS[$validated['payment_method']]);
 
         $result = $this->paymentInitiationService->initiate($paymentLink, $gatewayProvider, $validated);
 

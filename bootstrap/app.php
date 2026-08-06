@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Real payment gateways POST to these without a CSRF token.
         $middleware->validateCsrfTokens(except: [
-            'webhooks/pesapal/*',
+            'webhooks/pesapal',
             'webhooks/yo-payments/*',
         ]);
     })

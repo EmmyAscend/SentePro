@@ -15,17 +15,14 @@ class PaymentLinkCustomFieldsTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function gatewayProvider(Business $business): GatewayProvider
+    private function gatewayProvider(): GatewayProvider
     {
         return GatewayProvider::create([
-            'business_id' => $business->id,
-            'name' => 'Pesapal Cards',
             'provider' => 'pesapal',
             'status' => 'active',
             'environment' => 'sandbox',
-            'webhook_url' => 'https://example.test/webhooks/pesapal/1',
+            'webhook_url' => 'https://example.test/webhooks/pesapal',
             'credentials' => ['consumer_key' => 'test-key', 'consumer_secret' => 'test-secret'],
-            'supported_countries' => 'UG',
             'supported_currencies' => 'UGX',
         ]);
     }
@@ -74,7 +71,7 @@ class PaymentLinkCustomFieldsTest extends TestCase
     public function test_submitting_checkout_with_field_values_captures_label_and_value_on_the_transaction(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $paymentLink = PaymentLink::factory()->create([
             'business_id' => $business->id,
             'amount' => 2500,
@@ -95,7 +92,7 @@ class PaymentLinkCustomFieldsTest extends TestCase
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
             'currency' => 'UGX',
-            'gateway_provider_id' => $gatewayProvider->id,
+            'payment_method' => 'card',
             'custom_fields' => ['product' => 'T-Shirt', 'quantity' => '2'],
         ])->assertRedirect('https://cybqa.pesapal.com/pesapalv3/checkout/fields1');
 
@@ -110,7 +107,7 @@ class PaymentLinkCustomFieldsTest extends TestCase
     public function test_submitting_checkout_with_configured_but_blank_fields_still_succeeds(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $paymentLink = PaymentLink::factory()->create([
             'business_id' => $business->id,
             'amount' => 2500,
@@ -131,7 +128,7 @@ class PaymentLinkCustomFieldsTest extends TestCase
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
             'currency' => 'UGX',
-            'gateway_provider_id' => $gatewayProvider->id,
+            'payment_method' => 'card',
         ])->assertRedirect('https://cybqa.pesapal.com/pesapalv3/checkout/fields2');
 
         $transaction = PaymentTransaction::where('business_id', $business->id)->firstOrFail();

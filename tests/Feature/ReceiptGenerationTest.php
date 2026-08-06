@@ -25,15 +25,12 @@ class ReceiptGenerationTest extends TestCase
 
         $business = Business::factory()->create(['status' => 'approved']);
         $admin = User::factory()->businessAdmin($business)->create();
-        $gatewayProvider = GatewayProvider::create([
-            'business_id' => $business->id,
-            'name' => 'Pesapal Cards',
+        GatewayProvider::create([
             'provider' => 'pesapal',
             'status' => 'active',
             'environment' => 'sandbox',
-            'webhook_url' => 'https://example.test/webhooks/pesapal/1',
+            'webhook_url' => 'https://example.test/webhooks/pesapal',
             'credentials' => ['consumer_key' => 'test', 'consumer_secret' => 'test'],
-            'supported_countries' => 'UG',
             'supported_currencies' => 'UGX',
         ]);
         $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id, 'amount' => 5000]);
@@ -60,7 +57,7 @@ class ReceiptGenerationTest extends TestCase
             ]),
         ]);
 
-        $this->post("/webhooks/pesapal/{$gatewayProvider->id}", [
+        $this->post('/webhooks/pesapal', [
             'OrderTrackingId' => 'tracking-receipt-1',
             'OrderMerchantReference' => 'txn-receipt-1',
         ])->assertOk();

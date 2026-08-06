@@ -12,12 +12,12 @@ class GatewayMonitoringController extends Controller
     {
         $this->authorize('manage', GatewayProvider::class);
 
-        $providers = GatewayProvider::with('business')->orderBy('business_id')->get();
+        $providers = GatewayProvider::query()->get();
 
         // Capped rather than paginated — same "200 most-recent rows is
         // plenty for a v1 log viewer" precedent as the audit log viewer.
         $logs = GatewayLog::query()
-            ->with(['business', 'gatewayProvider'])
+            ->with('gatewayProvider')
             ->latest()
             ->take(200)
             ->get();

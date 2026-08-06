@@ -69,14 +69,11 @@ class EgoSmsNotificationTest extends TestCase
 
         $business = Business::factory()->create(['status' => 'approved']);
         GatewayProvider::create([
-            'business_id' => $business->id,
-            'name' => 'Test Gateway',
             'provider' => 'pesapal',
             'status' => 'active',
             'environment' => 'sandbox',
-            'webhook_url' => 'https://example.test/webhooks/pesapal/1',
+            'webhook_url' => 'https://example.test/webhooks/pesapal',
             'credentials' => ['consumer_key' => 'test-key', 'consumer_secret' => 'test-secret'],
-            'supported_countries' => 'UG',
             'supported_currencies' => 'UGX',
         ]);
         $transaction = PaymentTransaction::factory()->create([
@@ -136,14 +133,11 @@ class EgoSmsNotificationTest extends TestCase
 
         $business = Business::factory()->create(['status' => 'approved']);
         GatewayProvider::create([
-            'business_id' => $business->id,
-            'name' => 'Test Gateway',
             'provider' => 'pesapal',
             'status' => 'active',
             'environment' => 'sandbox',
-            'webhook_url' => 'https://example.test/webhooks/pesapal/1',
+            'webhook_url' => 'https://example.test/webhooks/pesapal',
             'credentials' => ['consumer_key' => 'test-key', 'consumer_secret' => 'test-secret'],
-            'supported_countries' => 'UG',
             'supported_currencies' => 'UGX',
         ]);
         $transaction = PaymentTransaction::factory()->create([

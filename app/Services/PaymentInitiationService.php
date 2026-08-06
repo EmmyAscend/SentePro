@@ -20,7 +20,7 @@ class PaymentInitiationService
      */
     public function initiate(PaymentLink $paymentLink, GatewayProvider $gatewayProvider, array $customer): array
     {
-        if ($gatewayProvider->business_id !== $paymentLink->business_id || $gatewayProvider->status !== 'active') {
+        if ($gatewayProvider->status !== 'active') {
             throw ValidationException::withMessages([
                 'gateway_provider_id' => 'The selected payment method is not available for this payment link.',
             ]);

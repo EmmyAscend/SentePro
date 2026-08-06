@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Webhooks;
 
+use App\Enums\PaymentProvider;
 use App\Http\Controllers\Controller;
 use App\Models\GatewayProvider;
 use App\Models\PaymentTransaction;
@@ -13,14 +14,14 @@ class YoPaymentsWebhookController extends Controller
 {
     public function __construct(private readonly PaymentWebhookService $webhookService) {}
 
-    public function success(Request $request, GatewayProvider $gatewayProvider): Response
+    public function success(Request $request): Response
     {
-        return $this->handle($request, $gatewayProvider, $request->input('external_ref'));
+        return $this->handle($request, $request->input('external_ref'));
     }
 
-    public function failure(Request $request, GatewayProvider $gatewayProvider): Response
+    public function failure(Request $request): Response
     {
-        return $this->handle($request, $gatewayProvider, $request->input('failed_transaction_reference'));
+        return $this->handle($request, $request->input('failed_transaction_reference'));
     }
 
     /**
@@ -28,12 +29,15 @@ class YoPaymentsWebhookController extends Controller
      * isn't confidently confirmed against current documentation, so — same
      * principle as the Pesapal receiver — this handler doesn't trust the
      * payload's claimed outcome, it only uses it to find the transaction and
-     * then reconciles via checkStatus(); see PaymentWebhookService.
+     * then reconciles via checkStatus(); see PaymentWebhookService. There is
+     * now exactly one platform-wide Yo Payments GatewayProvider row, so no
+     * route parameter is needed to identify it.
      */
-    private function handle(Request $request, GatewayProvider $gatewayProvider, ?string $externalReference): Response
+    private function handle(Request $request, ?string $externalReference): Response
     {
+        $gatewayProvider = GatewayProvider::byProvider(PaymentProvider::YoPayments);
+
         $transaction = PaymentTransaction::query()
-            ->where('business_id', $gatewayProvider->business_id)
             ->where('external_reference', $externalReference)
             ->first();
 

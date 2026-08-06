@@ -14,17 +14,14 @@ class PesapalCheckoutTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function gatewayProvider(Business $business): GatewayProvider
+    private function gatewayProvider(): GatewayProvider
     {
         return GatewayProvider::create([
-            'business_id' => $business->id,
-            'name' => 'Pesapal Cards',
             'provider' => 'pesapal',
             'status' => 'active',
             'environment' => 'sandbox',
-            'webhook_url' => 'https://example.test/webhooks/pesapal/1',
+            'webhook_url' => 'https://example.test/webhooks/pesapal',
             'credentials' => ['consumer_key' => 'test-key', 'consumer_secret' => 'test-secret'],
-            'supported_countries' => 'UG',
             'supported_currencies' => 'UGX',
         ]);
     }
@@ -32,7 +29,7 @@ class PesapalCheckoutTest extends TestCase
     public function test_checkout_initiates_a_pesapal_order_and_redirects_to_the_hosted_checkout_page(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
+        $gatewayProvider = $this->gatewayProvider();
         $paymentLink = PaymentLink::factory()->create([
             'business_id' => $business->id,
             'amount' => 2500,
@@ -53,7 +50,7 @@ class PesapalCheckoutTest extends TestCase
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
             'currency' => 'UGX',
-            'gateway_provider_id' => $gatewayProvider->id,
+            'payment_method' => 'card',
         ]);
 
         $response->assertRedirect('https://cybqa.pesapal.com/pesapalv3/checkout/abc123');
@@ -81,7 +78,7 @@ class PesapalCheckoutTest extends TestCase
     public function test_checkout_fails_validation_for_a_currency_the_chosen_gateway_does_not_support(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business); // supports UGX only
+        $this->gatewayProvider(); // supports UGX only
         $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id]);
 
         Http::fake(['*/api/Auth/RequestToken' => Http::response(['token' => 'fake-token', 'status' => '200'])]);
@@ -90,7 +87,7 @@ class PesapalCheckoutTest extends TestCase
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
             'currency' => 'KES',
-            'gateway_provider_id' => $gatewayProvider->id,
+            'payment_method' => 'card',
         ]);
 
         $response->assertSessionHasErrors('currency');
@@ -100,7 +97,7 @@ class PesapalCheckoutTest extends TestCase
     public function test_pesapal_webhook_reconciles_status_and_credits_the_wallet_on_completion(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id, 'amount' => 2500]);
 
         $transaction = PaymentTransaction::create([
@@ -128,7 +125,7 @@ class PesapalCheckoutTest extends TestCase
 
         // Pesapal's IPN deliberately carries no status — reconciliation must
         // still land on "completed" purely from the status-check response.
-        $response = $this->post("/webhooks/pesapal/{$gatewayProvider->id}", [
+        $response = $this->post('/webhooks/pesapal', [
             'OrderTrackingId' => 'tracking-abc-123',
             'OrderMerchantReference' => 'txn-ref-1',
             'OrderNotificationType' => 'IPNCHANGE',
@@ -147,7 +144,7 @@ class PesapalCheckoutTest extends TestCase
     public function test_pesapal_webhook_does_not_credit_the_wallet_when_status_check_says_failed(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id, 'amount' => 2500]);
 
         $transaction = PaymentTransaction::create([
@@ -170,7 +167,7 @@ class PesapalCheckoutTest extends TestCase
             ]),
         ]);
 
-        $this->post("/webhooks/pesapal/{$gatewayProvider->id}", [
+        $this->post('/webhooks/pesapal', [
             'OrderTrackingId' => 'tracking-xyz-999',
             'OrderMerchantReference' => 'txn-ref-2',
         ])->assertOk();

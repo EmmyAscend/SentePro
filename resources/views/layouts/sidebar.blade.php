@@ -26,9 +26,8 @@ $navGroups = [
         ],
     ],
     [
-        'label' => 'Gateways',
+        'label' => 'Webhooks',
         'links' => [
-            ['route' => 'gateways.index', 'pattern' => 'gateways.*', 'label' => 'Gateways', 'icon' => 'server'],
             ['route' => 'webhooks.index', 'pattern' => 'webhooks.*', 'label' => 'Webhooks', 'icon' => 'webhook'],
         ],
     ],
@@ -62,6 +61,7 @@ if (auth()->user()->isSuperAdmin()) {
             ['route' => 'admin.fee-structures', 'pattern' => 'admin.fee-structures', 'label' => 'Fee Structures', 'icon' => 'clipboard'],
             ['route' => 'admin.businesses.index', 'pattern' => 'admin.businesses.index', 'label' => 'Businesses', 'icon' => 'users'],
             ['route' => 'admin.wallet-monitoring', 'pattern' => 'admin.wallet-monitoring', 'label' => 'Wallet Monitoring', 'icon' => 'wallet'],
+            ['route' => 'admin.gateway-providers', 'pattern' => 'admin.gateway-providers*', 'label' => 'Payment Gateways', 'icon' => 'server'],
             ['route' => 'admin.gateway-monitoring', 'pattern' => 'admin.gateway-monitoring', 'label' => 'Gateway Monitoring', 'icon' => 'server'],
             ['route' => 'admin.audit-logs', 'pattern' => 'admin.audit-logs', 'label' => 'Audit Logs', 'icon' => 'shield'],
             ['route' => 'admin.landing-page.edit', 'pattern' => 'admin.landing-page.*', 'label' => 'Landing Page', 'icon' => 'link'],

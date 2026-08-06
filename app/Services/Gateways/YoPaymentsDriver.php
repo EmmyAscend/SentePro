@@ -78,8 +78,8 @@ class YoPaymentsDriver implements PaymentGatewayDriver
             'Narrative' => mb_substr('Payment to '.$transaction->business->business_name, 0, 100),
             'ExternalReference' => $transaction->external_reference,
             'NonBlocking' => 'TRUE',
-            'InstantNotificationUrl' => route('webhooks.yo-payments.success', $config),
-            'FailureNotificationUrl' => route('webhooks.yo-payments.failure', $config),
+            'InstantNotificationUrl' => route('webhooks.yo-payments.success'),
+            'FailureNotificationUrl' => route('webhooks.yo-payments.failure'),
         ], $config);
 
         return [

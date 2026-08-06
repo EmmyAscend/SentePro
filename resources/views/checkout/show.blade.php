@@ -60,12 +60,20 @@
                         @endforeach
                         <label class="block">
                             <span class="font-medium">Payment method</span>
-                            <select name="gateway_provider_id" class="mt-1 w-full rounded-lg border-0 px-3 py-2 text-slate-900" required>
-                                @forelse ($gatewayProviders as $gatewayProvider)
-                                    <option value="{{ $gatewayProvider->id }}">{{ $gatewayProvider->name }} ({{ $gatewayProvider->provider->label() }})</option>
-                                @empty
+                            @php
+                                $cardAvailable = $cardProvider->status === 'active';
+                                $mobileMoneyAvailable = $mobileMoneyProvider->status === 'active';
+                            @endphp
+                            <select name="payment_method" class="mt-1 w-full rounded-lg border-0 px-3 py-2 text-slate-900" required @disabled(! $cardAvailable && ! $mobileMoneyAvailable)>
+                                @if (! $cardAvailable && ! $mobileMoneyAvailable)
                                     <option value="" disabled selected>No payment methods available</option>
-                                @endforelse
+                                @endif
+                                @if ($cardAvailable)
+                                    <option value="card">Debit or Credit Card</option>
+                                @endif
+                                @if ($mobileMoneyAvailable)
+                                    <option value="mobile_money">Mobile Money (MTN / Airtel)</option>
+                                @endif
                             </select>
                         </label>
                         <label class="block">
@@ -77,7 +85,7 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="mt-5 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white" @disabled($gatewayProviders->isEmpty())>Proceed to payment</button>
+                    <button type="submit" class="mt-5 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white" @disabled(! $cardAvailable && ! $mobileMoneyAvailable)>Proceed to payment</button>
                 </form>
             </div>
         </div>

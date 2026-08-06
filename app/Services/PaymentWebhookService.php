@@ -28,7 +28,7 @@ class PaymentWebhookService
         }
 
         WebhookEvent::create([
-            'business_id' => $config->business_id,
+            'business_id' => $transaction->business_id,
             'provider' => $config->provider->value,
             'event' => 'payment.status_check',
             'payload' => json_encode(['inbound' => $rawPayload, 'status_check' => $result['raw']]),

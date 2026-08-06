@@ -13,34 +13,30 @@ class GatewayMonitoringTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function gatewayProvider(Business $business): GatewayProvider
+    private function gatewayProvider(): GatewayProvider
     {
         return GatewayProvider::create([
-            'business_id' => $business->id,
-            'name' => 'Pesapal Cards',
             'provider' => 'pesapal',
             'status' => 'active',
             'environment' => 'sandbox',
-            'webhook_url' => 'https://example.test/webhooks/pesapal/1',
+            'webhook_url' => 'https://example.test/webhooks/pesapal',
             'credentials' => ['consumer_key' => 'test-key', 'consumer_secret' => 'test-secret'],
-            'supported_countries' => 'UG',
             'supported_currencies' => 'UGX',
         ]);
     }
 
-    public function test_business_admin_can_test_their_own_gateways_connection(): void
+    public function test_super_admin_can_test_a_gateways_connection(): void
     {
-        $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
-        $admin = User::factory()->businessAdmin($business)->create();
+        $gatewayProvider = $this->gatewayProvider();
+        $superAdmin = User::factory()->superAdmin()->create();
 
         Http::fake([
             '*/api/Auth/RequestToken' => Http::response(['token' => 'fake-token', 'status' => '200']),
         ]);
 
-        $response = $this->actingAs($admin)->post("/gateways/{$gatewayProvider->id}/test");
+        $response = $this->actingAs($superAdmin)->post("/admin/gateway-providers/{$gatewayProvider->provider->value}/test");
 
-        $response->assertRedirect(route('gateways.index'));
+        $response->assertRedirect(route('admin.gateway-providers'));
         $response->assertSessionHas('status', 'Connection healthy.');
 
         $this->assertDatabaseHas('gateway_logs', [
@@ -57,17 +53,16 @@ class GatewayMonitoringTest extends TestCase
 
     public function test_a_failed_connection_test_records_unhealthy_status_without_a_server_error(): void
     {
-        $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
-        $admin = User::factory()->businessAdmin($business)->create();
+        $gatewayProvider = $this->gatewayProvider();
+        $superAdmin = User::factory()->superAdmin()->create();
 
         Http::fake([
             '*/api/Auth/RequestToken' => Http::response(['error' => 'invalid_client'], 401),
         ]);
 
-        $response = $this->actingAs($admin)->post("/gateways/{$gatewayProvider->id}/test");
+        $response = $this->actingAs($superAdmin)->post("/admin/gateway-providers/{$gatewayProvider->provider->value}/test");
 
-        $response->assertRedirect(route('gateways.index'));
+        $response->assertRedirect(route('admin.gateway-providers'));
         $response->assertSessionHas('status', fn ($status) => str_starts_with($status, 'Connection failed:'));
 
         $gatewayProvider->refresh();
@@ -81,23 +76,18 @@ class GatewayMonitoringTest extends TestCase
         ]);
     }
 
-    public function test_a_business_admin_cannot_test_another_businesss_gateway(): void
+    public function test_business_admin_cannot_test_a_gateways_connection(): void
     {
-        $businessA = Business::factory()->create(['status' => 'approved']);
-        $businessB = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($businessB);
-        $adminA = User::factory()->businessAdmin($businessA)->create();
+        $gatewayProvider = $this->gatewayProvider();
+        $business = Business::factory()->create(['status' => 'approved']);
+        $admin = User::factory()->businessAdmin($business)->create();
 
-        // GatewayProvider is tenant-scoped, so route-model-binding can't even
-        // find another business's provider for this user — 404, same pattern
-        // as every other tenant-scoped resource in this app.
-        $this->actingAs($adminA)->post("/gateways/{$gatewayProvider->id}/test")->assertNotFound();
+        $this->actingAs($admin)->post("/admin/gateway-providers/{$gatewayProvider->provider->value}/test")->assertForbidden();
     }
 
     public function test_super_admin_can_view_the_gateway_monitoring_dashboard(): void
     {
-        $business = Business::factory()->create(['status' => 'approved', 'business_name' => 'Monitored Biz']);
-        $gatewayProvider = $this->gatewayProvider($business);
+        $gatewayProvider = $this->gatewayProvider();
         $gatewayProvider->update([
             'last_checked_at' => now(),
             'last_health_status' => 'healthy',
@@ -108,7 +98,7 @@ class GatewayMonitoringTest extends TestCase
         $response = $this->actingAs($superAdmin)->get('/admin/gateway-monitoring');
 
         $response->assertOk();
-        $response->assertSee('Monitored Biz');
+        $response->assertSee('Pesapal');
         $response->assertSee('HEALTHY');
     }
 

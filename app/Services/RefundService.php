@@ -134,13 +134,9 @@ class RefundService
 
     private function resolveGatewayProvider(PaymentTransaction $transaction): GatewayProvider
     {
-        $gatewayProvider = GatewayProvider::query()
-            ->where('business_id', $transaction->business_id)
-            ->where('provider', $transaction->provider)
-            ->where('status', 'active')
-            ->first();
+        $gatewayProvider = GatewayProvider::byProvider($transaction->provider);
 
-        if (! $gatewayProvider) {
+        if ($gatewayProvider->status !== 'active') {
             throw ValidationException::withMessages([
                 'transaction' => 'No active gateway is configured for this provider.',
             ]);

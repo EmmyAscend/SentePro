@@ -3,18 +3,16 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Policies\Concerns\AuthorizesTenantAccess;
 
 class GatewayProviderPolicy
 {
-    use AuthorizesTenantAccess;
-
     /**
-     * The cross-tenant health/log monitoring dashboard — super-admin-only via
-     * the Gate::before bypass, same always-false-in-body pattern as
-     * BusinessPolicy/AuditLogPolicy/WalletPolicy. Testing a business's own
-     * already-configured gateway is separate, self-service diagnostics that
-     * reuses the trait's own `update` ability instead.
+     * Gateway credentials are platform-wide, super-admin-only configuration
+     * now — granted entirely via the Gate::before bypass in
+     * AppServiceProvider, same always-false-in-body pattern as
+     * SettlementMethodPolicy/FeeStructurePolicy. There is no business-tier
+     * ability at all anymore: viewing, editing, and testing a connection are
+     * all the same "manage" concern.
      */
     public function manage(User $user): bool
     {

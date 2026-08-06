@@ -81,11 +81,6 @@ class Business extends Model
         return $this->hasMany(PaymentLink::class);
     }
 
-    public function gatewayProviders(): HasMany
-    {
-        return $this->hasMany(GatewayProvider::class);
-    }
-
     public function paymentTransactions(): HasMany
     {
         return $this->hasMany(PaymentTransaction::class);

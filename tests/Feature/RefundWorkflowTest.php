@@ -16,19 +16,16 @@ class RefundWorkflowTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function gatewayProvider(Business $business, string $provider = 'pesapal'): GatewayProvider
+    private function gatewayProvider(string $provider = 'pesapal'): GatewayProvider
     {
         return GatewayProvider::create([
-            'business_id' => $business->id,
-            'name' => 'Test Gateway',
             'provider' => $provider,
             'status' => 'active',
             'environment' => 'sandbox',
-            'webhook_url' => 'https://example.test/webhooks/'.$provider.'/1',
+            'webhook_url' => 'https://example.test/webhooks/'.$provider,
             'credentials' => $provider === 'pesapal'
                 ? ['consumer_key' => 'test-key', 'consumer_secret' => 'test-secret']
                 : ['api_username' => 'test-user', 'api_password' => 'test-pass'],
-            'supported_countries' => 'UG',
             'supported_currencies' => 'UGX',
         ]);
     }
@@ -65,7 +62,7 @@ class RefundWorkflowTest extends TestCase
         Mail::fake();
 
         $business = Business::factory()->create(['status' => 'approved']);
-        $gatewayProvider = $this->gatewayProvider($business);
+        $gatewayProvider = $this->gatewayProvider();
         $transaction = $this->completedTransaction($business);
         $admin = User::factory()->businessAdmin($business)->create();
 
@@ -109,7 +106,7 @@ class RefundWorkflowTest extends TestCase
     public function test_business_admin_can_partially_refund_a_transaction(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $transaction = $this->completedTransaction($business);
         $admin = User::factory()->businessAdmin($business)->create();
 
@@ -139,7 +136,7 @@ class RefundWorkflowTest extends TestCase
     public function test_a_second_partial_refund_that_exhausts_the_remainder_fully_refunds_the_transaction(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $transaction = $this->completedTransaction($business);
         $admin = User::factory()->businessAdmin($business)->create();
 
@@ -160,7 +157,7 @@ class RefundWorkflowTest extends TestCase
     public function test_a_refund_exceeding_the_remaining_balance_is_rejected(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $transaction = $this->completedTransaction($business);
         $admin = User::factory()->businessAdmin($business)->create();
 
@@ -179,7 +176,7 @@ class RefundWorkflowTest extends TestCase
     public function test_omitting_amount_refunds_the_full_remaining_balance_after_a_prior_partial_refund(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $transaction = $this->completedTransaction($business);
         $admin = User::factory()->businessAdmin($business)->create();
 
@@ -200,7 +197,7 @@ class RefundWorkflowTest extends TestCase
     public function test_a_declined_refund_leaves_the_wallet_and_transaction_unchanged_but_records_the_attempt(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $transaction = $this->completedTransaction($business);
         $admin = User::factory()->businessAdmin($business)->create();
 
@@ -230,7 +227,7 @@ class RefundWorkflowTest extends TestCase
     public function test_a_yo_payments_transaction_cannot_be_refunded(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $this->gatewayProvider($business, 'yo_payments');
+        $this->gatewayProvider('yo_payments');
         $transaction = PaymentTransaction::factory()->create([
             'business_id' => $business->id,
             'provider' => 'yo_payments',
@@ -251,7 +248,7 @@ class RefundWorkflowTest extends TestCase
     public function test_a_non_completed_transaction_cannot_be_refunded(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $transaction = PaymentTransaction::factory()->create([
             'business_id' => $business->id,
             'provider' => 'pesapal',
@@ -269,7 +266,7 @@ class RefundWorkflowTest extends TestCase
     public function test_staff_without_permission_cannot_refund(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $transaction = $this->completedTransaction($business);
         $staff = User::factory()->staff($business)->create();
 
@@ -282,7 +279,7 @@ class RefundWorkflowTest extends TestCase
     public function test_staff_with_permission_can_refund(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
-        $this->gatewayProvider($business);
+        $this->gatewayProvider();
         $transaction = $this->completedTransaction($business);
         $staff = User::factory()->staff($business, ['transactions.refund'])->create();
 
@@ -298,7 +295,7 @@ class RefundWorkflowTest extends TestCase
     {
         $business = Business::factory()->create(['status' => 'approved']);
         $otherBusiness = Business::factory()->create(['status' => 'approved']);
-        $this->gatewayProvider($otherBusiness);
+        $this->gatewayProvider();
         $transaction = $this->completedTransaction($otherBusiness);
         $admin = User::factory()->businessAdmin($business)->create();
 
