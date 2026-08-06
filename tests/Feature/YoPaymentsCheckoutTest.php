@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Enums\PaymentProvider;
 use App\Models\Business;
 use App\Models\GatewayProvider;
 use App\Models\PaymentLink;
 use App\Models\PaymentTransaction;
+use App\Services\PaymentGatewayManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -194,6 +196,41 @@ class YoPaymentsCheckoutTest extends TestCase
         $wallet = $business->wallet->fresh();
         $this->assertSame('5000.00', (string) $wallet->available_balance);
         $this->assertSame('5000.00', (string) $wallet->settlement_balance);
+    }
+
+    /**
+     * The actual reported "payment approved on phone, status never
+     * advances past Processing" bug: our acdepositfunds + NonBlocking=TRUE
+     * flow (an on-screen/USSD prompt the customer approves) is Yo's own
+     * documented "Pull Method" (API spec section 6.1) — but
+     * actransactioncheckstatus was sending DepositTransactionType=PUSH,
+     * which refers to a completely different, deprecated mechanism
+     * (section 6.2). Yo's real API responds "transaction not found" to
+     * every such check regardless of the transaction's actual status,
+     * which looks identical to "still processing" from our side.
+     */
+    public function test_check_status_asks_yo_payments_about_a_pull_transaction_not_a_push_one(): void
+    {
+        $this->gatewayProvider();
+
+        Http::fake([
+            '*' => Http::response($this->xmlResponse([
+                'Status' => 'OK',
+                'StatusCode' => 0,
+                'TransactionStatus' => 'SUCCEEDED',
+                'TransactionReference' => 'yo-txn-ref-pull',
+            ]), 200, ['Content-Type' => 'text/xml']),
+        ]);
+
+        app(PaymentGatewayManager::class)
+            ->driver(PaymentProvider::YoPayments)
+            ->checkStatus('yo-txn-ref-pull', GatewayProvider::where('provider', 'yo_payments')->firstOrFail());
+
+        Http::assertSent(function ($request) {
+            return str_contains($request->body(), '<Method>actransactioncheckstatus</Method>')
+                && str_contains($request->body(), '<DepositTransactionType>PULL</DepositTransactionType>')
+                && ! str_contains($request->body(), '<DepositTransactionType>PUSH</DepositTransactionType>');
+        });
     }
 
     public function test_yo_payments_failure_callback_does_not_credit_the_wallet_when_status_check_says_failed(): void

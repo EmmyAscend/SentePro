@@ -92,9 +92,17 @@ class YoPaymentsDriver implements PaymentGatewayDriver
 
     public function checkStatus(string $providerReference, GatewayProvider $config): array
     {
+        // Confusingly named on Yo's side, but "PULL" is correct here: our
+        // acdepositfunds + NonBlocking=TRUE flow (an on-screen/USSD prompt
+        // the customer approves) is documented as Yo's "Pull Method"
+        // (API spec section 6.1). Their "Push Method" (section 6.2) is a
+        // separate, deprecated mechanism superseded by the IPN API — it has
+        // nothing to do with this flow. Sending PUSH here made every status
+        // check come back "transaction not found," which is exactly why a
+        // real, approved payment never advanced past "Processing."
         $data = $this->send('actransactioncheckstatus', [
             'TransactionReference' => $providerReference,
-            'DepositTransactionType' => 'PUSH',
+            'DepositTransactionType' => 'PULL',
         ], $config);
 
         $status = match ($data['TransactionStatus'] ?? null) {
@@ -124,7 +132,7 @@ class YoPaymentsDriver implements PaymentGatewayDriver
         try {
             $this->send('actransactioncheckstatus', [
                 'TransactionReference' => 'sentepro-health-check',
-                'DepositTransactionType' => 'PUSH',
+                'DepositTransactionType' => 'PULL',
             ], $config);
 
             return ['healthy' => true, 'error' => null];
