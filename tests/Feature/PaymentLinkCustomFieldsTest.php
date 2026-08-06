@@ -36,6 +36,7 @@ class PaymentLinkCustomFieldsTest extends TestCase
             'title' => 'School Fees',
             'type' => 'invoice',
             'amount' => 50000,
+            'currency' => 'UGX',
             'custom_amount' => 0,
             'expiry_date' => now()->addDays(30)->toDateString(),
             'standard_fields' => ['student_id', 'invoice_number'],
@@ -91,7 +92,6 @@ class PaymentLinkCustomFieldsTest extends TestCase
         $this->post('/pay/'.$paymentLink->id, [
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
-            'currency' => 'UGX',
             'payment_method' => 'card',
             'custom_fields' => ['product' => 'T-Shirt', 'quantity' => '2'],
         ])->assertRedirect('https://cybqa.pesapal.com/pesapalv3/checkout/fields1');
@@ -127,7 +127,6 @@ class PaymentLinkCustomFieldsTest extends TestCase
         $this->post('/pay/'.$paymentLink->id, [
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
-            'currency' => 'UGX',
             'payment_method' => 'card',
         ])->assertRedirect('https://cybqa.pesapal.com/pesapalv3/checkout/fields2');
 

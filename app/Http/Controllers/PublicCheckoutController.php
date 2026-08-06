@@ -111,12 +111,16 @@ class PublicCheckoutController extends Controller
         $validated = $request->validate([
             'customer_name' => ['required', 'string', 'max:255'],
             'customer_email' => ['required', 'email', 'max:255'],
-            'customer_phone' => ['nullable', 'string', 'max:20'],
-            'currency' => ['required', 'string', 'max:10'],
+            'customer_phone_country' => ['nullable', 'string', 'in:256,254'],
+            'customer_phone_local' => ['nullable', 'string', 'regex:/^\d{9}$/'],
             'payment_method' => ['required', 'string', 'in:card,mobile_money'],
             'custom_fields' => ['nullable', 'array'],
             'custom_fields.*' => ['nullable', 'string', 'max:500'],
         ]);
+
+        $validated['customer_phone'] = ! empty($validated['customer_phone_local'])
+            ? $validated['customer_phone_country'].$validated['customer_phone_local']
+            : null;
 
         $gatewayProvider = GatewayProvider::byProvider(self::METHOD_PROVIDERS[$validated['payment_method']]);
 

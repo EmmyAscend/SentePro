@@ -19,6 +19,7 @@ class StorePaymentLinkRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'numeric', 'min:0'],
+            'currency' => ['required', 'string', Rule::in(['UGX', 'KES'])],
             'custom_amount' => ['required', 'boolean'],
             'expiry_date' => ['required', 'date'],
             'description' => ['nullable', 'string', 'max:1000'],

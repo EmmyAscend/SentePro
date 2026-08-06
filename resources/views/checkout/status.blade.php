@@ -6,6 +6,12 @@
     <title>Payment Status | SentePro</title>
     <link href="https://fonts.bunny.net/css?family=syne:400,500,600,700,800|pacifico:400&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #ffffff !important; }
+        }
+    </style>
 </head>
 <body class="font-sans bg-slate-950 text-white">
     @php
@@ -28,7 +34,7 @@
         };
     @endphp
     <div class="mx-auto flex min-h-screen max-w-4xl items-center justify-center px-4 py-12">
-        <div class="w-full rounded-3xl bg-slate-900 p-8 shadow-2xl ring-1 ring-white/10">
+        <div class="w-full rounded-3xl bg-slate-900 p-8 shadow-2xl ring-1 ring-white/10 print:bg-white print:text-slate-900 print:shadow-none print:ring-0">
             <x-brand-mark class="text-3xl" />
             <p class="mt-4 text-sm uppercase tracking-[0.3em] text-lime-300">SentePro Receipt</p>
 
@@ -47,36 +53,53 @@
             </div>
             <p id="status-subtext" class="mt-2 text-slate-300">{{ $subtext }}</p>
 
-            <div class="mt-6 grid gap-4 md:grid-cols-2">
-                <div class="rounded-2xl bg-slate-800 p-5 ring-1 ring-white/10">
-                    <p class="text-sm text-slate-400">Business</p>
-                    <p class="mt-2 text-lg font-semibold text-white">{{ $paymentLink->business->business_name }}</p>
-                    <p class="mt-3 text-sm text-slate-300">Amount: {{ number_format($transaction?->amount ?? $paymentLink->amount, 2) }}</p>
-                    <p id="status-label" class="mt-2 text-sm text-slate-300">Status: {{ $transaction?->status?->label() ?? 'Processing' }}</p>
-                    @if ($transaction?->provider === \App\Enums\PaymentProvider::YoPayments && $transaction->status === \App\Enums\PaymentTransactionStatus::Processing)
-                        <p id="mobile-money-hint" class="mt-2 text-xs text-lime-300">Check your phone to approve the mobile money prompt.</p>
-                    @endif
+            @if ($isCompleted && $transaction->receipt)
+                <div class="mt-6 flex items-center justify-between gap-2 no-print">
+                    <button type="button" onclick="navigator.clipboard.writeText('{{ $transaction->external_reference }}'); this.textContent='Copied!'" class="flex shrink-0 items-center gap-1 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">
+                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Copy reference
+                    </button>
+                    <button type="button" onclick="window.print()" class="rounded-full bg-lime-400 px-4 py-2 text-xs font-semibold text-slate-950 hover:bg-lime-300">
+                        Print / Save as PDF
+                    </button>
                 </div>
 
-                <div class="rounded-2xl bg-lime-400 p-5 text-slate-950">
-                    <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-semibold">Reference</p>
-                        @if ($transaction)
-                            <button type="button" onclick="navigator.clipboard.writeText('{{ $transaction->external_reference }}'); this.textContent='Copied!'" class="flex shrink-0 items-center gap-1 rounded-full bg-slate-950/10 px-2.5 py-1 text-xs font-semibold hover:bg-slate-950/20">
-                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                                Copy
-                            </button>
+                <x-receipt-card :receipt="$transaction->receipt" />
+
+                <p class="mt-6 text-center text-xs text-slate-500 no-print">Tip: take a screenshot of this page to keep as proof of payment.</p>
+            @else
+                <div class="mt-6 grid gap-4 md:grid-cols-2">
+                    <div class="rounded-2xl bg-slate-800 p-5 ring-1 ring-white/10">
+                        <p class="text-sm text-slate-400">Business</p>
+                        <p class="mt-2 text-lg font-semibold text-white">{{ $paymentLink->business->business_name }}</p>
+                        <p class="mt-3 text-sm text-slate-300">Amount: {{ number_format($transaction?->amount ?? $paymentLink->amount, 2) }}</p>
+                        <p id="status-label" class="mt-2 text-sm text-slate-300">Status: {{ $transaction?->status?->label() ?? 'Processing' }}</p>
+                        @if ($transaction?->provider === \App\Enums\PaymentProvider::YoPayments && $transaction->status === \App\Enums\PaymentTransactionStatus::Processing)
+                            <p id="mobile-money-hint" class="mt-2 text-xs text-lime-300">Check your phone to approve the mobile money prompt.</p>
                         @endif
                     </div>
-                    <p id="reference-value" class="mt-2 text-lg font-extrabold">{{ $transaction?->external_reference ?? 'Awaiting provider response' }}</p>
-                    <p id="status-footnote" class="mt-3 text-sm">A business admin can follow this transaction from their dashboard ledger.</p>
-                    <a id="receipt-link" href="#" class="mt-3 hidden w-full items-center justify-center rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-900">View receipt</a>
-                </div>
-            </div>
 
-            <p class="mt-6 text-center text-xs text-slate-500">Tip: take a screenshot of this page to keep as proof of payment.</p>
+                    <div class="rounded-2xl bg-lime-400 p-5 text-slate-950">
+                        <div class="flex items-center justify-between gap-2">
+                            <p class="text-sm font-semibold">Reference</p>
+                            @if ($transaction)
+                                <button type="button" onclick="navigator.clipboard.writeText('{{ $transaction->external_reference }}'); this.textContent='Copied!'" class="flex shrink-0 items-center gap-1 rounded-full bg-slate-950/10 px-2.5 py-1 text-xs font-semibold hover:bg-slate-950/20">
+                                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                    Copy
+                                </button>
+                            @endif
+                        </div>
+                        <p id="reference-value" class="mt-2 text-lg font-extrabold">{{ $transaction?->external_reference ?? 'Awaiting provider response' }}</p>
+                        <p id="status-footnote" class="mt-3 text-sm">A business admin can follow this transaction from their dashboard ledger.</p>
+                    </div>
+                </div>
+
+                <p class="mt-6 text-center text-xs text-slate-500">Tip: take a screenshot of this page to keep as proof of payment.</p>
+            @endif
         </div>
     </div>
 
@@ -104,21 +127,7 @@
                     var maxAttempts = 30;
                     var intervalMs = 4000;
 
-                    var heading = document.getElementById('status-heading');
                     var subtext = document.getElementById('status-subtext');
-                    var statusLabel = document.getElementById('status-label');
-                    var footnote = document.getElementById('status-footnote');
-                    var receiptLink = document.getElementById('receipt-link');
-                    var mobileMoneyHint = document.getElementById('mobile-money-hint');
-                    var completedIcon = document.getElementById('status-icon-completed');
-                    var failedIcon = document.getElementById('status-icon-failed');
-
-                    var labels = {
-                        completed: 'Completed',
-                        failed: 'Failed',
-                        refunded: 'Refunded',
-                        partially_refunded: 'Partially Refunded',
-                    };
 
                     function stopPolling() {
                         clearInterval(timer);
@@ -138,30 +147,12 @@
                                     return;
                                 }
 
+                                // Reload rather than patch the DOM in place — the server
+                                // already knows how to render every terminal state
+                                // (including the inline receipt card once completed),
+                                // so there's no need to duplicate that logic in JS.
                                 stopPolling();
-                                statusLabel.textContent = 'Status: ' + (labels[data.status] || data.status);
-                                if (mobileMoneyHint) {
-                                    mobileMoneyHint.remove();
-                                }
-
-                                if (data.status === 'completed') {
-                                    completedIcon.classList.remove('hidden');
-                                    heading.textContent = 'Payment successful';
-                                    subtext.textContent = 'Your payment has been confirmed. Thank you!';
-                                    if (data.receipt_url) {
-                                        footnote.textContent = 'Your receipt is ready.';
-                                        receiptLink.href = data.receipt_url;
-                                        receiptLink.classList.remove('hidden');
-                                        receiptLink.classList.add('flex');
-                                        window.location.href = data.receipt_url;
-                                    }
-                                } else if (data.status === 'failed') {
-                                    failedIcon.classList.remove('hidden');
-                                    heading.textContent = 'Payment failed';
-                                    subtext.textContent = 'This payment could not be completed. You can go back and try again.';
-                                } else {
-                                    heading.textContent = 'Payment ' + (labels[data.status] || data.status).toLowerCase();
-                                }
+                                window.location.reload();
                             })
                             .catch(function () {
                                 // A transient network error shouldn't stop the poll loop —

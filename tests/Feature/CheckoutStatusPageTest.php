@@ -42,6 +42,39 @@ class CheckoutStatusPageTest extends TestCase
         $response->assertDontSee('id="status-icon-completed" class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-lime-400/20 text-lime-300 hidden"', false);
     }
 
+    /**
+     * The receipt used to only ever be reachable by redirecting away to
+     * /receipts/{receipt} once the poll script detected completion — a
+     * customer reloading /status directly (or landing there after Yo
+     * Payments' IPN completed the transaction server-side) never saw it.
+     * The receipt card (reference, date, amount, QR/verify) now renders
+     * inline on this same page via the shared <x-receipt-card> component.
+     */
+    public function test_a_completed_transaction_shows_the_receipt_inline_with_a_print_button(): void
+    {
+        $business = Business::factory()->create(['status' => 'approved']);
+        $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id]);
+        $transaction = PaymentTransaction::factory()->create([
+            'business_id' => $business->id,
+            'payment_link_id' => $paymentLink->id,
+            'status' => 'completed',
+            'amount' => 2500,
+            'external_reference' => 'txn-status-page-receipt-1',
+        ]);
+
+        $response = $this->get('/pay/'.$paymentLink->id.'/status');
+
+        $response->assertOk();
+        $receipt = $transaction->fresh()->receipt;
+        $this->assertNotNull($receipt);
+        $response->assertSee($receipt->reference_number);
+        $response->assertSee('Reference Number');
+        $response->assertSee('Amount Paid');
+        $response->assertSee(route('receipts.qr-code', $receipt), false);
+        $response->assertSee(route('receipts.verify', $receipt), false);
+        $response->assertSee('onclick="window.print()"', false);
+    }
+
     public function test_a_failed_transaction_shows_a_failure_heading(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);

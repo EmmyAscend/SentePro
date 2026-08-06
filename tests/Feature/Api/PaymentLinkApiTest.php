@@ -24,6 +24,7 @@ class PaymentLinkApiTest extends TestCase
             'title' => 'API-created link',
             'type' => 'donation',
             'amount' => 5000,
+            'currency' => 'UGX',
             'custom_amount' => false,
             'expiry_date' => now()->addDays(30)->toDateString(),
         ]);

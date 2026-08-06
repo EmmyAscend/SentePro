@@ -14,6 +14,7 @@ class PaymentLinkResource extends JsonResource
             'title' => $this->title,
             'type' => $this->type,
             'amount' => (float) $this->amount,
+            'currency' => $this->currency,
             'custom_amount' => $this->custom_amount,
             'expiry_date' => $this->expiry_date?->toDateString(),
             'description' => $this->description,

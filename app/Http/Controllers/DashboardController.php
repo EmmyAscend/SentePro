@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentTransactionStatus;
 use App\Enums\SettlementStatus;
 use App\Models\Business;
 use App\Models\PaymentTransaction;
@@ -30,6 +31,16 @@ class DashboardController extends Controller
         $latestTransactions = PaymentTransaction::with('business')->latest()->take(5)->get();
 
         $walletBalance = (float) Wallet::sum('available_balance');
+
+        // A live reporting view over completed transactions, not the wallet
+        // ledger itself — Wallet stays a single flat balance with no
+        // currency column. Tenant-scoped automatically for non-super-admins,
+        // same as every other PaymentTransaction query on this dashboard.
+        $currencyBreakdown = PaymentTransaction::query()
+            ->where('status', PaymentTransactionStatus::Completed)
+            ->selectRaw('currency, SUM(amount) as total')
+            ->groupBy('currency')
+            ->pluck('total', 'currency');
 
         $pendingSettlementsCount = Settlement::query()
             ->whereIn('status', [SettlementStatus::Pending, SettlementStatus::Processing])
@@ -62,6 +73,7 @@ class DashboardController extends Controller
             'latestBusinesses',
             'latestTransactions',
             'walletBalance',
+            'currencyBreakdown',
             'pendingSettlementsCount',
             'transactionsToday',
             'transactionTrend',

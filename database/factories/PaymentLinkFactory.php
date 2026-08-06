@@ -16,6 +16,7 @@ class PaymentLinkFactory extends Factory
             'title' => $this->faker->sentence(3),
             'type' => 'donation',
             'amount' => 2500,
+            'currency' => 'UGX',
             'custom_amount' => true,
             'expiry_date' => now()->addDays(7),
             'description' => $this->faker->sentence(),

@@ -37,7 +37,14 @@
         $baseline = $chartHeight - $padY;
         $areaPath = $linePath . " L {$coords->last()['x']} {$baseline} L {$coords->first()['x']} {$baseline} Z";
 
-        $providerLabels = ['pesapal' => 'Pesapal', 'yo_payments' => 'Yo Payments'];
+        // Customers/businesses never see "Pesapal"/"Yo Payments" anywhere
+        // else in the app (see PublicCheckoutController::METHOD_PROVIDERS) —
+        // a business admin's own dashboard keeps that same abstraction. Only
+        // the super admin, who actually manages the gateway credentials
+        // behind each label, sees the real provider names.
+        $providerLabels = auth()->user()->isSuperAdmin()
+            ? ['pesapal' => 'Pesapal', 'yo_payments' => 'Yo Payments']
+            : ['pesapal' => 'Bank Cards', 'yo_payments' => 'Mobile Money'];
         $providerColors = ['pesapal' => 'bg-lime-600', 'yo_payments' => 'bg-sky-700'];
         $maxProvider = max(1, $providerSplit->max() ?? 0);
 
@@ -59,7 +66,15 @@
                 </div>
                 <div class="rounded-2xl bg-slate-900 p-6 ring-1 ring-white/10">
                     <p class="text-sm text-slate-400">Wallet Balance</p>
-                    <p class="mt-2 text-4xl font-bold text-white">${{ number_format($walletBalance, 2) }}</p>
+                    @if ($currencyBreakdown->isEmpty())
+                        <p class="mt-2 text-2xl font-bold text-white">No completed transactions yet</p>
+                    @else
+                        <div class="mt-2 space-y-0.5">
+                            @foreach ($currencyBreakdown as $currency => $total)
+                                <p class="text-2xl font-bold text-white">{{ $currency }} {{ number_format($total, 2) }}</p>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
                 <div class="rounded-2xl bg-slate-900 p-6 ring-1 ring-white/10">
                     <p class="text-sm text-slate-400">Pending Settlements</p>

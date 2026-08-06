@@ -67,8 +67,19 @@ class DashboardTest extends TestCase
         $response = $this->actingAs($admin)->get('/dashboard');
 
         $response->assertOk();
+        // The "Provider split" widget shows generic labels to a business
+        // admin — only the super admin, who manages gateway credentials,
+        // sees "Pesapal"/"Yo Payments" there. The "Live payment activity"
+        // list still shows the transaction's own real provider label
+        // ("Pesapal"), unrelated to this widget and unchanged by this pass.
+        $response->assertSee('Bank Cards');
+        $response->assertSee('Mobile Money');
         $response->assertSee('Pesapal');
         $response->assertSee('Completed');
+        // Wallet Balance card: a live per-currency breakdown of completed
+        // transactions, not a single hardcoded-$ figure.
+        $response->assertSee('UGX 7,500.00');
+        $response->assertDontSee('$'.number_format(7500, 2));
     }
 
     public function test_dashboard_does_not_show_another_businesss_transaction_activity(): void

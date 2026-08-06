@@ -40,9 +40,18 @@
                             </select>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-slate-300">Amount</label>
-                            <input type="number" name="amount" step="0.01" class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white" required>
+                        <div class="grid grid-cols-[1fr_auto] gap-2">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300">Amount</label>
+                                <input type="number" name="amount" step="0.01" class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300">Currency</label>
+                                <select name="currency" class="mt-1 rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white">
+                                    <option value="UGX">UGX</option>
+                                    <option value="KES">KES</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div>

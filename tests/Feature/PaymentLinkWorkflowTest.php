@@ -29,6 +29,7 @@ class PaymentLinkWorkflowTest extends TestCase
             'title' => 'Community Support Fund',
             'type' => 'donation',
             'amount' => 2500,
+            'currency' => 'UGX',
             'custom_amount' => true,
             'expiry_date' => now()->addDays(7)->toDateString(),
             'description' => 'Support the community initiative.',

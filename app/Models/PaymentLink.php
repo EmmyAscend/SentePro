@@ -32,6 +32,7 @@ class PaymentLink extends Model
         'title',
         'type',
         'amount',
+        'currency',
         'custom_amount',
         'expiry_date',
         'description',

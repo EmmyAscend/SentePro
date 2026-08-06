@@ -75,7 +75,6 @@ class CheckoutPaymentMethodTest extends TestCase
             $this->post('/pay/'.$link->id, [
                 'customer_name' => 'Jane Doe',
                 'customer_email' => 'jane@example.test',
-                'currency' => 'UGX',
                 'payment_method' => 'card',
             ])->assertRedirect('https://cybqa.pesapal.com/pesapalv3/checkout/shared');
         }

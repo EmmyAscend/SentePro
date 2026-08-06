@@ -48,7 +48,6 @@ class YoPaymentsCheckoutTest extends TestCase
         $response = $this->post('/pay/'.$paymentLink->id, [
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
-            'currency' => 'UGX',
             'payment_method' => 'mobile_money',
         ]);
 
@@ -74,8 +73,8 @@ class YoPaymentsCheckoutTest extends TestCase
         $response = $this->post('/pay/'.$paymentLink->id, [
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
-            'customer_phone' => '256712345678',
-            'currency' => 'UGX',
+            'customer_phone_country' => '256',
+            'customer_phone_local' => '712345678',
             'payment_method' => 'mobile_money',
         ]);
 
@@ -106,17 +105,18 @@ class YoPaymentsCheckoutTest extends TestCase
     }
 
     /**
-     * The actual reported bug: a customer typing a local-format number
-     * (0712345678, exactly how most Ugandan customers naturally type their
-     * own number) produced no mobile money prompt at all. Yo Payments'
-     * Account field requires strict international format with no leading
-     * zero — sending the local format unnormalized meant the request never
-     * mapped to a real subscriber, which looks identical from the outside
-     * to "nothing happened." PhoneNumber::normalizeUganda() fixes this at
-     * the point YoPaymentsDriver builds the request; the stored
-     * customer_phone column is left exactly as the customer typed it.
+     * The checkout form's country-code picker + 9-digit local-number field
+     * (PublicCheckoutController::store()) replaced the old free-text phone
+     * input this test used to exercise leading-zero normalization against —
+     * a leading zero is no longer reachable through this form at all, since
+     * the local field is validated to exactly 9 digits. The controller
+     * combines the two into a single well-formed international string
+     * before it ever reaches PaymentInitiationService; PhoneNumber::
+     * normalizeUganda() (still exercised directly in
+     * tests/Unit/PhoneNumberTest.php) is now a defensive no-op for numbers
+     * built this way, kept as a safety net for other entry paths.
      */
-    public function test_a_locally_formatted_phone_number_is_normalized_before_reaching_yo_payments(): void
+    public function test_the_country_code_and_local_number_are_combined_before_reaching_yo_payments(): void
     {
         $business = Business::factory()->create(['status' => 'approved']);
         $this->gatewayProvider();
@@ -134,22 +134,19 @@ class YoPaymentsCheckoutTest extends TestCase
         $this->post('/pay/'.$paymentLink->id, [
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
-            'customer_phone' => '0712345678',
-            'currency' => 'UGX',
+            'customer_phone_country' => '256',
+            'customer_phone_local' => '712345678',
             'payment_method' => 'mobile_money',
         ])->assertRedirect('/pay/'.$paymentLink->id.'/status');
 
-        // The customer's own typed format is preserved for display/audit...
         $this->assertDatabaseHas('payment_transactions', [
             'payment_link_id' => $paymentLink->id,
-            'customer_phone' => '0712345678',
+            'customer_phone' => '256712345678',
         ]);
 
-        // ...but Yo Payments only ever sees the normalized international form.
         Http::assertSent(function ($request) {
             return str_contains($request->body(), '<Method>acdepositfunds</Method>')
-                && str_contains($request->body(), '<Account>256712345678</Account>')
-                && ! str_contains($request->body(), '<Account>0712345678</Account>');
+                && str_contains($request->body(), '<Account>256712345678</Account>');
         });
     }
 

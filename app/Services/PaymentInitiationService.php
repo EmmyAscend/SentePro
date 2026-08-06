@@ -15,7 +15,7 @@ class PaymentInitiationService
     public function __construct(private readonly PaymentGatewayManager $gatewayManager) {}
 
     /**
-     * @param  array{customer_name: string, customer_email: string, customer_phone?: ?string, currency: string, custom_fields?: array<string, ?string>}  $customer
+     * @param  array{customer_name: string, customer_email: string, customer_phone?: ?string, custom_fields?: array<string, ?string>}  $customer
      * @return array{transaction: PaymentTransaction, redirect_url: ?string}
      */
     public function initiate(PaymentLink $paymentLink, GatewayProvider $gatewayProvider, array $customer): array
@@ -26,7 +26,7 @@ class PaymentInitiationService
             ]);
         }
 
-        $currency = $customer['currency'];
+        $currency = $paymentLink->currency;
         $supportedCurrencies = array_map('trim', explode(',', $gatewayProvider->supported_currencies));
 
         if (! in_array($currency, $supportedCurrencies, true)) {

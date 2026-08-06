@@ -49,7 +49,6 @@ class PesapalCheckoutTest extends TestCase
         $response = $this->post('/pay/'.$paymentLink->id, [
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
-            'currency' => 'UGX',
             'payment_method' => 'card',
         ]);
 
@@ -79,14 +78,13 @@ class PesapalCheckoutTest extends TestCase
     {
         $business = Business::factory()->create(['status' => 'approved']);
         $this->gatewayProvider(); // supports UGX only
-        $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id]);
+        $paymentLink = PaymentLink::factory()->create(['business_id' => $business->id, 'currency' => 'KES']);
 
         Http::fake(['*/api/Auth/RequestToken' => Http::response(['token' => 'fake-token', 'status' => '200'])]);
 
         $response = $this->post('/pay/'.$paymentLink->id, [
             'customer_name' => 'Jane Doe',
             'customer_email' => 'jane@example.test',
-            'currency' => 'KES',
             'payment_method' => 'card',
         ]);
 
