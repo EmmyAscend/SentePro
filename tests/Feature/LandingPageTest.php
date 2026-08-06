@@ -357,10 +357,10 @@ class LandingPageTest extends TestCase
         // smaller supporting text.
         // 6 section subtext paragraphs (requirements/features/balances/
         // gateways/faq/cta) + 8 feature-card and how-it-works titles (see
-        // the hierarchy test below) + 5 footer elements (tagline, 3 default
-        // menu columns, copyright row — Contact only renders when
-        // configured) also use lg:text-xl = 19 total.
-        $this->assertSame(19, substr_count($html, 'lg:text-xl'));
+        // the hierarchy test below) use lg:text-xl = 14 total. The footer
+        // was later reduced to lg:text-lg to match the FAQ answers' size —
+        // see test_footer_elements_match_the_faq_answer_text_size below.
+        $this->assertSame(14, substr_count($html, 'lg:text-xl'));
         $this->assertStringNotContainsString('lg:text-[32px]', $html);
         $this->assertStringNotContainsString('lg:text-[28px]', $html);
     }
@@ -380,20 +380,20 @@ class LandingPageTest extends TestCase
         $this->assertSame(8, substr_count($html, 'text-sm text-slate-400 lg:text-base'));
     }
 
-    public function test_footer_elements_match_the_description_text_size_on_desktop(): void
+    public function test_footer_elements_match_the_faq_answer_text_size(): void
     {
         $response = $this->get('/');
 
         $response->assertOk();
         $html = $response->getContent();
 
-        // Tagline, the 3 default menu columns, and the copyright row all
-        // grow to lg:text-xl on desktop — matching the same size the CTA
-        // banner's own subtext already uses, per the "make them like the
-        // ticked paragraph" request. Mobile keeps its existing smaller size.
-        $response->assertSee('mt-3 max-w-xs text-xs text-slate-400 lg:text-xl', false);
-        $this->assertSame(3, substr_count($html, 'mt-4 space-y-2 text-[15px] text-slate-300 lg:text-xl'));
-        $response->assertSee('text-xs text-slate-500 sm:flex-row sm:items-center sm:gap-1 sm:px-6 lg:px-8 lg:text-xl', false);
+        // Tagline, the 3 default menu columns, and the copyright row were
+        // previously bumped to lg:text-xl (matching the CTA banner's
+        // subtext) but read as too large — reduced to lg:text-lg to match
+        // the FAQ answers' desktop size instead. Mobile is unaffected.
+        $response->assertSee('mt-3 max-w-xs text-xs text-slate-400 lg:text-lg', false);
+        $this->assertSame(3, substr_count($html, 'mt-4 space-y-2 text-[15px] text-slate-300 lg:text-lg'));
+        $response->assertSee('text-xs text-slate-500 sm:flex-row sm:items-center sm:gap-1 sm:px-6 lg:px-8 lg:text-lg', false);
     }
 
     public function test_headings_use_tight_line_height(): void
