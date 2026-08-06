@@ -179,7 +179,7 @@
                 <div class="rounded-2xl bg-slate-900 p-6 shadow-sm ring-1 ring-white/10" x-data="{ items: @js(old('features', $content->features ?? [])) }">
                     <div class="flex items-center justify-between gap-4">
                         <h3 class="text-lg font-semibold text-white">Features</h3>
-                        <button type="button" @click="items.push({ title: '', description: '' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add feature</button>
+                        <button type="button" @click="items.push({ eyebrow: '', title: '', description: '' })" class="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-white/5">+ Add feature</button>
                     </div>
                     <div class="mt-4 grid gap-4 sm:grid-cols-2">
                         <label class="flex flex-col gap-1 text-sm">
@@ -195,7 +195,11 @@
                     </div>
                     <div class="mt-4 space-y-4">
                         <template x-for="(item, index) in items" :key="index">
-                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_2fr_auto] md:items-end">
+                            <div class="rounded-xl bg-slate-800/60 p-4 grid gap-3 md:grid-cols-[1fr_1fr_2fr_auto] md:items-end">
+                                <label class="flex flex-col gap-1 text-sm">
+                                    <span class="font-medium text-slate-300">Eyebrow / label</span>
+                                    <input type="text" :name="`features[${index}][eyebrow]`" x-model="item.eyebrow" placeholder="e.g. Payments" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2">
+                                </label>
                                 <label class="flex flex-col gap-1 text-sm">
                                     <span class="font-medium text-slate-300">Title</span>
                                     <input type="text" :name="`features[${index}][title]`" x-model="item.title" class="rounded-xl border border-white/10 bg-slate-950 text-white px-3 py-2" required>

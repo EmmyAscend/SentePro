@@ -146,10 +146,10 @@ class LandingPageContent extends Model
             'features_heading' => 'Why SentePro?',
             'features_subtext' => 'Fast, flexible, and secure payment collection for growing businesses.',
             'features' => [
-                ['title' => 'Unified payment collection', 'description' => 'Collect through one marketplace-ready flow without requiring each business to maintain its own gateway.'],
-                ['title' => 'Verified business onboarding', 'description' => 'Capture business, owner, and documentation details under a production-safe verification pipeline.'],
-                ['title' => 'Role-aware access', 'description' => 'Super admins, business admins, and staff all operate through structured, permission-based workflows.'],
-                ['title' => 'Transparent settlement fees', 'description' => 'Every settlement method shows its fees and timing upfront, locked in the moment you request a payout.'],
+                ['eyebrow' => 'Payments', 'title' => 'Unified payment collection', 'description' => 'Collect through one marketplace-ready flow without requiring each business to maintain its own gateway.'],
+                ['eyebrow' => 'Onboarding', 'title' => 'Verified business onboarding', 'description' => 'Capture business, owner, and documentation details under a production-safe verification pipeline.'],
+                ['eyebrow' => 'Security', 'title' => 'Role-aware access', 'description' => 'Super admins, business admins, and staff all operate through structured, permission-based workflows.'],
+                ['eyebrow' => 'Settlements', 'title' => 'Transparent settlement fees', 'description' => 'Every settlement method shows its fees and timing upfront, locked in the moment you request a payout.'],
             ],
             'faqs' => [
                 ['question' => 'How do I register my business on SentePro?', 'answer' => "Submit your business details and an owner account together — you're logged in immediately, and a super admin reviews and approves your business before you can accept live payments."],

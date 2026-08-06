@@ -111,12 +111,13 @@ class LandingPageTest extends TestCase
         $response->assertDontSee('h-10 w-10 items-center justify-center rounded-full bg-lime-400/10', false);
     }
 
-    public function test_features_render_as_cards(): void
+    public function test_features_render_as_divided_columns_with_an_eyebrow_label(): void
     {
         $response = $this->get('/');
 
         $response->assertOk();
-        $response->assertSee('rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10', false);
+        $response->assertSee('grid divide-y divide-white/10 lg:grid-cols-4 lg:divide-x lg:divide-y-0', false);
+        $response->assertSee('Payments');
     }
 
     public function test_footer_wraps_powered_by_and_copyright_onto_separate_lines_on_mobile(): void

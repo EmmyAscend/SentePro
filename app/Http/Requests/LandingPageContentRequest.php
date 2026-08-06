@@ -23,6 +23,7 @@ class LandingPageContentRequest extends FormRequest
             'features_heading' => ['required', 'string', 'max:255'],
             'features_subtext' => ['required', 'string', 'max:500'],
             'features' => ['required', 'array', 'min:1', 'max:20'],
+            'features.*.eyebrow' => ['nullable', 'string', 'max:255'],
             'features.*.title' => ['required', 'string', 'max:255'],
             'features.*.description' => ['required', 'string', 'max:500'],
             'requirements_heading' => ['required', 'string', 'max:255'],

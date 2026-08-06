@@ -72,11 +72,14 @@
                 <h2 class="font-bold leading-tight" style="font-size: {{ $content->headingSize('features') }}">{{ $content->features_heading }}</h2>
                 <p class="mt-2 text-slate-300 lg:text-xl">{{ $content->features_subtext }}</p>
             </div>
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="grid divide-y divide-white/10 lg:grid-cols-4 lg:divide-x lg:divide-y-0">
                 @foreach ($content->features as $feature)
-                    <div class="rounded-3xl bg-slate-900 p-6 ring-1 ring-white/10">
-                        <h3 class="font-semibold text-white lg:text-xl">{{ $feature['title'] }}</h3>
-                        <p class="mt-1 text-sm text-slate-400 lg:text-base">{{ $feature['description'] }}</p>
+                    <div class="py-6 lg:px-8 lg:py-0 lg:first:pl-0 lg:last:pr-0">
+                        @if (! empty($feature['eyebrow']))
+                            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">{{ $feature['eyebrow'] }}</p>
+                        @endif
+                        <h3 class="mt-2 font-semibold text-white lg:text-xl">{{ $feature['title'] }}</h3>
+                        <p class="mt-2 text-sm text-slate-400 lg:text-base">{{ $feature['description'] }}</p>
                     </div>
                 @endforeach
             </div>
