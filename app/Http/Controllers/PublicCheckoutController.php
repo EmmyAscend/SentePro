@@ -3,16 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PaymentProvider;
+use App\Enums\PaymentTransactionStatus;
 use App\Models\GatewayProvider;
 use App\Models\PaymentLink;
 use App\Models\PaymentTransaction;
 use App\Services\PaymentInitiationService;
+use App\Services\PaymentWebhookService;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\SvgWriter;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Throwable;
 
 class PublicCheckoutController extends Controller
 {
@@ -64,6 +68,42 @@ class PublicCheckoutController extends Controller
             ->first();
 
         return view('checkout.status', compact('paymentLink', 'transaction'));
+    }
+
+    /**
+     * Polled by checkout/status.blade.php while a transaction is still
+     * processing. Actively re-checks the gateway's own status rather than
+     * just reading our possibly-stale DB row — the same "a webhook is only
+     * ever a trigger to go check" principle PaymentWebhookService already
+     * documents, and exactly the periodic-check pattern Yo Payments' own
+     * integration docs recommend for a pending transaction. A failed
+     * gateway call (bad credentials, network error) is swallowed — the
+     * poll just reports the last-known status rather than breaking the
+     * page; LoggingGatewayDriver already records the failure separately.
+     */
+    public function statusCheck(PaymentLink $paymentLink, PaymentWebhookService $webhookService): JsonResponse
+    {
+        $transaction = PaymentTransaction::where('payment_link_id', $paymentLink->id)
+            ->latest()
+            ->first();
+
+        if (! $transaction) {
+            return response()->json(['status' => 'not_found']);
+        }
+
+        if ($transaction->status === PaymentTransactionStatus::Processing) {
+            try {
+                $gatewayProvider = GatewayProvider::byProvider($transaction->provider);
+                $transaction = $webhookService->reconcile($gatewayProvider, $transaction, []);
+            } catch (Throwable) {
+                // Keep serving the last-known status below.
+            }
+        }
+
+        return response()->json([
+            'status' => $transaction->status->value,
+            'receipt_url' => $transaction->receipt ? route('receipts.show', $transaction->receipt) : null,
+        ]);
     }
 
     public function store(PaymentLink $paymentLink, Request $request): RedirectResponse

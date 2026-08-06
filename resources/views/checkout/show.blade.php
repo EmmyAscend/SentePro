@@ -4,19 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $paymentLink->title }} | SentePro</title>
+    <link href="https://fonts.bunny.net/css?family=syne:400,500,600,700,800&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-950 text-white">
+<body class="font-sans bg-slate-950 text-white">
     <div class="mx-auto flex min-h-screen max-w-4xl items-center justify-center px-4 py-12">
-        <div class="w-full rounded-3xl bg-slate-900 p-8 shadow-2xl ring-1 ring-slate-700">
+        <div class="w-full rounded-3xl bg-slate-900 p-8 shadow-2xl ring-1 ring-white/10">
             <div class="mb-6">
-                <p class="text-sm uppercase tracking-[0.3em] text-emerald-400">SentePro Checkout</p>
+                <p class="text-sm uppercase tracking-[0.3em] text-lime-300">SentePro Checkout</p>
                 <h1 class="mt-3 text-3xl font-bold text-white">{{ $paymentLink->title }}</h1>
                 <p class="mt-2 text-slate-300">{{ $paymentLink->description }}</p>
             </div>
 
             <div class="grid gap-6 md:grid-cols-2">
-                <div class="rounded-2xl bg-slate-800 p-5 ring-1 ring-slate-700">
+                <div class="rounded-2xl bg-slate-800 p-5 ring-1 ring-white/10">
                     <p class="text-sm text-slate-400">Business</p>
                     <p class="mt-2 text-xl font-semibold text-white">{{ $paymentLink->business->business_name }}</p>
                     <p class="mt-4 text-sm text-slate-300">Payment type: {{ ucfirst($paymentLink->type) }}</p>
@@ -24,10 +25,10 @@
                     <p class="mt-2 text-sm text-slate-300">Expiry: {{ $paymentLink->expiry_date?->format('d M Y') }}</p>
                 </div>
 
-                <form method="POST" action="{{ route('checkout.store', $paymentLink) }}" class="rounded-2xl bg-emerald-500 p-5 text-slate-950">
+                <form method="POST" action="{{ route('checkout.store', $paymentLink) }}" class="rounded-2xl bg-lime-400 p-5 text-slate-950">
                     @csrf
                     <p class="text-sm font-semibold">Ready to pay</p>
-                    <p class="mt-3 text-3xl font-black">{{ number_format($paymentLink->amount, 2) }}</p>
+                    <p class="mt-3 text-3xl font-extrabold">{{ number_format($paymentLink->amount, 2) }}</p>
 
                     @if ($errors->any())
                         <div class="mt-4 rounded-lg bg-rose-100 px-3 py-2 text-xs text-rose-700">
