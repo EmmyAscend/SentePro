@@ -27,9 +27,18 @@ class GatewayProviderController extends Controller
     {
         $validated = $request->validated();
 
+        $newCredentials = $gatewayProvider->provider === PaymentProvider::YoPayments
+            ? ['api_username' => $validated['api_username'], 'api_password' => $validated['api_password']]
+            : ['consumer_key' => $validated['consumer_key'], 'consumer_secret' => $validated['consumer_secret']];
+
         $gatewayProvider->update([
-            ...$validated,
-            'credentials' => json_decode($validated['credentials'], true),
+            'status' => $validated['status'],
+            'environment' => $validated['environment'],
+            'supported_currencies' => $validated['supported_currencies'],
+            // Merged, not replaced — preserves fields a driver writes back
+            // on its own (e.g. PesapalDriver caching the ipn_id it gets on
+            // first use) across an admin edit of just the key/secret pair.
+            'credentials' => [...($gatewayProvider->credentials ?? []), ...$newCredentials],
         ]);
 
         return redirect()->route('admin.gateway-providers')->with('status', 'Gateway provider updated.');

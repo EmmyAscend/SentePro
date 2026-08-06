@@ -18,7 +18,8 @@ class GatewayProviderManagementTest extends TestCase
         return [
             'status' => 'active',
             'environment' => 'production',
-            'credentials' => json_encode(['consumer_key' => 'real-key', 'consumer_secret' => 'real-secret']),
+            'consumer_key' => 'real-key',
+            'consumer_secret' => 'real-secret',
             'supported_currencies' => 'UGX,KES',
         ];
     }
@@ -41,6 +42,52 @@ class GatewayProviderManagementTest extends TestCase
         $this->assertSame('active', $pesapal->status);
         $this->assertSame('production', $pesapal->environment);
         $this->assertSame('real-key', $pesapal->credentials['consumer_key']);
+    }
+
+    public function test_super_admin_can_update_yo_payments_with_its_own_field_set(): void
+    {
+        GatewayProvider::byProvider(PaymentProvider::YoPayments);
+
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $response = $this->actingAs($superAdmin)->put('/admin/gateway-providers/yo_payments', [
+            'status' => 'active',
+            'environment' => 'production',
+            'api_username' => 'real-username',
+            'api_password' => 'real-password',
+            'supported_currencies' => 'UGX',
+        ]);
+
+        $response->assertRedirect(route('admin.gateway-providers'));
+
+        $yoPayments = GatewayProvider::byProvider(PaymentProvider::YoPayments);
+        $this->assertSame('real-username', $yoPayments->credentials['api_username']);
+        $this->assertSame('real-password', $yoPayments->credentials['api_password']);
+    }
+
+    public function test_submitting_pesapal_fields_for_yo_payments_fails_validation(): void
+    {
+        GatewayProvider::byProvider(PaymentProvider::YoPayments);
+
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $response = $this->actingAs($superAdmin)->put('/admin/gateway-providers/yo_payments', $this->validPayload());
+
+        $response->assertSessionHasErrors(['api_username', 'api_password']);
+    }
+
+    public function test_updating_credentials_preserves_other_stored_keys_like_a_cached_ipn_id(): void
+    {
+        $pesapal = GatewayProvider::byProvider(PaymentProvider::Pesapal);
+        $pesapal->update(['credentials' => ['consumer_key' => 'old-key', 'consumer_secret' => 'old-secret', 'ipn_id' => 'cached-ipn-guid']]);
+
+        $superAdmin = User::factory()->superAdmin()->create();
+
+        $this->actingAs($superAdmin)->put('/admin/gateway-providers/pesapal', $this->validPayload())->assertRedirect();
+
+        $pesapal->refresh();
+        $this->assertSame('real-key', $pesapal->credentials['consumer_key']);
+        $this->assertSame('cached-ipn-guid', $pesapal->credentials['ipn_id']);
     }
 
     public function test_a_gateway_provider_row_is_lazily_created_the_first_time_its_provider_is_visited(): void

@@ -1,12 +1,12 @@
 @php $content = \App\Models\LandingPageContent::current(); @endphp
 
 <footer class="border-t border-white/10 py-12">
-    <div class="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1fr] lg:gap-10 lg:px-8">
-        <div class="col-span-2 lg:col-span-1">
+    <div class="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-10 px-4 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1fr] lg:gap-0 lg:divide-x lg:divide-white/10 lg:px-8">
+        <div class="col-span-2 lg:col-span-1 lg:px-8 lg:first:pl-0 lg:last:pr-0">
             <x-brand-mark class="text-5xl" />
             <p class="mt-3 max-w-xs text-xs text-slate-400 lg:text-xl">{{ $content->footer_tagline }}</p>
         </div>
-        <div>
+        <div class="lg:px-8 lg:first:pl-0 lg:last:pr-0">
             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Product</p>
             <ul class="mt-4 space-y-2 text-[15px] text-slate-300 lg:text-xl">
                 <li><a href="/#requirements" class="hover:text-white">Requirements</a></li>
@@ -15,14 +15,14 @@
                 <li><a href="/#faq" class="hover:text-white">FAQ</a></li>
             </ul>
         </div>
-        <div>
+        <div class="lg:px-8 lg:first:pl-0 lg:last:pr-0">
             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Company</p>
             <ul class="mt-4 space-y-2 text-[15px] text-slate-300 lg:text-xl">
                 <li><a href="/login" class="hover:text-white">Login</a></li>
                 <li><a href="{{ route('business.register') }}" class="hover:text-white">Register your business</a></li>
             </ul>
         </div>
-        <div>
+        <div class="lg:px-8 lg:first:pl-0 lg:last:pr-0">
             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Legal</p>
             <ul class="mt-4 space-y-2 text-[15px] text-slate-300 lg:text-xl">
                 <li><a href="{{ route('legal.show', 'privacy-policy') }}" class="hover:text-white">Privacy Policy</a></li>
@@ -31,7 +31,7 @@
             </ul>
         </div>
         @if ($content->contact_location || $content->contact_phone)
-            <div>
+            <div class="lg:px-8 lg:first:pl-0 lg:last:pr-0">
                 <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Contact</p>
                 <ul class="mt-4 space-y-2 text-[15px] text-slate-300 lg:text-xl">
                     @if ($content->contact_location)

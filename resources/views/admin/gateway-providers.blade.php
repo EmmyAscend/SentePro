@@ -67,18 +67,26 @@
                             </select>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-slate-300">Credentials (JSON)</label>
-                            <textarea name="credentials" rows="3" class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 font-mono text-xs text-white" placeholder='{{ $provider->provider === \App\Enums\PaymentProvider::Pesapal ? '{"consumer_key": "...", "consumer_secret": "..."}' : '{"api_username": "...", "api_password": "..."}' }}' required>{{ json_encode($provider->credentials ?: new stdClass) }}</textarea>
-                            <p class="mt-1 text-xs text-slate-400">
-                                @if ($provider->provider === \App\Enums\PaymentProvider::Pesapal)
-                                    Needs <code>consumer_key</code>/<code>consumer_secret</code>.
-                                @else
-                                    Needs <code>api_username</code>/<code>api_password</code>.
-                                @endif
-                                The webhook URL is generated automatically.
-                            </p>
-                        </div>
+                        @if ($provider->provider === \App\Enums\PaymentProvider::Pesapal)
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300">Consumer Key</label>
+                                <input type="text" name="consumer_key" value="{{ $provider->credentials['consumer_key'] ?? '' }}" class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300">Consumer Secret</label>
+                                <input type="password" name="consumer_secret" value="{{ $provider->credentials['consumer_secret'] ?? '' }}" class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white" required>
+                            </div>
+                        @else
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300">API Username</label>
+                                <input type="text" name="api_username" value="{{ $provider->credentials['api_username'] ?? '' }}" class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-300">API Password</label>
+                                <input type="password" name="api_password" value="{{ $provider->credentials['api_password'] ?? '' }}" class="mt-1 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white" required>
+                            </div>
+                        @endif
+                        <p class="text-xs text-slate-400">The webhook URL is generated automatically.</p>
 
                         <div>
                             <label class="block text-sm font-medium text-slate-300">Supported currencies</label>
